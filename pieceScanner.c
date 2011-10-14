@@ -43,7 +43,8 @@ struct sig
     uchar PORT3;
 };
 
-
+void pieceScanner();
+void generateSig(uchar c, sig *s);
 int readPieceArrayLine();
 void linTo2D(uchar i, uchar* x, uchar* y);
 void delay(uint ms);
@@ -88,55 +89,9 @@ void setup()
 
 }
 
-void generateSig(uchar c, sig *s);
 int main()
 {
-#if ARDUINO == 0
-    printf("Initializing Piece Array Scanner\n");
-#elif 
-	Serial.println("Initializing Piece Array Scanner");
-#endif
-    uchar x, y = 0;
-    
-	//Scan the board
-	// Run i from 0 to 63
-    for(unsigned int i = 0; i < 64; i++)
-    {
-
-        linTo2D(i, &x, &y);
-#if ARDUINO == 0
-        printf("Moving .. %d %d \n", x, y);
-#elif 
-		Serial.print("Moving .. ");
-		Serial.print(x);
-		Serial.print(",");
-		Serial.println(y);
-#endif
-
-        sig col, row;
-
-        generateSig(x, &col);
-        generateSig(y, &row);
-
-        // Enable Decoder
-        setDecoder(&col);
-
-        // Enable Multiplexer
-        setMux(&row);
-
-        // Wait for settle
-        delay(TIME_SETTLE);
-
-        // Read Result
-        uchar data = readPieceArrayLine();
-
-        // Save the result
-        board[i] = data;
-
-
-        // Wait for next
-        delay(TIME_NEXT);
-    }
+	pieceScanner();
     return 0;
 }
 
