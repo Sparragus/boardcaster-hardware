@@ -2,6 +2,34 @@
 #include <stdio.h>
 #include <unistd.h>
 
+
+#define WIDTH 8
+#define HEIGHT 8
+
+#define ARDUINO 0
+// MUX = Columns
+// DECs = ROWS
+#define MUX_PA 7
+#define MUX_PB 6
+#define MUX_PC 5
+
+#define DEC_PA 4
+#define DEC_PB 3
+#define DEC_PC 2
+
+#define OUT_DATA 8
+
+#define TIME_SETTLE 200
+#define TIME_NEXT  10
+
+#if ARDUINO == 0
+#define HIGH 1
+#define LOW 0
+#define INPUT 0
+#define OUTPUT 0
+
+
+
 // Hold all the states
 unsigned char board[64];
 typedef unsigned int uint;
@@ -14,59 +42,30 @@ struct sig
     uchar PORT2;
     uchar PORT3;
 };
+
+
 int readPieceArrayLine();
 void linTo2D(uchar i, uchar* x, uchar* y);
 void delay(uint ms);
 void setDecoder(sig *s);
 void setMux(sig *s);
 
-#define WIDTH 8
-#define HEIGHT 8
-
-#define ARDUINO 0
-
-#define MUX_PA 0
-#define MUX_PB 0
-#define MUX_PC 0
-
-#define DEC_PA 0
-#define DEC_PB 0
-#define DEC_PC 0
-
-#define OUT 0
-
-#define TIME_SETTLE 200
-#define TIME_NEXT  10
-
-#if ARDUINO == 0
-#define HIGH 1
-#define LOW 0
-#define IN 0
-#define OUT_DATA 0
 
 void pinMode(int pin, int mode)
 {
-
-
+	// No one here but us chickens...
 }
-
 void digitalWrite(int pin, int data)
 {
-
+	// No one here but us chickens...
 }
 
 int digitalRead(int pin)
 {
-
+	// No one here but us chickens...
 }
 
 #endif
-
-
-
-
-
-
 
 
 void setup()
@@ -79,23 +78,39 @@ void setup()
     pinMode(MUX_PB, OUT);
     pinMode(MUX_PC, OUT);
 
-    pinMode(OUT_DATA, IN);
+    pinMode(OUT_DATA, INPUT);
+	
+    // Disable internal pullup
+   digitalWrite(OUT_DATA, LOW);
+   
+   // Set serial transmission rate for debug prints
+   Serial.begin(9600);
 
 }
 
 void generateSig(uchar c, sig *s);
 int main()
 {
-    printf( "OK\n");
-    unsigned char x, y = 0;
-    // Run i from 0 to 63
-    printf( "OK\n");
+#if ARDUINO == 0
+    printf("Initializing Piece Array Scanner\n");
+#elif 
+	Serial.println("Initializing Piece Array Scanner");
+#endif
+    uchar x, y = 0;
+    
+	//Scan the board
+	// Run i from 0 to 63
     for(unsigned int i = 0; i < 64; i++)
     {
 
         linTo2D(i, &x, &y);
 #if ARDUINO == 0
         printf("Moving .. %d %d \n", x, y);
+#elif 
+		Serial.print("Moving .. ");
+		Serial.print(x);
+		Serial.print(",");
+		Serial.println(y);
 #endif
 
         sig col, row;
@@ -105,7 +120,6 @@ int main()
 
         // Enable Decoder
         setDecoder(&col);
-
 
         // Enable Multiplexer
         setMux(&row);
