@@ -1,9 +1,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <unistd.h>
+
 // Hold all the states
-
-
 unsigned char board[64];
 typedef unsigned int uint;
 typedef unsigned char uchar;
