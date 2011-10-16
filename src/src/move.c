@@ -49,7 +49,7 @@ static void clearCapturedPiece(position *pos, const move * const m);
 static int movePiece(position *pos, const move * const m, const int player);
 static bitboard getPieceBitboard(const position * const pos, const int piece);
 static int getPieceMoves(const position * const pos, const int player, const int type, bitboard rawMoves, const int sq, move store[]);
-static bitboard getRawMoves(const position * const pos, const int piece, const int player, const int type, const int sq);
+bitboard getRawMoves(const position * const pos, const int piece, const int player, const int type, const int sq);
 static bitboard getAttackRange(const int piece, const int type, const int sq, const bitboard allPieces, const int epSquare);
 static void storeMoveIfLegal(const position* const pos, move*  m, const int player, move store[], int *numMoves);
 static void movePawnExtra(position *pos, const move * const m, const int player);
@@ -158,7 +158,7 @@ int getMoves(const position * const pos, const int player, const int piece, cons
     return numMoves;
 }
 
-static bitboard getRawMoves(const position * const pos, const int player, const int piece, const int type, const int sq)
+bitboard getRawMoves(const position * const pos, const int player, const int piece, const int type, const int sq)
 {
     bitboard rawMoves = 0;
     bitboard attackRange = 0;
