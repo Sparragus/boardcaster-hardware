@@ -1,13 +1,9 @@
-#include <iostream>
 #include <stdio.h>
-#include <unistd.h>
-
-
 
 #define WIDTH 8
 #define HEIGHT 8
 
-#define ARDUINO 0
+#define ARDUINO 1
 // MUX = Columns
 // DECs = ROWS
 #define MUX_PA 7
@@ -36,7 +32,7 @@ struct sig
     uchar PORT3;
 };
 
-void scanPieceArray();
+void scanPieceArray(uchar *board);
 void generateSig(uchar c, sig *s);
 int readPieceArrayLine();
 void linTo2D(uchar i, uchar* x, uchar* y);
