@@ -21,7 +21,8 @@ typedef unsigned int uint;
 typedef unsigned char uchar;
 
 struct sig_t {
-  uchar PORT1;
-  uchar PORT2;
-  uchar PORT3;
+  uchar m_port1;
+  uchar m_port2;
+  uchar m_port3;
+
 } sig;

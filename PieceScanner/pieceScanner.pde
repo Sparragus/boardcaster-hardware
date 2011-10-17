@@ -83,19 +83,20 @@ int readPieceArrayLine()
 void setDecoder(sig_t* s)
 {
 
-    
-    digitalWrite(DEC_PA, s->PORT1);
-    digitalWrite(DEC_PB, s->PORT2);
-    digitalWrite(DEC_PC, s->PORT3);
-    
+   
+    digitalWrite(DEC_PA, s->m_port1);
+    digitalWrite(DEC_PB, s->m_port2);
+    digitalWrite(DEC_PC, s->m_port3);
+  
 }
 
 void setMux(sig_t* s)
 {
   
-    digitalWrite(MUX_PA, s->PORT1);
-    digitalWrite(MUX_PB, s->PORT2);
-    digitalWrite(MUX_PC, s->PORT3);
+    digitalWrite(MUX_PA, s->m_port1);
+    digitalWrite(MUX_PB, s->m_port2);
+    digitalWrite(MUX_PC, s->m_port3);
+    
 }
 
 void generateSig(uchar i, sig_t* s)
@@ -108,9 +109,10 @@ void generateSig(uchar i, sig_t* s)
 
     //  printf("%d to bin %d %d %d\n", i, a, b, c);
 
-    s->PORT1 = a;
-    s->PORT2 = b;
-    s->PORT3 = c;
+
+    s->m_port1 = a;
+    s->m_port2 = b;
+    s->m_port3 = c;
 
 }
 
