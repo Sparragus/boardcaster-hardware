@@ -115,7 +115,7 @@ void scanPieceArray(uchar* board)
 	  linTo2D(i, &x, &y);
 #if ARDUINO == 0
 	   printf("Moving .. %d %d \n", x, y);
-#elif
+#else
 		Serial.print("Moving .. ");
 		Serial.print(x);
 		Serial.print(",");
