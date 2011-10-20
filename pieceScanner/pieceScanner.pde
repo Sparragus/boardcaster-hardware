@@ -1,5 +1,6 @@
 
 
+
 #include "config.h"
 void scanPieceArray(uchar* board);
 void linTo2D(uchar i, uchar* x, uchar* y);
@@ -52,7 +53,7 @@ void scanPieceArray(uchar* board)
   for(unsigned int i = 0; i < 64; i++)
     {
       
-      i = 8;
+      i = 0;
       linTo2D(i, &x, &y);
       Serial.print(i);
       Serial.print(") Moving .. ");
@@ -103,14 +104,14 @@ int readPieceArrayLine()
 
 void setDecoder(sig_t* s)
 {
-
+#ifdef DEBUG
   Serial.print("DEC: ");
   Serial.print(s->m_port1,DEC);
   Serial.print(",");
   Serial.print(s->m_port2,DEC);
   Serial.print(",");
   Serial.println(s->m_port3,DEC);
-
+#endif
   digitalWrite(DEC_PA, s->m_port1);
   digitalWrite(DEC_PB, s->m_port2);
   digitalWrite(DEC_PC, s->m_port3);
@@ -119,14 +120,14 @@ void setDecoder(sig_t* s)
 
 void setMux(sig_t* s)
 { 
-
+#ifdef DEBUG
   Serial.print("MUX: ");
   Serial.print(s->m_port1,DEC);
   Serial.print(",");
   Serial.print(s->m_port2,DEC);
   Serial.print(",");
   Serial.println(s->m_port3,DEC);
- 
+#endif
   digitalWrite(MUX_PA, s->m_port1);
   digitalWrite(MUX_PB, s->m_port2);
   digitalWrite(MUX_PC, s->m_port3);
