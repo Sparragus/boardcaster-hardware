@@ -1,3 +1,5 @@
+
+
 #define WIDTH 8
 #define HEIGHT 8
 
@@ -13,8 +15,8 @@
 		
 #define OUT_DATA 8
 
-const long unsigned TIME_SETTLE = 200;
-const long unsigned TIME_NEXT = 10;
+const long unsigned TIME_SETTLE = 50;
+const long unsigned TIME_NEXT = 100;
 
 // Hold all the states
 typedef unsigned int uint;
