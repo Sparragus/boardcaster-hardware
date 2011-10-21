@@ -35,7 +35,7 @@ void setup()
 void loop()
 {
   // Scan piece array
-  uchar board[64];
+  uchar board[SCAN_SIZE];
   scanPieceArray(board);	
        
 }
@@ -50,16 +50,18 @@ void scanPieceArray(uchar* board)
 		
   //Scan the board
   // Run i from 0 to 63
-  for(unsigned int i = 0; i < 64; i++)
+  for(unsigned int i = 0; i < SCAN_SIZE; i++)
     {
       
-      i = 0;
+      
       linTo2D(i, &x, &y);
-      Serial.print(i);
-      Serial.print(") Moving .. ");
-      Serial.print(x,DEC);
-      Serial.print(",");
-      Serial.print(y,DEC);
+//    Serial.print(i);
+//
+//
+//    Serial.print(") Moving .. ");
+//    Serial.print(x,DEC);
+//    Serial.print(",");
+//    Serial.print(y,DEC);
 
       sig_t col;
       sig_t row;
@@ -90,12 +92,18 @@ void scanPieceArray(uchar* board)
 
       // Save the result
       board[i] = data;
-      Serial.print(" -> ");
-      Serial.println(data, DEC);
+
+// Serial.print(" -> ");
+// Serial.println(data, DEC);
 
       // Wait for next
       delay(TIME_NEXT);
     }
+
+Serial.print("-> ");
+Serial.print(board[0], DEC);
+Serial.print( ",");
+Serial.println(board[1], DEC);
 }
 int readPieceArrayLine()
 {
@@ -118,8 +126,28 @@ void setDecoder(sig_t* s)
   
 }
 
+
+
 void setMux(sig_t* s)
 { 
+
+  // MAX4581 uses reversed select pins
+  // MSB is C LSB is A
+  // X0 - 0 0 0 ( C B A)
+  // X1 - 0 0 1 ( C B A)
+
+  // Please wire accordingly. 
+
+  /*
+   |o   |
+   |    |
+   |    |
+   |    |A
+   |    |B
+   |____|C
+
+   */
+
 #ifdef DEBUG
   Serial.print("MUX: ");
   Serial.print(s->m_port1,DEC);

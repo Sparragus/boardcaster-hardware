@@ -14,6 +14,7 @@
 #define DEC_PC 2
 		
 #define OUT_DATA 8
+#define SCAN_SIZE 2
 
 const long unsigned TIME_SETTLE = 50;
 const long unsigned TIME_NEXT = 100;
