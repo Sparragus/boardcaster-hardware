@@ -49,6 +49,7 @@ void scanPieceArray(uint64_t* board)
   uchar x, y = 0;
   start_time = millis();
   //Scan the board
+
   // Run i from 0 to 63
   // *board = 0x0000000000000000LL;
 
