@@ -7,7 +7,9 @@ void setDecoder(sig_t* s);
 void setMux(sig_t* s);
 int readPieceArrayLine();
 void setBit(uint64_t* board, uchar data, uchar bit);
-uchar getBit(const uint64_t* board, uchar bit);
+uchar getBit(uint64_t* board, uchar bit);
+void arrayToBitBoard(uchar* array, uint64_t* board);
+uchar tboard[SCAN_SIZE];
 
 void setup()
 {
@@ -48,7 +50,7 @@ void scanPieceArray(uint64_t* board)
   start_time = millis();
   //Scan the board
   // Run i from 0 to 63
-  board = 0x0000000000000000LL;
+  // *board = 0x0000000000000000LL;
 
 
   for(unsigned int i = 0; i < SCAN_SIZE; i++)
@@ -93,60 +95,119 @@ void scanPieceArray(uint64_t* board)
 
       // Save the result
       //      board[i] = data;
-      if(i == 1 || i == 0)
-       setBit(board, data, i);
+      // if(i == 1 || i == 0)
+      //setBit(board, data, i);
       //setBit(board,0, 0);
       //setBit(board,0, 1);
       // Serial.print(" -> ");
       // Serial.println(data, DEC);
-
+      tboard[i] = data;
       // Wait for next
-      delay(TIME_NEXT);
+      // delay(TIME_NEXT);
     }
   end_time = millis();
-  //Serial.print("Array scan took ");
-  //Serial.print(end_time-start_time, DEC);
-  //Serial.println("ms");
+  
+  Serial.print("Array scan took ");
+  Serial.print(end_time-start_time, DEC);
+  Serial.println("ms");
   Serial.print("-> ");
+  
+  /*
+    Serial.print(tboard[0], DEC);
+    Serial.print(",");
+    Serial.println(tboard[1], DEC);
+  */
+  arrayToBitBoard(tboard, board);
+
+  if(tboard[0] != getBit(board,0) && tboard[1] != getBit(board,1))
+    Serial.print("getBitFailure");
+
   Serial.print(getBit(board,0), DEC);
   Serial.print( ",");
   Serial.println(getBit(board,1), DEC);
+
 }
-uchar getBit(const uint64_t* board, uchar bit)
+void arrayToBitBoard(uchar* array, uint64_t* board)
 {
-  uint64_t temp_board = *board;
-  uchar res = 0;
-  long unsigned int hi = (temp_board >> 32) & 0x00000000FFFFFFFFLL;
-  long unsigned int lo = temp_board & 0x00000000FFFFFFFFLL;
+
+  uint64_t temp = 0LL;
+  
+  for(int i = 0; i < SCAN_SIZE; i++)
+    {
+      if(array[63-i] == 1)
+        {
+          // Serial.print(".")
+          //  Serial.print((unsigned long int)temp,DEC);
+          temp |= 1LL<<i;
+        }
+    }
+
+  *board = temp;
+
+}
+uchar getBit(uint64_t* board, uchar bit)
+{
+  unsigned long int res = 0L;
+  uint64_t hi  = (*board >> 32) & 0x00000000FFFFFFFFLL;
+  uint64_t lo =   *board & 0x00000000FFFFFFFFLL;
+  // Serial.println("Checking bits");
+  //Serial.println(hi,BIN);
   if(bit < 31)
-    res = hi >> (31-bit) & 1L;
+    res = (hi >> (31-bit) )  & 1L;
   else
-      res = lo >> (31-bit) & 1L;
+    {
+      bit -=32;
+      res = (lo >> (31-bit))  & 1L;
+    }
+  // Serial.println(hi,BIN);
+  //   Serial.print("RES");
+  // Serial.println(res,BIN);
   return res;
 }
 void setBit(uint64_t* board, uchar data, uchar bit)
 {
-  uint64_t temp_board = *board;
-  uint64_t board_hi = (temp_board >> 32)  & 0x00000000FFFFFFFFLL;
-  uint64_t board_lo = temp_board & 0x00000000FFFFFFFFLL;
+  
+  uint64_t board_hi = (*board >> 32)  & 0x00000000FFFFFFFFLL;
+  uint64_t  board_lo = *board & 0x00000000FFFFFFFFLL;
 
   if(data == 0)
     {
       if(bit >= 0 && bit < 32)
-        board_hi &= ~(1L<<(31-bit));
+        {
+          //      Serial.println(bit, DEC);
+          //     Serial.println(board_hi,BIN);
+          board_hi = board_hi &  ~(1L<<(31-bit));
+          //    if(bit == 1)
+          //   Serial.println( board_hi,BIN);
+        }
+
+ 
       else if(bit >=32 && bit < 64)
-        board_lo &= ~(1L<<(31-bit));
-     }
+        {
+          bit -= 32;
+          board_lo &= ~(1L<<(31-bit));
+       
+        }
+    }
   else if (data == 1)
     {
 
-     if(bit >= 0 && bit < 32)
-        board_hi |= (1L<<(31-bit));
+      if(bit >= 0 && bit < 32)
+        {
+          //       Serial.println(board_hi, BIN);
+          board_hi = board_hi | (1L<<(31-bit));
+          //    Serial.println(board_hi,BIN);
+        }
       else if(bit >=32 && bit < 64)
-        board_lo |= (1L<<(31-bit));
- 
+        {
+          bit -= 32;
+          board_lo |= (1L<<(31-bit));
+        } 
+    
     }
-  *board = (board_hi << 32)  | board_lo;
+  
+  *board  = board_lo | (board_hi << 32);
+  delay(10);
   if (getBit(board, bit) != data)
     {
       Serial.print("Got: ");

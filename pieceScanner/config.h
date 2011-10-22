@@ -1,8 +1,4 @@
 
-
-#define WIDTH 8
-#define HEIGHT 8
-
 // MUX = Columns
 // DECs = ROWS
 #define MUX_PA 7
@@ -15,9 +11,8 @@
 		
 #define OUT_DATA 8
 #define SCAN_SIZE 64
-
-const long unsigned TIME_SETTLE = 2;
-const long unsigned TIME_NEXT = 2;
+const long unsigned TIME_SETTLE = 0;
+const long unsigned TIME_NEXT = 1;
 
 // Hold all the states
 typedef unsigned int uint;
