@@ -1,15 +1,13 @@
 
-
-
 #include "config.h"
-void scanPieceArray(uchar* board);
+void scanPieceArray(uint64_t* board);
 void linTo2D(uchar i, uchar* x, uchar* y);
 void generateSig(uchar i, sig_t* s);
 void setDecoder(sig_t* s);
 void setMux(sig_t* s);
 int readPieceArrayLine();
-
-
+void setBit(uint64_t* board, uchar data, uchar bit);
+uchar getBit(const uint64_t* board, uchar bit);
 
 void setup()
 {
@@ -35,33 +33,36 @@ void setup()
 void loop()
 {
   // Scan piece array
-  uchar board[SCAN_SIZE];
-  scanPieceArray(board);	
+  uint64_t board = 0x0000000000000000LL;
+  scanPieceArray(&board);	
        
 }
 
 
-void scanPieceArray(uchar* board)
+void scanPieceArray(uint64_t* board)
 {
 
 
-
+  long start_time, end_time = 0;
   uchar x, y = 0;
-		
+  start_time = millis();
   //Scan the board
   // Run i from 0 to 63
+  board = 0x0000000000000000LL;
+
+
   for(unsigned int i = 0; i < SCAN_SIZE; i++)
     {
       
       
       linTo2D(i, &x, &y);
-//    Serial.print(i);
-//
-//
-//    Serial.print(") Moving .. ");
-//    Serial.print(x,DEC);
-//    Serial.print(",");
-//    Serial.print(y,DEC);
+      //    Serial.print(i);
+      //
+      //
+      //    Serial.print(") Moving .. ");
+      //    Serial.print(x,DEC);
+      //    Serial.print(",");
+      //    Serial.print(y,DEC);
 
       sig_t col;
       sig_t row;
@@ -85,25 +86,75 @@ void scanPieceArray(uchar* board)
       setMux(&row);
 
       // Wait for settle
-       delay(TIME_SETTLE);
+      delay(TIME_SETTLE);
 
       // Read Result
       uchar data = readPieceArrayLine();
 
       // Save the result
-      board[i] = data;
-
-// Serial.print(" -> ");
-// Serial.println(data, DEC);
+      //      board[i] = data;
+      if(i == 1 || i == 0)
+       setBit(board, data, i);
+      //setBit(board,0, 0);
+      //setBit(board,0, 1);
+      // Serial.print(" -> ");
+      // Serial.println(data, DEC);
 
       // Wait for next
       delay(TIME_NEXT);
     }
+  end_time = millis();
+  //Serial.print("Array scan took ");
+  //Serial.print(end_time-start_time, DEC);
+  //Serial.println("ms");
+  Serial.print("-> ");
+  Serial.print(getBit(board,0), DEC);
+  Serial.print( ",");
+  Serial.println(getBit(board,1), DEC);
+}
+uchar getBit(const uint64_t* board, uchar bit)
+{
+  uint64_t temp_board = *board;
+  uchar res = 0;
+  long unsigned int hi = (temp_board >> 32) & 0x00000000FFFFFFFFLL;
+  long unsigned int lo = temp_board & 0x00000000FFFFFFFFLL;
+  if(bit < 31)
+    res = hi >> (31-bit) & 1L;
+  else
+      res = lo >> (31-bit) & 1L;
+  return res;
+}
+void setBit(uint64_t* board, uchar data, uchar bit)
+{
+  uint64_t temp_board = *board;
+  uint64_t board_hi = (temp_board >> 32)  & 0x00000000FFFFFFFFLL;
+  uint64_t board_lo = temp_board & 0x00000000FFFFFFFFLL;
 
-Serial.print("-> ");
-Serial.print(board[0], DEC);
-Serial.print( ",");
-Serial.println(board[1], DEC);
+  if(data == 0)
+    {
+      if(bit >= 0 && bit < 32)
+        board_hi &= ~(1L<<(31-bit));
+      else if(bit >=32 && bit < 64)
+        board_lo &= ~(1L<<(31-bit));
+     }
+  else if (data == 1)
+    {
+
+     if(bit >= 0 && bit < 32)
+        board_hi |= (1L<<(31-bit));
+      else if(bit >=32 && bit < 64)
+        board_lo |= (1L<<(31-bit));
+ 
+    }
+  *board = (board_hi << 32)  | board_lo;
+  if (getBit(board, bit) != data)
+    {
+      Serial.print("Got: ");
+      Serial.print(getBit(board, bit), BIN);
+      Serial.print(" Expected: ");
+      Serial.print(data, BIN);
+      Serial.println(" Assert setting bit!");
+    }
 }
 int readPieceArrayLine()
 {
@@ -139,14 +190,14 @@ void setMux(sig_t* s)
   // Please wire accordingly. 
 
   /*
-   |o   |
-   |    |
-   |    |
-   |    |A
-   |    |B
-   |____|C
+    |o   |
+    |    |
+    |    |
+    |    |A
+    |    |B
+    |____|C
 
-   */
+  */
 
 #ifdef DEBUG
   Serial.print("MUX: ");
