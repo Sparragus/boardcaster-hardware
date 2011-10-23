@@ -9,10 +9,17 @@ int readPieceArrayLine();
 void setBit(uint64_t* board, uchar data, uchar bit);
 uchar getBit(uint64_t* board, uchar bit);
 void arrayToBitBoard(uchar* array, uint64_t* board);
-uchar tboard[SCAN_SIZE];
+
+#define PRINT_RES 0
+#define PRINT_TIME 0
 
 void setup()
 {
+ 
+  // Set serial transmission rate for debug prints
+  Serial.begin(9600);
+
+  Serial.print("Initializing Piece Array Scanner.");	
   // Set up pin directions
   pinMode(DEC_PA, OUTPUT);
   pinMode(DEC_PB, OUTPUT);
@@ -23,41 +30,44 @@ void setup()
 
   pinMode(OUT_DATA, INPUT);
 
-
   // Disable internal pullup
   digitalWrite(OUT_DATA, LOW);
-	
-  // Set serial transmission rate for debug prints
-  Serial.begin(9600);
-  Serial.println("Initializing Piece Array Scanner");	
+  Serial.println("..done");	
+  
 }
 
 void loop()
 {
+ 
   // Scan piece array
   uint64_t board = 0x0000000000000000LL;
   scanPieceArray(&board);	
-       
+  
+  // Run the Chess Engine
+  //
+  // void chessAnalyze()
+
+  // Run the LED Array Code
+  // 
+  // void LEDArrayIllum()
 }
 
-
+// Scan the board into the long long board (64 bits)
 void scanPieceArray(uint64_t* board)
 {
-
+  // Read the board as uchars into tboard
+  uchar tboard[SCAN_SIZE];
 
   long start_time, end_time = 0;
   uchar x, y = 0;
   start_time = millis();
+  
   //Scan the board
-
   // Run i from 0 to 63
-  // *board = 0x0000000000000000LL;
-
 
   for(unsigned int i = 0; i < SCAN_SIZE; i++)
     {
-      
-      
+          
       linTo2D(i, &x, &y);
       //    Serial.print(i);
       //
@@ -70,9 +80,8 @@ void scanPieceArray(uint64_t* board)
       sig_t col;
       sig_t row;
 
-      
+      // Generate device signals  
       generateSig(x, &col);
-      
       generateSig(y, &row);
 
 
@@ -84,7 +93,6 @@ void scanPieceArray(uint64_t* board)
       // Enable Decoder
       setDecoder(&col);
 
-
       // Enable Multiplexer
       setMux(&row);
 
@@ -94,65 +102,55 @@ void scanPieceArray(uint64_t* board)
       // Read Result
       uchar data = readPieceArrayLine();
 
-      // Save the result
-      //      board[i] = data;
-      // if(i == 1 || i == 0)
-      //setBit(board, data, i);
-      //setBit(board,0, 0);
-      //setBit(board,0, 1);
-      // Serial.print(" -> ");
-      // Serial.println(data, DEC);
+ 
       tboard[i] = data;
-      // Wait for next
-      // delay(TIME_NEXT);
     }
+ 
   end_time = millis();
-  
+#if PRINT_TIME == 1
   Serial.print("Array scan took ");
   Serial.print(end_time-start_time, DEC);
   Serial.println("ms");
   Serial.print("-> ");
-  
-  /*
-    Serial.print(tboard[0], DEC);
-    Serial.print(",");
-    Serial.println(tboard[1], DEC);
-  */
+#endif 
+  // Convert array bit board into a long long 
   arrayToBitBoard(tboard, board);
 
+  // Assert conversion failure
+  // This should NEVER happen.
   if(tboard[0] != getBit(board,0) && tboard[1] != getBit(board,1))
     Serial.print("getBitFailure");
-
+  
+#if PRINT_RES == 1
   Serial.print(getBit(board,0), DEC);
   Serial.print( ",");
   Serial.println(getBit(board,1), DEC);
-
+#endif
 }
+
+// Convert array of board into a bitboard
 void arrayToBitBoard(uchar* array, uint64_t* board)
 {
-
   uint64_t temp = 0LL;
   
   for(int i = 0; i < SCAN_SIZE; i++)
     {
       if(array[63-i] == 1)
         {
-          // Serial.print(".")
-          //  Serial.print((unsigned long int)temp,DEC);
           temp |= 1LL<<i;
         }
     }
-
   *board = temp;
-
 }
+
+
+// Get bit from board
 uchar getBit(uint64_t* board, uchar bit)
 {
   unsigned long int res = 0L;
   uint64_t hi  = (*board >> 32) & 0x00000000FFFFFFFFLL;
   uint64_t lo =   *board & 0x00000000FFFFFFFFLL;
-  // Serial.println("Checking bits");
-  //Serial.println(hi,BIN);
+  
   if(bit < 31)
     res = (hi >> (31-bit) )  & 1L;
   else
@@ -160,11 +158,10 @@ uchar getBit(uint64_t* board, uchar bit)
       bit -=32;
       res = (lo >> (31-bit))  & 1L;
     }
-  // Serial.println(hi,BIN);
-  //   Serial.print("RES");
-  // Serial.println(res,BIN);
   return res;
 }
+
+// Set bit to data of board.
 void setBit(uint64_t* board, uchar data, uchar bit)
 {
   
@@ -175,19 +172,12 @@ void setBit(uint64_t* board, uchar data, uchar bit)
     {
       if(bit >= 0 && bit < 32)
         {
-          //      Serial.println(bit, DEC);
-          //     Serial.println(board_hi,BIN);
           board_hi = board_hi &  ~(1L<<(31-bit));
-          //    if(bit == 1)
-          //   Serial.println( board_hi,BIN);
         }
-
- 
       else if(bit >=32 && bit < 64)
         {
           bit -= 32;
           board_lo &= ~(1L<<(31-bit));
-       
         }
     }
   else if (data == 1)
@@ -195,34 +185,37 @@ void setBit(uint64_t* board, uchar data, uchar bit)
 
       if(bit >= 0 && bit < 32)
         {
-          //       Serial.println(board_hi, BIN);
           board_hi = board_hi | (1L<<(31-bit));
-          //    Serial.println(board_hi,BIN);
         }
       else if(bit >=32 && bit < 64)
         {
           bit -= 32;
           board_lo |= (1L<<(31-bit));
         } 
-    
     }
   
   *board  = board_lo | (board_hi << 32);
-  delay(10);
+
+  // Assert the bits. This should NEVER assert false
   if (getBit(board, bit) != data)
     {
+#ifdef DEBUG
       Serial.print("Got: ");
       Serial.print(getBit(board, bit), BIN);
       Serial.print(" Expected: ");
       Serial.print(data, BIN);
       Serial.println(" Assert setting bit!");
+#endif
     }
 }
+
+// Get result from the piece array
 int readPieceArrayLine()
 {
   return digitalRead(OUT_DATA);
 }
 
+// Set decoder to the given signal
 void setDecoder(sig_t* s)
 {
 #ifdef DEBUG
@@ -236,14 +229,11 @@ void setDecoder(sig_t* s)
   digitalWrite(DEC_PA, s->m_port1);
   digitalWrite(DEC_PB, s->m_port2);
   digitalWrite(DEC_PC, s->m_port3);
-  
 }
 
-
-
+// Set Multiplexer to the given signal
 void setMux(sig_t* s)
 { 
-
   // MAX4581 uses reversed select pins
   // MSB is C LSB is A
   // X0 - 0 0 0 ( C B A)
@@ -272,26 +262,21 @@ void setMux(sig_t* s)
   digitalWrite(MUX_PA, s->m_port1);
   digitalWrite(MUX_PB, s->m_port2);
   digitalWrite(MUX_PC, s->m_port3);
-    
 }
 
+// Generate signal s from decimal input i
 void generateSig(uchar i, sig_t* s)
 {
-  
   uchar a = (i&0x4)>>2;
   uchar b = (i&0x2)>>1;
   uchar c = i&0x1;
 
-
-  //  printf("%d to bin %d %d %d\n", i, a, b, c);
-
-
   s->m_port1 = a;
   s->m_port2 = b;
   s->m_port3 = c;
-
 }
 
+// Convert linear position to 2D position
 void linTo2D(uchar i, uchar* x, uchar* y)
 {
   uchar yt = i/8;
@@ -299,6 +284,5 @@ void linTo2D(uchar i, uchar* x, uchar* y)
 
   *x = xt;
   *y = yt;
- 
 }
 

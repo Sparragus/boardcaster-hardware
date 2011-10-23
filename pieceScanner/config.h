@@ -11,8 +11,11 @@
 		
 #define OUT_DATA 8
 #define SCAN_SIZE 64
-const long unsigned TIME_SETTLE = 0;
-const long unsigned TIME_NEXT = 1;
+// Time in ms to wait until reading the data
+// units in ms.
+// 1ms SETTLE ~~ 64ms per board scan
+const long unsigned TIME_SETTLE = 1;
+
 
 // Hold all the states
 typedef unsigned int uint;
