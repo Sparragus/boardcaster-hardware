@@ -9,8 +9,9 @@ int readPieceArrayLine();
 void setBit(uint64_t* board, uchar data, uchar bit);
 uchar getBit(uint64_t* board, uchar bit);
 void arrayToBitBoard(uchar* array, uint64_t* board);
+void printBoard(uint64_t* board, int n);
 
-#define PRINT_RES 0
+#define PRINT_RES 1
 #define PRINT_TIME 0
 
 void setup()
@@ -84,8 +85,6 @@ void scanPieceArray(uint64_t* board)
       generateSig(x, &col);
       generateSig(y, &row);
 
-
-
       // Decoder = Column
       // Multiplexer = Row
       // One multiplexer per RANK
@@ -101,7 +100,6 @@ void scanPieceArray(uint64_t* board)
 
       // Read Result
       uchar data = readPieceArrayLine();
-
  
       tboard[i] = data;
     }
@@ -122,10 +120,28 @@ void scanPieceArray(uint64_t* board)
     Serial.print("getBitFailure");
   
 #if PRINT_RES == 1
-  Serial.print(getBit(board,0), DEC);
-  Serial.print( ",");
-  Serial.println(getBit(board,1), DEC);
+//  Serial.print(getBit(board,0), DEC);
+//  Serial.print( ",");
+//  Serial.println(getBit(board,1), DEC);
+    printBoard(board, 4);
 #endif
+}
+
+// Prints a bitboard up to n positions
+void printBoard(uint64_t* board, int n)
+{
+  Serial.print("[");
+  for(int i = 0; i < n && i < SCAN_SIZE; i++)
+    {
+      
+      if(n > 8 && i%8 == 0)
+        Serial.println("");
+      Serial.print(getBit(board,i), DEC);
+      if(i+1 != n && i != SCAN_SIZE)
+        Serial.print(", ");
+    }
+
+  Serial.println("]");
 }
 
 // Convert array of board into a bitboard
