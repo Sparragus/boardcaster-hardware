@@ -1,4 +1,5 @@
 
+
 #include "config.h"
 void scanPieceArray(uint64_t* board);
 void linTo2D(uchar i, uchar* x, uchar* y);
@@ -36,7 +37,35 @@ void setup()
   Serial.println("..done");	
   
 }
+void initPieceDetector()
+{
 
+  uchar x, y = 0;
+  for(unsigned int i = 0; i < SCAN_SIZE; i++)
+    {
+          
+      linTo2D(i, &x, &y);
+      //    Serial.print(i);
+      //
+      //
+      //    Serial.print(") Moving .. ");
+      //    Serial.print(x,DEC);
+      //    Serial.print(",");
+      //    Serial.print(y,DEC);
+
+      sig_t col;
+      sig_t row;
+
+      // Generate device signals  
+      generateSig(x, &col);
+      generateSig(y, &row);
+
+      setDecoder(&row);
+
+      // Enable Multiplexer
+      setMux(&col);
+    }
+}
 void loop()
 {
  
@@ -85,15 +114,15 @@ void scanPieceArray(uint64_t* board)
       generateSig(x, &col);
       generateSig(y, &row);
 
-      // Decoder = Column
-      // Multiplexer = Row
+      // Decoder = Row
+      // Multiplexer = Column
       // One multiplexer per RANK
       // As connected DEMO
       // Enable Decoder
-      setDecoder(&col);
+      setDecoder(&row);
 
       // Enable Multiplexer
-      setMux(&row);
+      setMux(&col);
 
       // Wait for settle
       delay(TIME_SETTLE);
@@ -232,6 +261,12 @@ int readPieceArrayLine()
 // Set decoder to the given signal
 void setDecoder(sig_t* s)
 {
+
+  // 74HCT138 uses reversed select pins as well
+  // Output = Input
+  // Yx =   C B A
+  // ~Y0 =  0 0 0
+  // ~Y1 =  0 0 1
 #ifdef DEBUG
   Serial.print("DEC: ");
   Serial.print(s->m_port1,DEC);
