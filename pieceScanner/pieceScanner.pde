@@ -1,7 +1,7 @@
 
 
 #include "config.h"
-void scanPieceArray(uint64_t* board);
+int scanPieceArray(uint64_t* board);
 void linTo2D(uchar i, uchar* x, uchar* y);
 void generateSig(uchar i, sig_t* s);
 void setDecoder(sig_t* s);
@@ -11,6 +11,8 @@ void setBit(uint64_t* board, uchar data, uchar bit);
 uchar getBit(uint64_t* board, uchar bit);
 void arrayToBitBoard(uchar* array, uint64_t* board);
 void printBoard(uint64_t* board, int n);
+
+uint64_t* old_board = 0x0000000000000000LL;
 
 #define PRINT_RES 1
 #define PRINT_TIME 0
@@ -85,7 +87,7 @@ void loop()
 }
 
 // Scan the board into the long long board (64 bits)
-void scanPieceArray(uint64_t* board)
+int scanPieceArray(uint64_t* board)
 {
   // Read the board as uchars into tboard
   uchar tboard[SCAN_SIZE];
@@ -136,6 +138,8 @@ void scanPieceArray(uint64_t* board)
   Serial.println("ms");
   Serial.print("-> ");
 #endif 
+
+  *old_board = *board;
   // Convert array bit board into a long long 
   arrayToBitBoard(tboard, board);
 
@@ -145,11 +149,14 @@ void scanPieceArray(uint64_t* board)
     Serial.print("getBitFailure");
   
 #if PRINT_RES == 1
-    Serial.print(getBit(board,0), DEC);
-    Serial.print( ",");
-    Serial.println(getBit(board,1), DEC);
-    printBoard(board, 64);
+  //   Serial.print(getBit(board,0), DEC);
+  //  Serial.print( ",");
+  //   Serial.println(getBit(board,1), DEC);
+  //   printBoard(board, 64);
 #endif
+    Serial.println("::");
+    Serial.println(*old_board == *board, BIN);
+   return (*old_board == *board) ? -1 : 1;
 }
 
 // Prints a bitboard up to n positions
