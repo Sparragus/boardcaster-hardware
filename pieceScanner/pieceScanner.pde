@@ -275,9 +275,9 @@ void setDecoder(sig_t* s)
   Serial.print(",");
   Serial.println(s->m_port3,DEC);
 #endif
-  digitalWrite(DEC_PA, s->m_port1);
-  digitalWrite(DEC_PB, s->m_port2);
-  digitalWrite(DEC_PC, s->m_port3);
+  digitalWrite(DEC_PA0, s->m_port1);
+  digitalWrite(DEC_PA1, s->m_port2);
+  digitalWrite(DEC_PA2, s->m_port3);
 }
 
 // Set Multiplexer to the given signal

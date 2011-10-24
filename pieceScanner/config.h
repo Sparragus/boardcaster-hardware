@@ -5,9 +5,9 @@
 #define MUX_PB 6
 #define MUX_PC 5
 	
-#define DEC_PA 4
-#define DEC_PB 3
-#define DEC_PC 2
+#define DEC_PA0 4
+#define DEC_PA1 3
+#define DEC_PA2 2
 		
 #define OUT_DATA 8
 #define SCAN_SIZE 64
