@@ -120,10 +120,10 @@ void scanPieceArray(uint64_t* board)
     Serial.print("getBitFailure");
   
 #if PRINT_RES == 1
-//  Serial.print(getBit(board,0), DEC);
-//  Serial.print( ",");
-//  Serial.println(getBit(board,1), DEC);
-    printBoard(board, 4);
+  //  Serial.print(getBit(board,0), DEC);
+  //  Serial.print( ",");
+  //  Serial.println(getBit(board,1), DEC);
+  printBoard(board, 4);
 #endif
 }
 
@@ -133,14 +133,12 @@ void printBoard(uint64_t* board, int n)
   Serial.print("[");
   for(int i = 0; i < n && i < SCAN_SIZE; i++)
     {
-      
       if(n > 8 && i%8 == 0)
         Serial.println("");
       Serial.print(getBit(board,i), DEC);
       if(i+1 != n && i != SCAN_SIZE)
         Serial.print(", ");
     }
-
   Serial.println("]");
 }
 
