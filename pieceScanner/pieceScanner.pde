@@ -12,10 +12,8 @@ uchar getBit(uint64_t* board, uchar bit);
 void arrayToBitBoard(uchar* array, uint64_t* board);
 void printBoard(uint64_t* board, int n);
 void initPieceDetector();
-uint64_t old_board = 0x0000000000000000LL;
+int compareBoards(uint64_t* board1, uint64_t* board2, const int sensorCount);
 
-#define PRINT_RES 1
-#define PRINT_TIME 0
 
 void setup()
 {
@@ -27,10 +25,12 @@ void setup()
   initPieceDetector();
   
 }
+
+
 void initPieceDetector()
 {
 
-  Serial.print("Initializing Piece Array Scanner.");	
+  Serial.print("Initializing Piece Array Scanner");	
 
   // Set up pin directions
   pinMode(DEC_PA0, OUTPUT);
@@ -48,6 +48,9 @@ void initPieceDetector()
 
   // Delay for a while (100ms)
   delay(100);
+  
+  // Record start
+  unsigned long int startBench = millis();
 
   // Sweep the array
   uchar x, y = 0;
@@ -67,23 +70,48 @@ void initPieceDetector()
 
       // Enable Multiplexer
       setMux(&col);
+     
+      // Wait for settle
+      delay(TIME_SETTLE); 
+     
+      // Read the data but do nothing;
+      readPieceArrayLine();
     }
-  Serial.println("..done");	
+
+  // Record end time
+  realTimeToScan = millis() - startBench;
+  Serial.print("  [");
+  Serial.print(realTimeToScan, DEC);
+  Serial.print("]ms/scan..");
+  Serial.println("\nInitialization Done.");	
+  
+
 }
+
 void loop()
 {
  
   // Scan piece array
   static uint64_t board = 0x0000000000000000LL;
-  scanPieceArray(&board);	
-  
-  // Run the Chess Engine
-  //
-  // void chessAnalyze()
 
-  // Run the LED Array Code
-  // 
-  // void LEDArrayIllum()
+  // Check for board changes
+  // 1 = Board changed, 0 = No change
+  if(scanPieceArray(&board) == 1)
+    {
+      // Boards Changed
+      // Print the boards
+      printBoard(&board,SENSOR_COUNT);
+
+  
+      // Run the Chess Engine
+      //
+      // void chessAnalyze()
+
+      // Run the LED Array Code
+      // 
+      // void LEDArrayIllum()
+
+    }
 }
 
 // Scan the board into the long long board (64 bits)
@@ -94,9 +122,7 @@ int scanPieceArray(uint64_t* board)
 
   long start_time, end_time = 0;
   uchar x, y = 0;
-  start_time = millis();
-  
-  //Scan the board
+   //Scan the board
 
   // Run i from 0 to 63
 
@@ -131,13 +157,6 @@ int scanPieceArray(uint64_t* board)
       tboard[i] = data;
     }
  
-  end_time = millis();
-#if PRINT_TIME == 1
-  Serial.print("Array scan took ");
-  Serial.print(end_time-start_time, DEC);
-  Serial.println("ms");
-  Serial.print("-> ");
-#endif 
 
   old_board = *board;
   // Convert array bit board into a long long 
@@ -153,15 +172,26 @@ int scanPieceArray(uint64_t* board)
   //  Serial.print( ",");
   //   Serial.println(getBit(board,1), DEC);
   //   printBoard(board, 64);
-#endif
-   Serial.print("NEW BOARD ");
-       printBoard(board,  4);
-      Serial.print("OLD BOARD ");
-        printBoard(&old_board,  4);
+
+    Serial.print("NEW BOARD ");
+    printBoard(board,  SENSOR_COUNT);
+    Serial.print("OLD BOARD ");
+    printBoard(&old_board,  SENSOR_COUNT);
+    Serial.print("Full compare: ");
     Serial.print(old_board == *board, BIN);
-   return (old_board == *board) ? -1 : 1;
+    Serial.println("");
+#endif
+    return compareBoards(board, &old_board, SENSOR_COUNT);
+
 }
 
+int compareBoards(uint64_t* board1, uint64_t* board2, const int sensorCount)
+{
+  for(int i = 0; i < sensorCount; i++)
+    if(getBit(board1,i) != getBit(board2,i))
+      return 1;
+  return 0;
+}
 // Prints a bitboard up to n positions
 void printBoard(uint64_t* board, int n)
 {
