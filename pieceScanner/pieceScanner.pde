@@ -230,8 +230,8 @@ void arrayToBitBoard(uchar* array, uint64_t* board)
 uchar getBit(uint64_t* board, uchar bit)
 {
     unsigned long int res = 0L;
-    uint64_t hi  = (*board >> 32) & 0x00000000FFFFFFFFLL;
-    uint64_t lo =  *board & 0x00000000FFFFFFFFLL;
+    uint64_t hi  = (*board >> 32) & 0x00000000FFFFFFFFULL;
+    uint64_t lo =  *board & 0x00000000FFFFFFFFULL;
   
     if(bit < 31)
         res = (hi >> (31-bit)) & 1L;
@@ -247,8 +247,8 @@ uchar getBit(uint64_t* board, uchar bit)
 void putBit(uint64_t* board, uchar data, uchar bit)
 {
   
-    uint64_t board_hi = (*board >> 32)  & 0x00000000FFFFFFFFLL;
-    uint64_t  board_lo = *board & 0x00000000FFFFFFFFLL;
+    uint64_t board_hi = (*board >> 32)  & 0x00000000FFFFFFFFULL;
+    uint64_t  board_lo = *board & 0x00000000FFFFFFFFULL;
 
     if(data == 0)
     {
