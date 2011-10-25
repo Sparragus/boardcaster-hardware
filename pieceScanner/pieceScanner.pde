@@ -249,7 +249,7 @@ uchar getBit(uint64_t* board, uchar bit)
 }
 
 // Set bit to data of board.
-void setBit(uint64_t* board, uchar data, uchar bit)
+void putBit(uint64_t* board, uchar data, uchar bit)
 {
   
   uint64_t board_hi = (*board >> 32)  & 0x00000000FFFFFFFFLL;
