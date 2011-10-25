@@ -160,22 +160,18 @@ int scanPieceArray(uint64_t* board)
       tboard[i] = data;
     }
  
-
+  // Save old board
   old_board = *board;
+ 
   // Convert array bit board into a long long 
   arrayToBitBoard(tboard, board);
-  //old_board = *board;
+ 
   // Assert conversion failure
   // This should NEVER happen.
   if(tboard[0] != getBit(board,0) && tboard[1] != getBit(board,1))
     Serial.print("getBitFailure");
   
 #if PRINT_RES == 1
-  //   Serial.print(getBit(board,0), DEC);
-  //  Serial.print( ",");
-  //   Serial.println(getBit(board,1), DEC);
-  //   printBoard(board, 64);
-
     Serial.print("NEW BOARD ");
     printBoard(board,  SENSOR_COUNT);
     Serial.print("OLD BOARD ");
