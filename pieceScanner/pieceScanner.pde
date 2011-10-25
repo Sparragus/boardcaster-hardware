@@ -11,8 +11,8 @@ void setBit(uint64_t* board, uchar data, uchar bit);
 uchar getBit(uint64_t* board, uchar bit);
 void arrayToBitBoard(uchar* array, uint64_t* board);
 void printBoard(uint64_t* board, int n);
-
-uint64_t* old_board = 0x0000000000000000LL;
+void initPieceDetector();
+uint64_t old_board = 0x0000000000000000LL;
 
 #define PRINT_RES 1
 #define PRINT_TIME 0
@@ -74,7 +74,7 @@ void loop()
 {
  
   // Scan piece array
-  uint64_t board = 0x0000000000000000LL;
+  static uint64_t board = 0x0000000000000000LL;
   scanPieceArray(&board);	
   
   // Run the Chess Engine
@@ -139,10 +139,10 @@ int scanPieceArray(uint64_t* board)
   Serial.print("-> ");
 #endif 
 
-  *old_board = *board;
+  old_board = *board;
   // Convert array bit board into a long long 
   arrayToBitBoard(tboard, board);
-
+  //old_board = *board;
   // Assert conversion failure
   // This should NEVER happen.
   if(tboard[0] != getBit(board,0) && tboard[1] != getBit(board,1))
@@ -154,9 +154,12 @@ int scanPieceArray(uint64_t* board)
   //   Serial.println(getBit(board,1), DEC);
   //   printBoard(board, 64);
 #endif
-    Serial.println("::");
-    Serial.println(*old_board == *board, BIN);
-   return (*old_board == *board) ? -1 : 1;
+   Serial.print("NEW BOARD ");
+       printBoard(board,  4);
+      Serial.print("OLD BOARD ");
+        printBoard(&old_board,  4);
+    Serial.print(old_board == *board, BIN);
+   return (old_board == *board) ? -1 : 1;
 }
 
 // Prints a bitboard up to n positions
