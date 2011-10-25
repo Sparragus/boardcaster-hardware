@@ -14,7 +14,7 @@ void printBoard(uint64_t* board, int n);
 void initPieceDetector();
 int compareBoards(uint64_t* board1, uint64_t* board2, const int sensorCount);
 
-
+// Main firmware setup call
 void setup()
 {
  
@@ -26,7 +26,7 @@ void setup()
   
 }
 
-
+// Piece Detector Initializer
 void initPieceDetector()
 {
 
@@ -88,6 +88,7 @@ void initPieceDetector()
 
 }
 
+// Main firmware loop
 void loop()
 {
  
@@ -115,6 +116,8 @@ void loop()
 }
 
 // Scan the board into the long long board (64 bits)
+// Return: 1 = Board Change
+//       : 0 = No Board Change
 int scanPieceArray(uint64_t* board)
 {
   // Read the board as uchars into tboard
@@ -185,6 +188,10 @@ int scanPieceArray(uint64_t* board)
 
 }
 
+// Compare board1 against board2 for the specified amount of sensors
+// Under normal operation SENSOR_COUNT = SCAN_SIZE
+// Return: 0 = Equal boards
+// Return: 1 = Different boards;
 int compareBoards(uint64_t* board1, uint64_t* board2, const int sensorCount)
 {
   for(int i = 0; i < sensorCount; i++)
@@ -192,6 +199,7 @@ int compareBoards(uint64_t* board1, uint64_t* board2, const int sensorCount)
       return 1;
   return 0;
 }
+
 // Prints a bitboard up to n positions
 void printBoard(uint64_t* board, int n)
 {

@@ -1,4 +1,6 @@
 
+// Pin Definitions
+
 // MUX = Columns
 // DECs = ROWS
 #define MUX_PA 7
@@ -10,8 +12,10 @@
 #define DEC_PA2 2
 		
 #define OUT_DATA 8
-#define SCAN_SIZE 64
 
+
+// Under non-debugging operation SENSOR_COUNT = SCAN_SIZE = 64
+#define SCAN_SIZE 64
 #define SENSOR_COUNT 4
 
 
