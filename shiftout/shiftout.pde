@@ -1,12 +1,5 @@
-//**************************************************************//
-//  Name    : shiftOutCode, Hello World                                
-//  Author  : Carlyn Maw,Tom Igoe, David A. Mellis 
-//  Date    : 25 Oct, 2006    
-//  Modified: 23 Mar 2010                                 
-//  Version : 2.0                                             
-//  Notes   : Code for using a IR2D07 Shift Register           //
-//          : to count from 0 to 255                           
-//****************************************************************
+// Code by Gabriel J. Perez
+//         Francisco De La Cruz
 
 //Pin connected to S-IN of IR2D07
 int dataPin = 8;
@@ -17,32 +10,51 @@ int latchPin = 10;
 //Pin connected to XEN of IR2D07
 int xenPin = 11;
 
+unsigned int j = 0;
+const int disp[] = { 0, 1, 2, 3};
+
 void setup() {
-  //set pins to output so you can control the shift register
-  pinMode(dataPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-  pinMode(latchPin, OUTPUT);
-  pinMode(xenPin, OUTPUT);
+    //set pins to output so you can control the shift register
+    pinMode(dataPin, OUTPUT);
+    pinMode(clockPin, OUTPUT);
+    pinMode(latchPin, OUTPUT);
+    pinMode(xenPin, OUTPUT);
   
-  digitalWrite(latchPin, HIGH);
+    digitalWrite(latchPin, HIGH);
+  
 }
 
 void loop() {
 
-    // take the xenPin low so 
-    // the LEDs don't change while you're sending in bits:
-    digitalWrite(xenPin, LOW);
-    
-    // shift out the bits:
-    shiftOut(dataPin, clockPin, MSBFIRST, 8);  
+   
+    for(int i = 0; i < 8; i++)
+    {
 
-    //take the xen pin high so the LEDs will light up:
-    digitalWrite(xenPin, HIGH);
-    // pause before next value:
-    delay(1000);
-    
-    digitalWrite(xenPin, LOW);
-    
-    delay(1000);
+        // Set xenPin high to disable the drivers.
+        // Set the latch low to allow data through latch. This might
+        // have to be revised.
+        digitalWrite(xenPin, HIGH);
+        digitalWrite(latchPin, LOW);
 
+        // Set the clockPin low to prepare for rising edge trigger
+        digitalWrite(clockPin, LOW);  
+        // Shift out the data
+        shiftOut(dataPin, clockPin, MSBFIRST, disp[j] );  
+        
+        // Index overflow housekeeping
+        j++;
+        if(j>3)
+            j = 0;
+     
+        // Set latch high to capture latch
+        // Set xenPin low to enable the drivers
+        // Set latchPin low to allow data to pass through
+        digitalWrite(latchPin, HIGH);
+        digitalWrite(xenPin, LOW);
+        digitalWrite(latchPin, LOW);
+
+        // Delay about 1sec per number    
+        delay(1000);
+    }
 }
+
