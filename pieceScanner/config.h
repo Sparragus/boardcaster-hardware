@@ -16,7 +16,7 @@
 
 // Under non-debugging operation SENSOR_COUNT = SCAN_SIZE = 64
 #define SCAN_SIZE 64
-#define SENSOR_COUNT 4
+#define SENSOR_COUNT 6
 
 
 #define PRINT_RES 0
