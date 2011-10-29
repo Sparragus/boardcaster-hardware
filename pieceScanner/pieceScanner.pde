@@ -1,17 +1,12 @@
 
 #include "config.h"
-int scanPieceArray(uint64_t* board);
-void linTo2D(uchar i, uchar* x, uchar* y);
-void generateSig(uchar i, sig_t* s);
-void setDecoder(sig_t* s);
-void setMux(sig_t* s);
-int readPieceArrayLine();
-void setBit(uint64_t* board, uchar data, uchar bit);
-uchar getBit(uint64_t* board, uchar bit);
-void arrayToBitBoard(uchar* array, uint64_t* board);
-void printBoard(uint64_t* board, int n);
+#include "utils.h"
+#include "hw_signals.h"
+#include "bit_ops.h"
+#include "bitboard_ops.h"
+
+
 void initPieceDetector();
-int compareBoards(uint64_t* board1, uint64_t* board2, const int sensorCount);
 
 // Main firmware setup call
 void setup()

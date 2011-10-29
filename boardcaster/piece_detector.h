@@ -1,4 +1,5 @@
-
+#ifndef PIECE_DETECTOR_H
+#define PIECE_DETECTOR_H
 // Pin Definitions
 
 // MUX = Columns
@@ -22,25 +23,32 @@
 #define PRINT_RES 0
 #define PRINT_TIME 0
 
+
+typedef unsigned long long uint64_t;
 // Temporary board for delta calculation
-uint64_t old_board = 0x0000000000000000LL;
+extern uint64_t old_board;
 
 
 // Time in ms to wait until reading the data
 // units in ms.
 // 1ms SETTLE ~~ 64ms per board scan
 // 5ms SETTLE ~~ 322ms per board scan
-const long unsigned TIME_SETTLE = 5;
+extern const long unsigned TIME_SETTLE;
 
-long unsigned realTimeToScan = 0;
+extern long unsigned realTimeToScan;
 
 // Hold all the states
 typedef unsigned int uint;
 typedef unsigned char uchar;
 
-struct sig_t {
+extern struct sig_t {
   uchar m_port1;
   uchar m_port2;
   uchar m_port3;
 
 } sig;
+
+int scanPieceArray(uint64_t* board);
+void initPieceDetector();
+
+#endif //PIECE_DETECTOR_H
