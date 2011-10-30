@@ -1,8 +1,8 @@
 ARDUINO_DIR = /usr/share/arduino
 TARGET = CLItest
-BOARD_TAG = atmega328
+BOARD_TAG = mega2560
 
-ARDUINO_PORT = /dev/ttyUSB0
+ARDUINO_PORT = /dev/ttyACM0
 
 
 
