@@ -1,5 +1,5 @@
 ARDUINO_DIR = /usr/share/arduino
-TARGET = CLItest
+TARGET = boardcaster
 BOARD_TAG = atmega328
 
 ARDUINO_PORT = /dev/ttyUSB0

@@ -5,4 +5,17 @@ This is the main repository serving the firmware source for the Boardcaster.
 The main firmware sketch is: boardcaster
 This is the integration sketch for code targeted for flash onto the final product and demos.
 
+==Build==
+make
+
+==Upload (Target: tmega328)==
+make upload
+
+==Target Change==
+Edit Makefile and change TARGET to one of the following:
+
+atmega328
+mega2560
+uno
+
 -xerces
