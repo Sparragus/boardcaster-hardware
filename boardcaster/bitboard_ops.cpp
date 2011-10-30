@@ -8,8 +8,8 @@
 // Return: 1 = Different boards;
 int compareBoards(uint64_t* board1, uint64_t* board2)
 {
-  int i;
-  uint ret = 0;
+  unsigned int i;
+  unsigned ret = 0;
   for(i = 0; i < SENSOR_COUNT; i++)
     {
       if(getBit(board1, i)!= getBit(board2, i))
@@ -23,7 +23,7 @@ int compareBoards(uint64_t* board1, uint64_t* board2)
 // Prints a bitboard up to n positions
 void printBoard(uint64_t* board, int n)
 {
-  int i;
+  unsigned int i;
   Serial.print("[");
   for(i = 0; i < n && i < SCAN_SIZE; i++)
     {
