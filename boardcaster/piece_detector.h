@@ -14,27 +14,22 @@
 		
 #define OUT_DATA 8
 
-
 // Under non-debugging operation SENSOR_COUNT = SCAN_SIZE = 64
 #define SCAN_SIZE 64
 #define SENSOR_COUNT 6
 
-
 #define PRINT_RES 0
 #define PRINT_TIME 0
-
 
 typedef unsigned long long uint64_t;
 // Temporary board for delta calculation
 extern uint64_t old_board;
-
 
 // Time in ms to wait until reading the data
 // units in ms.
 // 1ms SETTLE ~~ 64ms per board scan
 // 5ms SETTLE ~~ 322ms per board scan
 extern const long unsigned TIME_SETTLE;
-
 extern long unsigned realTimeToScan;
 
 // Hold all the states

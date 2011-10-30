@@ -13,12 +13,11 @@ int compareBoards(uint64_t* board1, uint64_t* board2)
   for(i = 0; i < SENSOR_COUNT; i++)
     {
       if(getBit(board1, i)!= getBit(board2, i))
-			ret = 1;
-
+        {
+          ret = 1;
+        }
     }
-  
   return ret;
-	
 }
 
 // Prints a bitboard up to n positions
@@ -52,9 +51,6 @@ void arrayToBitBoard(uchar* array, uint64_t* board)
   *board = temp;
 }
 
-
-
-
 // Get bit from board
 uchar getBit(uint64_t* board, uchar bit)
 {
@@ -75,7 +71,6 @@ uchar getBit(uint64_t* board, uchar bit)
 // Set bit to data of board.
 void putBit(uint64_t* board, uchar data, uchar bit)
 {
-  
   uint64_t board_hi = (*board >> 32)  & 0x00000000FFFFFFFFULL;
   uint64_t  board_lo = *board & 0x00000000FFFFFFFFULL;
 
