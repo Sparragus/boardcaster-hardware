@@ -26,8 +26,6 @@ void setup() {
 
 void loop() {
    
-    for(int i = 0; i < 8; i++)
-    {
 
         // Set xenPin high to disable the drivers.
         // Set the latch low to allow data through latch. This might
@@ -54,6 +52,6 @@ void loop() {
 
         // Delay about 1sec per number    
         delay(1000);
-    }
+   
 }
 
