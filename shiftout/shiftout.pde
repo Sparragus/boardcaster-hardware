@@ -34,7 +34,7 @@ void loop() {
     digitalWrite(xenPin, LOW);
     
     // shift out the bits:
-    shiftOut(dataPin, clockPin, MSBFIRST, 8);  
+    shiftOut(dataPin, clockPin, MSBFIRST, 255);  
 
     //take the xen pin high so the LEDs will light up:
     digitalWrite(xenPin, HIGH);
