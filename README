@@ -1,0 +1,8 @@
+Boardcaster Project
+
+This is the main repository serving the firmware source for the Boardcaster.
+
+The main firmware sketch is: boardcaster
+This is the integration sketch for code targeted for flash onto the final product and demos.
+
+-xerces
