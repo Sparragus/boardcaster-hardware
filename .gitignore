@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 bin/
 
 *.swp
+=======
+*/build-cli/*
+>>>>>>> fcd221bf3b0b64a95f45b6462d94a05af0a23251
