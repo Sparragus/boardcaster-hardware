@@ -8,7 +8,7 @@ This is the integration sketch for code targeted for flash onto the final produc
 ==Build==
 make
 
-==Upload (Target: tmega328)==
+==Upload (Target: atmega328)==
 make upload
 
 ==Target Change==
