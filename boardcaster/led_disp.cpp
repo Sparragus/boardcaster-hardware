@@ -1,19 +1,9 @@
 // Code by Gabriel J. Perez
 //         Francisco De La Cruz
 
-//Pin connected to S-IN of IR2D07
-int dataPin = 2;
-//Pin connected to CLK of IR2D07
-int clockPin = 3;
-//Pin connected to LATCH of IR2D07
-int latchPin = 4;
-//Pin connected to XEN of IR2D07
-int xenPin = 5;
+#include "led_disp.h"
 
-int latchPin2 = 6;
-int xenPin2 = 7;
-
-void setup() {
+void initLedDisp() {
   //set pins to output so you can control the shift register
   pinMode(dataPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
@@ -24,8 +14,6 @@ void setup() {
   
   digitalWrite(latchPin, HIGH);
   digitalWrite(latchPin2, HIGH);
-
-  Serial.begin(9600);
   
 }
 
@@ -99,20 +87,4 @@ void displaypossisions(uint16_t* possisions)
 
 }
 
-void loop() {
-
-  uint64_t bitboard = 0xFFFF000FFFFF000F;
-  uint16_t  *x = getParts(&bitboard);
-
-  for(int i = 0; i < 4; i++)
-    {
-      Serial.println(x[i], BIN);
-    }
-  Serial.println("blah");
-  
-
-  displaypossisions(x);
-  
-  delay(500);
-}
 
