@@ -13,10 +13,6 @@ int xenPin = 5;
 int latchPin2 = 6;
 int xenPin2 = 7;
 
-unsigned int j = 2;
-const int disp[] = { 0, 0, 0, 0};
-const int disp2[] = { 0, 0, 0, 1};
-
 void setup() {
   //set pins to output so you can control the shift register
   pinMode(dataPin, OUTPUT);
@@ -28,33 +24,30 @@ void setup() {
   
   digitalWrite(latchPin, HIGH);
   digitalWrite(latchPin2, HIGH);
+
+  Serial.begin(9600);
   
 }
 
 
 void displayIllegalPos(int pos)
 {
-  uint64_t x; 
+  uint64_t xn; 
   
 }
 
 /* // Get bit from board */
-/* int getBit(uint64_t* board) */
-/* { */
+uint16_t *getParts(uint64_t* board)
+{
 
-/*   unsigned int res = 0L; */
-/*   uint64_t hi  = (*board >> 16) & 0x00000000FFFFFFFFULL; */
-/*   uint64_t lo =  *board & 0x00000000FFFFFFFFULL; */
-  
-/*   if(bit < 31) */
-/*     res = (hi >> (31-bit)) & 1L; */
-/*   else */
-/*     { */
-/*       bit -=32; */
-/*       res = (lo >> (31-bit)) & 1L; */
-/*     } */
-/*   return res; */
-/* } */
+  static uint16_t board_parts[4];
+  board_parts[0] = *board;
+  board_parts[1] = (*board >> 16);
+  board_parts[2] = (*board >> 32);
+  board_parts[3] = (*board >> 48);
+
+  return board_parts;
+}
 
 void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t val)
 {
@@ -71,8 +64,10 @@ void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t va
   }
 }
 
-void displaydata(int shift1, int shift2)
+void displaypossisions(uint16_t* possisions)
 {
+
+
   // Set xenPin high to disable the drivers.
   // Set the latch low to allow data through latch. This might
   // have to be revised.
@@ -83,9 +78,11 @@ void displaydata(int shift1, int shift2)
   // Set the clockPin low to prepare for rising edge trigger
   digitalWrite(clockPin, LOW);  
   // Shift out the data
-  int x = 255;
-  shiftOut16(dataPin, clockPin, MSBFIRST, shift1);
-  shiftOut16(dataPin, clockPin, MSBFIRST, shift2);  
+  for(int i = 0; i < 4; i++)
+    {
+  shiftOut16(dataPin, clockPin, MSBFIRST, possisions[4-i]);
+    }
+
         
   // Set latch high to capture latch
   // Set xenPin low to enable the drivers
@@ -103,8 +100,19 @@ void displaydata(int shift1, int shift2)
 }
 
 void loop() {
-   
-  displaydata(65535, 0);
-     
+
+  uint64_t bitboard = 0xFFFF000FFFFF000F;
+  uint16_t  *x = getParts(&bitboard);
+
+  for(int i = 0; i < 4; i++)
+    {
+      Serial.println(x[i], BIN);
+    }
+  Serial.println("blah");
+  
+
+  displaypossisions(x);
+  
+  delay(500);
 }
 
