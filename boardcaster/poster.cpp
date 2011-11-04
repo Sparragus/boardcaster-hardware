@@ -61,7 +61,7 @@ POSTrequest sendInfo(ip, 80, "http://posttestserver.com", "/post.php?dump&html&d
 
 
 
-void setup() {
+void initPoster() {
     // Initialize WiServer (we'll pass NULL for the page serving function since we don't need to serve web pages) 
   WiServer.init(NULL);
   
@@ -76,7 +76,7 @@ void setup() {
 // Time (in millis) when the data should be retrieved 
 long updateTime = 0;
 
-void loop(){
+void test(){
 
   // Check if it's time to get an update;
   if (millis() >= updateTime)    
