@@ -1,6 +1,6 @@
 // Code by Gabriel J. Perez
 //         Francisco De La Cruz
-
+#include <WProgram.h>
 #include "led_disp.h"
 #include "defines.h"
 
