@@ -3,7 +3,9 @@
  * it via the Serial API
  */
 
+#include <WProgram.h>
 #include <WiServer.h>
+#include "poster.h"
 
 #define WIRELESS_MODE_INFRA	1
 #define WIRELESS_MODE_ADHOC	2
@@ -44,7 +46,8 @@ void printData(char* data, int len) {
   // Note that the data is not null-terminated, may be broken up into smaller packets, and 
   // includes the HTTP header. 
   while (len-- > 0) {
-    Serial.print(*(data++));
+    
+Serial.print(*(data++));
   } 
 }
 
