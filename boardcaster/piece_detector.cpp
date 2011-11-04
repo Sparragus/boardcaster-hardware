@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "hw_signals.h"
 #include "bitboard_ops.h"
+#include "defines.h"
 
 uint64_t old_board = 0x0000000000000000LL;
 const long unsigned  TIME_SETTLE = 5;
@@ -80,18 +81,18 @@ void initPieceDetector()
     Serial.print("Initializing Piece Array Scanner");	
 
     // Set up pin directions
-    pinMode(DEC_PA0, OUTPUT);
-    pinMode(DEC_PA1, OUTPUT);
-    pinMode(DEC_PA2, OUTPUT);
-    pinMode(MUX_PA, OUTPUT);
-    pinMode(MUX_PB, OUTPUT);
-    pinMode(MUX_PC, OUTPUT);
+    pinMode(PD_DEC_PA0, OUTPUT);
+    pinMode(PD_DEC_PA1, OUTPUT);
+    pinMode(PD_DEC_PA2, OUTPUT);
+    pinMode(PD_MUX_PA, OUTPUT);
+    pinMode(PD_MUX_PB, OUTPUT);
+    pinMode(PD_MUX_PC, OUTPUT);
 
     // Set output pin
-    pinMode(OUT_DATA, INPUT);
+    pinMode(PD_OUT_DATA, INPUT);
 
     // Disable internal pullup
-    digitalWrite(OUT_DATA, LOW);
+    digitalWrite(PD_OUT_DATA, LOW);
 
     // Delay for a while (100ms)
     delay(100);

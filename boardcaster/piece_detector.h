@@ -2,17 +2,6 @@
 #define PIECE_DETECTOR_H
 // Pin Definitions
 
-// MUX = Columns
-// DECs = ROWS
-#define MUX_PA 7  // MSB // C - Pin9
-#define MUX_PB 6         // B - Pin10
-#define MUX_PC 5 // LSB  // A - Pin11
-	
-#define DEC_PA0 4 // MSB // A2 - Pin3
-#define DEC_PA1 3        // A1 - Pin2
-#define DEC_PA2 2 // LSB // A0 - Pin1
-		
-#define OUT_DATA 8
 
 // Under non-debugging operation SENSOR_COUNT = SCAN_SIZE = 64
 #define SCAN_SIZE 64
