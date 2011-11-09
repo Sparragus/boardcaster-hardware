@@ -37,6 +37,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 /* for windows */
 /* #define WIN32 1 */
 
+#define LINUX 1
+
 #ifdef LINUX
 
 /* 64-bit unsigned data type */
@@ -53,7 +55,7 @@ typedef unsigned __int64 bitboard;
 
 
 /* Init the internal bitboards */
-void init(void);
+void init_bitboards(void);
 
 /* Rotate a bitboard.
  * Files become ranks and vice versa.
