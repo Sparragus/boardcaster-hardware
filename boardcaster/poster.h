@@ -3,6 +3,8 @@
 
 void printData(char* data, int len);
 void initPoster();
-void test();
+void printPost();
+void sendData();
+void setNextFen(String fen);
 
 #endif //POSTER_H

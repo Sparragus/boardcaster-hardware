@@ -38,6 +38,7 @@ unsigned char ssid_len;
 unsigned char security_passphrase_len;
 // End of wireless configuration parameters ----------------------------------------
 
+String nextFEN = "";   
 
 // Function that prints data from the server
 void printData(char* data, int len) {
@@ -52,8 +53,8 @@ Serial.print(*(data++));
 }
 
 // This function generates the body of our POST request
-  void searchQuery() {
-       WiServer.print("");
+void pritPost() {
+       WiServer.print("move_data=" + nextFEN);
 }
 
 // IP Address for boardcaster 
@@ -72,10 +73,13 @@ void initPoster() {
 
 }
 
-void test(){
+void sendData(){
 
-  Serial.println("Start POST");
   sendInfo.submit();
-  Serial.println("End POST");
+  WiServer.server_task();
+}
 
+void setNextFEN(String fen)
+{
+  this->nextFEN = fen;
 }
