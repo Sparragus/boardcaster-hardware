@@ -71,19 +71,19 @@
 #define ZG2100_INTR						BIT0
 #endif
 
-#define SPI0_SS_BIT						BIT2
+#define SPI0_SS_BIT						BIT0
 #define SPI0_SS_DDR						DDRB
 #define SPI0_SS_PORT					PORTB
 
-#define SPI0_SCLK_BIT					BIT5
+#define SPI0_SCLK_BIT					BIT1
 #define SPI0_SCLK_DDR					DDRB
 #define SPI0_SCLK_PORT					PORTB
 
-#define	SPI0_MOSI_BIT					BIT3
+#define	SPI0_MOSI_BIT					BIT2
 #define SPI0_MOSI_DDR					DDRB
 #define SPI0_MOSI_PORT					PORTB
 
-#define	SPI0_MISO_BIT					BIT4
+#define	SPI0_MISO_BIT					BIT3
 #define SPI0_MISO_DDR					DDRB
 #define SPI0_MISO_PORT					PORTB
 
@@ -105,11 +105,19 @@
 										SPCR  = 0x50;\
 										SPSR  = 0x01
 #else
-#define SPI0_Init()						DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT|LEDConn_BIT;\
-										DDRB  &= ~SPI0_MISO_BIT;\
-										PORTB = SPI0_SS_BIT;\
-										SPCR  = 0x50;\
-										SPSR  = 0x01
+/* #define SPI0_Init()						DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT|LEDConn_BIT;\ */
+/* 										DDRB  &= ~SPI0_MISO_BIT;\ */
+/* 										PORTB = SPI0_SS_BIT;\ */
+/* 										SPCR  = 0x50;\ */
+/* 										SPSR  = 0x01 */
+/* #endif */
+
+#define SPI0_Init()      PRR0 = 0x00;\
+  DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT|LEDConn_BIT;\
+  DDRB  &= ~SPI0_MISO_BIT;\
+  PORTB = SPI0_SS_BIT;\
+  SPCR  = 0x50;\
+                         SPSR  = 0x01
 #endif
 
 //ZG2100 SPI HAL
@@ -118,7 +126,7 @@
 #define ZG2100_SpiRecvData				SPI0_RxData
 
 
-#define ZG2100_CS_BIT					BIT2
+#define ZG2100_CS_BIT					BIT0
 #define ZG2100_CS_DDR					DDRB
 #define ZG2100_CS_PORT					PORTB
 
@@ -126,7 +134,7 @@
 #define ZG2100_CSon()					(ZG2100_CS_PORT |= ZG2100_CS_BIT)
 #define ZG2100_CSoff()					(ZG2100_CS_PORT &= ~ZG2100_CS_BIT)
 
-#define LEDConn_BIT					BIT1
+#define LEDConn_BIT					BIT5
 #define LEDConn_DDR					DDRB
 #define LEDConn_PORT				PORTB
 
