@@ -11,10 +11,10 @@
 #define WIRELESS_MODE_ADHOC	2
 
 // Wireless configuration parameters ----------------------------------------
-unsigned char local_ip[] = {192,168,1,2};	// IP address of WiShield
-unsigned char gateway_ip[] = {192,168,1,1};	// router or gateway IP address
+unsigned char local_ip[] = {192,168,0,199};	// IP address of WiShield
+unsigned char gateway_ip[] = {192,168,0,1};	// router or gateway IP address
 unsigned char subnet_mask[] = {255,255,255,0};	// subnet mask for the local network
-const prog_char ssid[] PROGMEM = {"blue"};		// max 32 bytes
+const prog_char ssid[] PROGMEM = {"boardcaster"};		// max 32 bytes
 
 unsigned char security_type = 0;	// 0 - open; 1 - WEP; 2 - WPA; 3 - WPA2
 
@@ -56,42 +56,26 @@ Serial.print(*(data++));
        WiServer.print("");
 }
 
-// IP Address for www.weather.gov  
-uint8 ip[] = {205,196,210,187};
+// IP Address for boardcaster 
+uint8 ip[] = {192,168,0,198};
 
 // A request that gets the latest METAR weather data for LAX
-POSTrequest sendInfo(ip, 80, "http://posttestserver.com", "/post.php?dump&html&dir=arduino", searchQuery);
+POSTrequest sendInfo(ip, 80, "http://192.168.9.108", "/moves/", searchQuery);
 
 
 
 void initPoster() {
     // Initialize WiServer (we'll pass NULL for the page serving function since we don't need to serve web pages) 
   WiServer.init(NULL);
-  
-  // Enable Serial output and ask WiServer to generate log messages (optional)
-  Serial.begin(9600);
   WiServer.enableVerboseMode(true);
   sendInfo.setReturnFunc(printData);
 
 }
 
-
-// Time (in millis) when the data should be retrieved 
-long updateTime = 0;
-
 void test(){
 
-  // Check if it's time to get an update;
-  if (millis() >= updateTime)    
-  {
-      Serial.println("Start POST");
-      sendInfo.submit();
-      Serial.println("End POST");
-      updateTime += 1000 * 10;
-      Serial.println(updateTime);
-  }
+  Serial.println("Start POST");
+  sendInfo.submit();
+  Serial.println("End POST");
 
-  WiServer.server_task();
-
-  delay(10);
 }

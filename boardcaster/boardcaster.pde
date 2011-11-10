@@ -1,6 +1,7 @@
 
 #include "piece_detector.h"
 #include "led_disp.h"
+#include "poster.h"
 #include "utils.h"
 #include "hw_signals.h"
 #include "bitboard_ops.h"
