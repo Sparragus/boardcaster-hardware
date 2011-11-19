@@ -11,10 +11,8 @@
 #define LA_CLOCK_PIN 3
 //Pin connected to LATCH of IR2D07s
 #define LA_LATCH_PIN 4
-#define LA_LATCH_PIN2 6
 //Pin connected to XEN of IR2D07s
 #define LA_XEN_PIN 5
-#define LA_XEN_PIN2 7
 
 // Piece detector
 
