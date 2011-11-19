@@ -53,7 +53,7 @@ Serial.print(*(data++));
 }
 
 // This function generates the body of our POST request
-void pritPost() {
+void printPost() {
        WiServer.print("move_data=" + nextFEN);
 }
 
@@ -61,7 +61,7 @@ void pritPost() {
 uint8 ip[] = {192,168,0,198};
 
 // A request that gets the latest METAR weather data for LAX
-POSTrequest sendInfo(ip, 80, "http://192.168.9.108", "/moves/", searchQuery);
+POSTrequest sendInfo(ip, 80, "http://192.168.9.108", "/moves/", printPost);
 
 
 
@@ -81,5 +81,5 @@ void sendData(){
 
 void setNextFEN(String fen)
 {
-  this->nextFEN = fen;
+  nextFEN = fen;
 }
