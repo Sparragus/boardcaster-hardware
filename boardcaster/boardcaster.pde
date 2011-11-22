@@ -1,4 +1,3 @@
-
 #include "piece_detector.h"
 #include "led_disp.h"
 #include "poster.h"
@@ -38,8 +37,26 @@ void loop()
       //
       // void chessAnalyze()
 
-      // Run the LED Array Code
-      // 
-      // void LEDArrayIllum()
+      /* Some code to demnostrate how to integrate with LED module */
+      /* if (piece_is_up) */
+      /* { */
+      /* 	uint16_t parts  = getParts(&positions_board); */
+      /* 	display_positions(&parts); */
+      /* 	boolean diplayingPositions = true; */
+      /* } */
+
+      /* if (!piece_is_up && displayingPositions) */
+      /* { */
+      /* 	turnOffDisplay(); */
+      /* }  */
+
+      /* if (display_error) */
+      /* { */
+      /* 	uint16_t parts  = getParts(&error_board); */
+      /* 	display_positions(&parts); */
+      /* 	delay(100); */
+      /* 	turnOffDisplay(); */
+      /* } */
+
     }
 }
