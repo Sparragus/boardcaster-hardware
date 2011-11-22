@@ -15,12 +15,6 @@ void initLedDisp()
   digitalWrite(LA_LATCH_PIN, HIGH);
 }
 
-
-void displayIllegalPos(int pos)
-{
-  uint64_t xn; 
-}
-
 /*  Split bitboard into 4 segments of an array 
 array. The returned pointer is to static data which is overwritten with each call*/
 uint16_t *getParts(uint64_t* board)
@@ -49,7 +43,10 @@ void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t va
   }
 }
 
-void displaypossisions(uint16_t* possisions)
+
+// This will turn on the given positions. A call to turnOffDisplay
+// is necessarry after this call to turn off the positions.
+void displaypositions(uint16_t* positions)
 {
   // Set xenPin high to disable the drivers.
   // Set the latch low to allow data through latch. This might
@@ -62,7 +59,7 @@ void displaypossisions(uint16_t* possisions)
   // Shift out the data
   for(int i = 0; i < 4; i++)
   {
-    shiftOut16(LA_DATA_PIN, LA_CLOCK_PIN, MSBFIRST, possisions[4-i]);
+    shiftOut16(LA_DATA_PIN, LA_CLOCK_PIN, MSBFIRST, positions[4-i]);
   }
         
   // Set latch high to capture latch
@@ -70,11 +67,13 @@ void displaypossisions(uint16_t* possisions)
   // Set LA_LATCH_PIN low to allow data to pass through
   digitalWrite(LA_LATCH_PIN, HIGH);
   digitalWrite(LA_XEN_PIN, LOW);
+
+ }
+
+// Turn off the display, only to be called after displaypositions
+void turnOffDisplay()
+{
   digitalWrite(LA_LATCH_PIN, LOW);
-
-  // Delay about 1sec per number    
-  delay(100);
-
 }
 
 
