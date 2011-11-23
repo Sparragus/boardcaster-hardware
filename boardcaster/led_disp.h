@@ -1,6 +1,8 @@
 #ifndef LED_DISP_H
 #define LED_DISP_H
 
+#include <WProgram.h>
+
 void initLedDisp();
 void displayIllegalPos(int pos);
 uint16_t *getParts(uint64_t* board);
