@@ -34,12 +34,7 @@ void loop()
       // Boards Changed
       // Print the boards
       printBoard(&board,SENSOR_COUNT);
-      
-      uint16_t* parts  = getParts(&board);
-      displaypositions(parts);
-      
-      delay(2000);
-      turnOffDisplay();
+ 
       
   
       // Run the Chess Engine
@@ -72,5 +67,18 @@ void loop()
       /* 	setNextFEN(fenstring); */
       /* 	sendData(); */
       /* } */
+
     }
+
+      // This code below is for testing the pcb.
+      
+        // board = 0xFFFFFFFFFFFFFFFFLL;
+      uint16_t* parts  = getParts(&board);
+      displaypositions(parts);
+      
+      //  delay(2000);
+      turnOffDisplay();
+
+
+
 }

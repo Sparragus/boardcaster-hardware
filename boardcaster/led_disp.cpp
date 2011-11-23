@@ -59,7 +59,7 @@ void displaypositions(uint16_t* positions)
   // Shift out the data
   for(int i = 0; i < 4; i++)
   {
-    shiftOut16(LA_DATA_PIN, LA_CLOCK_PIN, MSBFIRST, positions[4-i]);
+    shiftOut16(LA_DATA_PIN, LA_CLOCK_PIN, LSBFIRST, positions[i]);
   }
         
   // Set latch high to capture latch
