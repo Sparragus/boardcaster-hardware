@@ -17,6 +17,8 @@ void setup()
   // Initialize the LED array
   initLedDisp();
 
+  // Init web posting code
+  initPoster();
 }
 
 // Main firmware loop
@@ -58,5 +60,10 @@ void loop()
       /* 	turnOffDisplay(); */
       /* } */
 
+      /* if (sending_fen) */
+      /* { */
+      /* 	setNextFEN(fenstring); */
+      /* 	sendData(); */
+      /* } */
     }
 }
