@@ -3,9 +3,7 @@
  * it via the Serial API
  */
 
-#include <WProgram.h>
 #include <WiServer.h>
-#include "poster.h"
 
 #define WIRELESS_MODE_INFRA	1
 #define WIRELESS_MODE_ADHOC	2
@@ -14,7 +12,7 @@
 unsigned char local_ip[] = {192,168,1,2};	// IP address of WiShield
 unsigned char gateway_ip[] = {192,168,1,1};	// router or gateway IP address
 unsigned char subnet_mask[] = {255,255,255,0};	// subnet mask for the local network
-const prog_char ssid[] PROGMEM = {"blue"};		// max 32 bytes
+const prog_char ssid[] PROGMEM = {"ASYNCLABS"};		// max 32 bytes
 
 unsigned char security_type = 0;	// 0 - open; 1 - WEP; 2 - WPA; 3 - WPA2
 
@@ -32,7 +30,7 @@ prog_uchar wep_keys[] PROGMEM = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
 // setup the wireless mode
 // infrastructure - connect to AP
 // adhoc - connect to another WiFi device
-unsigned char wireless_mode = WIRELESS_MODE_ADHOC;
+unsigned char wireless_mode = WIRELESS_MODE_INFRA;
 
 unsigned char ssid_len;
 unsigned char security_passphrase_len;
@@ -46,52 +44,45 @@ void printData(char* data, int len) {
   // Note that the data is not null-terminated, may be broken up into smaller packets, and 
   // includes the HTTP header. 
   while (len-- > 0) {
-    
-Serial.print(*(data++));
+    Serial.print(*(data++));
   } 
 }
 
-// This function generates the body of our POST request
-  void searchQuery() {
-       WiServer.print("");
-}
 
 // IP Address for www.weather.gov  
-uint8 ip[] = {205,196,210,187};
+uint8 ip[] = {140,90,113,200};
 
 // A request that gets the latest METAR weather data for LAX
-POSTrequest sendInfo(ip, 80, "http://posttestserver.com", "/post.php?dump&html&dir=arduino", searchQuery);
+GETrequest getWeather(ip, 80, "www.weather.gov", "/data/METAR/KLAX.1.txt");
 
 
-
-void initPoster() {
+void setup() {
     // Initialize WiServer (we'll pass NULL for the page serving function since we don't need to serve web pages) 
   WiServer.init(NULL);
   
   // Enable Serial output and ask WiServer to generate log messages (optional)
-  Serial.begin(9600);
+  Serial.begin(57600);
   WiServer.enableVerboseMode(true);
-  sendInfo.setReturnFunc(printData);
 
+  // Have the processData function called when data is returned by the server
+  getWeather.setReturnFunc(printData);
 }
 
 
 // Time (in millis) when the data should be retrieved 
 long updateTime = 0;
 
-void test(){
+void loop(){
 
-  // Check if it's time to get an update;
-  if (millis() >= updateTime)    
-  {
-      Serial.println("Start POST");
-      sendInfo.submit();
-      Serial.println("End POST");
-      updateTime += 1000 * 10;
-      Serial.println(updateTime);
+  // Check if it's time to get an update
+  if (millis() >= updateTime) {
+    getWeather.submit();    
+    // Get another update one hour from now
+    updateTime += 1000 * 60 * 60;
   }
-
+  
+  // Run WiServer
   WiServer.server_task();
-
+ 
   delay(10);
 }
