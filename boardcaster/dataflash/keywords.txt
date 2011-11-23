@@ -1,0 +1,31 @@
+#######################################
+# Syntax Coloring Map For Dataflash
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Dataflash	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+init	KEYWORD2
+Read_DF_ID	KEYWORD2
+Read_DF_status	KEYWORD2
+Page_To_Buffer	KEYWORD2
+Buffer_Read_Byte	KEYWORD2
+Buffer_Write_Byte	KEYWORD2
+Buffer_To_Page	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
