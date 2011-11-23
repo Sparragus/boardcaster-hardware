@@ -8,76 +8,76 @@
 // Main firmware setup call
 void setup()
 {
-  // Set serial transmission rate for debug prints
-  Serial.begin(9600);
+    // Set serial transmission rate for debug prints
+    Serial.begin(9600);
   
-  // Initialize the piece detector
-  initPieceDetector();
+    // Initialize the piece detector
+    initPieceDetector();
 
-  // Initialize the LED array
-  initLedDisp();
+    // Initialize the LED array
+    initLedDisp();
 
-  // Init web posting code
-  //initPoster();
+    // Init web posting code
+    //initPoster();
 }
 
 // Main firmware loop
 void loop()
 {
-  // Scan piece array
-  static uint64_t board = 0x0000000000000000LL;
+    // Scan piece array
+    static uint64_t board = 0x0000000000000000LL;
 
-  // Check for board changes
-  // 1 = Board changed, 0 = No change
-  if(scanPieceArray(&board) == 1)
+    // Check for board changes
+    // 1 = Board changed, 0 = No change
+    if(scanPieceArray(&board) == 1)
     {
-      // Boards Changed
-      // Print the boards
-      printBoard(&board,SENSOR_COUNT);
+        // Boards Changed
+        // Print the boards
+        printBoard(&board,SENSOR_COUNT);
  
       
   
-      // Run the Chess Engine
-      //
-      // void chessAnalyze()
+        // Run the Chess Engine
+        //
+        // void chessAnalyze()
 
-      /* Some code to demnostrate how to integrate with LED module */
-      /* if (piece_is_up) */
-      /* { */
-      /* 	uint16_t* parts  = getParts(&positions_board); */
-      /* 	displaypositions(parts); */
-      /* 	boolean diplayingPositions = true; */
-      /* } */
+        /* Some code to demnostrate how to integrate with LED module */
+        /* if (piece_is_up) */
+        /* { */
+        /* 	uint16_t* parts  = getParts(&positions_board); */
+        /* 	displaypositions(parts); */
+        /* 	boolean diplayingPositions = true; */
+        /* } */
 
-      /* if (!piece_is_up && displayingPositions) */
-      /* { */
-      /* 	turnOffDisplay(); */
-      /* }  */
+        /* if (!piece_is_up && displayingPositions) */
+        /* { */
+        /* 	turnOffDisplay(); */
+        /* }  */
 
-      /* if (display_error) */
-      /* { */
-      /* 	uint16_t parts  = getParts(&error_board); */
-      /* 	display_positions(&parts); */
-      /* 	delay(100); */
-      /* 	turnOffDisplay(); */
-      /* } */
+        /* if (display_error) */
+        /* { */
+        /* 	uint16_t parts  = getParts(&error_board); */
+        /* 	display_positions(&parts); */
+        /* 	delay(100); */
+        /* 	turnOffDisplay(); */
+        /* } */
 
-      /* if (sending_fen) */
-      /* { */
-      /* 	setNextFEN(fenstring); */
-      /* 	sendData(); */
-      /* } */
+        /* if (sending_fen) */
+        /* { */
+        /* 	setNextFEN(fenstring); */
+        /* 	sendData(); */
+        /* } */
 
     }
 
-      // This code below is for testing the pcb.
+    // This code below is for testing the pcb.
       
-        // board = 0xFFFFFFFFFFFFFFFFLL;
-      uint16_t* parts  = getParts(&board);
-      displaypositions(parts);
+    // board = 0xFFFFFFFFFFFFFFFFLL;
+    uint16_t* parts  = getParts(&board);
+    displaypositions(parts);
       
-      //  delay(2000);
-      turnOffDisplay();
+    //  delay(2000);
+    turnOffDisplay();
 
 
 
