@@ -34,6 +34,13 @@ void loop()
       // Boards Changed
       // Print the boards
       printBoard(&board,SENSOR_COUNT);
+      
+      uint16_t* parts  = getParts(&board);
+      displaypositions(parts);
+      
+      delay(2000);
+      turnOffDisplay();
+      
   
       // Run the Chess Engine
       //
@@ -42,8 +49,8 @@ void loop()
       /* Some code to demnostrate how to integrate with LED module */
       /* if (piece_is_up) */
       /* { */
-      /* 	uint16_t parts  = getParts(&positions_board); */
-      /* 	display_positions(&parts); */
+      /* 	uint16_t* parts  = getParts(&positions_board); */
+      /* 	displaypositions(parts); */
       /* 	boolean diplayingPositions = true; */
       /* } */
 
