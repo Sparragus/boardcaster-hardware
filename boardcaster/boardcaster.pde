@@ -1,6 +1,6 @@
 #include "piece_detector.h"
 #include "led_disp.h"
-#include "poster.h"
+//#include "poster.h"
 #include "utils.h"
 #include "hw_signals.h"
 #include "bitboard_ops.h"
@@ -18,7 +18,7 @@ void setup()
   initLedDisp();
 
   // Init web posting code
-  initPoster();
+  //initPoster();
 }
 
 // Main firmware loop
