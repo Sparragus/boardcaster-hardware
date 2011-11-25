@@ -39,6 +39,7 @@ unsigned char security_passphrase_len;
 // End of wireless configuration parameters ----------------------------------------
 
 String nextFEN = "";   
+String endString = "***";
 
 // Function that prints data from the server
 void printData(char* data, int len) {
@@ -82,4 +83,10 @@ void sendData(){
 void setNextFEN(String fen)
 {
   nextFEN = fen;
+}
+
+void sendEndGamePost()
+{
+  setNextFEN(endString);
+  sendData();
 }
