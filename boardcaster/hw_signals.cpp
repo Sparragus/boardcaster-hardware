@@ -23,9 +23,9 @@ void setDecoder(sig_t* s)
   Serial.print(",");
   Serial.println(s->m_port3,DEC);
 #endif
-  digitalWrite(PD_DEC_PA0, s->m_port1);
+  digitalWrite(PD_DEC_PA2, s->m_port1);
   digitalWrite(PD_DEC_PA1, s->m_port2);
-  digitalWrite(PD_DEC_PA2, s->m_port3);
+  digitalWrite(PD_DEC_PA0, s->m_port3);
 }
 
 // Set Multiplexer to the given signal
@@ -56,9 +56,9 @@ void setMux(sig_t* s)
   Serial.print(",");
   Serial.println(s->m_port3,DEC);
 #endif
-  digitalWrite(PD_MUX_PA, s->m_port1);
+  digitalWrite(PD_MUX_PC, s->m_port1);
   digitalWrite(PD_MUX_PB, s->m_port2);
-  digitalWrite(PD_MUX_PC, s->m_port3);
+  digitalWrite(PD_MUX_PA, s->m_port3);
 }
 
 // Generate signal s from decimal input i

@@ -6,13 +6,13 @@
 
 // LED Array
 //Pin connected to S-IN of IR2D07s
-#define LA_DATA_PIN 2
+#define LA_DATA_PIN A0
 //Pin connected to CLK of IR2D07s
-#define LA_CLOCK_PIN 3
+#define LA_CLOCK_PIN A1
 //Pin connected to LATCH of IR2D07s
-#define LA_LATCH_PIN 4
+#define LA_LATCH_PIN A2
 //Pin connected to XEN of IR2D07s
-#define LA_XEN_PIN 5
+#define LA_XEN_PIN A3
 
 // Piece detector
 
