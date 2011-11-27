@@ -34,36 +34,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define A1H8_STATE(rotb, sq) ((rotb >> _a1h8_shiftMask[sq][SHIFT]) & _a1h8_shiftMask[sq][MASK])
 #define H1A8_STATE(rotb, sq) ((rotb >> _h1a8_shiftMask[sq][SHIFT]) & _h1a8_shiftMask[sq][MASK])
 
-/* for windows */
-/* #define WIN32 1 */
-
-#define LINUX 1
-
-#ifdef LINUX
-
 /* 64-bit unsigned data type */
 typedef unsigned long long bitboard;
 
-#endif
-
-#ifdef WIN32
-
-/* 64-bit unsigned data type */
-typedef unsigned __int64 bitboard;
-
-#endif
-
-
 /* Init the internal bitboards */
-void init_bitboards(void);
-
-/* Rotate a bitboard.
- * Files become ranks and vice versa.
- */
-bitboard rotate(bitboard);
-
-bitboard rotate_a1h8(bitboard x);
-bitboard rotate_h1a8(bitboard x);
+void init_bitboard(void);
 
 #endif
 
