@@ -1,3 +1,13 @@
+// Chess Engine <START>
+#include <bitboard.h>
+#include <position.h>
+#include <move.h>
+#include <fen.h>
+#include <attack.h>
+#include <Chess.h>
+// Chess Engine <END>
+
+
 #include "piece_detector.h"
 #include "led_disp.h"
 //#include "poster.h"
@@ -5,12 +15,15 @@
 #include "hw_signals.h"
 #include "bitboard_ops.h"
 
+
+Chess chess;
+
 // Main firmware setup call
 void setup()
 {
     // Set serial transmission rate for debug prints
     Serial.begin(9600);
-  
+
     // Initialize the piece detector
     initPieceDetector();
 
@@ -19,6 +32,9 @@ void setup()
 
     // Init web posting code
     //initPoster();
+
+    // Init chess engine
+    chess = new chess;
 }
 
 // Main firmware loop
@@ -34,9 +50,9 @@ void loop()
         // Boards Changed
         // Print the boards
         printBoard(&board,SENSOR_COUNT);
- 
-      
-  
+
+
+
         // Run the Chess Engine
         //
         // void chessAnalyze()
@@ -71,11 +87,11 @@ void loop()
     }
 
     // This code below is for testing the pcb.
-      
+
     // board = 0xFFFFFFFFFFFFFFFFLL;
     uint16_t* parts  = getParts(&board);
     displaypositions(parts);
-      
+
     //  delay(2000);
     turnOffDisplay();
 
