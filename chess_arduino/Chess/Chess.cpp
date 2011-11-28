@@ -74,7 +74,7 @@ extern const bitboard _mask[64];
     return 1;
   }
 
-    bitboard Chess:getCurrentPos()
+bitboard Chess::getCurrentPosition()
     {
         return (pos.board[WHITE] || pos.board[BLACK]);
     }
@@ -104,10 +104,10 @@ bitboard Chess::getMask(const int sq)
     return _mask[sq];
 }
 
-char[] Chess::getFENFromPos()
+char* Chess::getFENFromPosition()
 {
-   static char fen[256] = {0};
-   savePositionToFEN(&pos, &fen);
+   static char fen[256];
+   savePositionToFEN(&pos, fen);
    return fen;
 }
 
