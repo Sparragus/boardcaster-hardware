@@ -10,11 +10,13 @@
 #include "boardcaster.h"
 #include "piece_detector.h"
 #include "led_disp.h"
-//#include "poster.h"
+#include "poster.h"
 #include "utils.h"
 #include "hw_signals.h"
 #include "bitboard_ops.h"
 #include <stdlib.h>
+
+
 
 Chess chess;
 
@@ -48,14 +50,14 @@ void setup()
     initLedDisp();
 
     // Run LED diagnostics
-    // cycleArray();
+     cycleArray();
 
     // Init web posting code
     //initPoster();
 
     // Init chess engine
 //    chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    chess = Chess("4k3/8/8/8/4Q3/8/8/4K3 w KQkq - 0 1");
+    chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
     
     // Piece is placed, turn off leds
     turnOffDisplay();
@@ -69,7 +71,9 @@ void loop()
     bitboard currentPosition;
     currentPosition = chess.getCurrentPosition();
     static uint64_t board = currentPosition;
-
+    chess.printBitboard(&board);
+    Serial.println("---");
+    chess.printBitboard(&currentPosition);
     Serial.println("Got current pos...");
 
     // Scan piece array
@@ -77,35 +81,42 @@ void loop()
 
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
-    int sq_source;
+    int sq_source = -1;
     do
     {
         Serial.println("*");
         sq_source = scanPieceArray(&board);
     }
     while(sq_source == -1);
-    
+
+sq_source = 63 - sq_source;
     Serial.print("Found lifted piece: "); Serial.println(sq_source, DEC);
 
     // Obtain a bitboard with the legal moves for a piece on the square sq
-    bitboard moves;
-    moves = chess.getPieceMoves( sq_source );
+    bitboard moves = 0xFFFFFFFFFFFFFFF;
+     moves = chess.getPieceMoves( sq_source );
+    //moves = chess.getPieceMoves( 27 );
 
+    
+    Serial.println("Just moved board");
+    chess.printBitboard(&moves);
 
     // Turn on LEDs using moves
     uint16_t* parts  = getParts(&moves);
     displaypositions(parts);
-
+    
+    Serial.println("Displayed positions");
 
     // Scan piece array until a change is detected
     // sq_source >= 0 if Board changed; Square that changed, sq_source = -1 = No change
     int sq_dest;
     do
     {
+        Serial.print(" s ");
         sq_dest = scanPieceArray(&board);
     }
     while(sq_dest == -1);
-
+    Serial.print("Found placed piece: "); Serial.println(sq_dest, DEC);
     // Piece is placed, turn off leds
     turnOffDisplay();
 
@@ -124,6 +135,7 @@ void loop()
     {
          if( sq_dest >= 0 )
          {
+             Serial.println("Error board!");
             error_board = chess.getMask(sq_dest);
          }
          uint16_t* parts  = getParts(&error_board);
@@ -144,10 +156,12 @@ void loop()
 
      //TODO: convert fen to an Arduino String
      // Send FEN to boardcaster.com
+    Serial.println("Getting FEN from position");
     char* fen_char = chess.getFENFromPosition();
+    Serial.println("Got FEN from position");
     String fen_string = String(fen_char);
-     /*setNextFEN(fen_string);*/
-     /*sendData();*/
+     setNextFEN(fen_string);
+     sendData();
 
     Serial.print("FEN: "); Serial.println(fen_string);
 
