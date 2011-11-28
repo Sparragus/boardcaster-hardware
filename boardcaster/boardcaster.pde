@@ -39,6 +39,8 @@ void setup()
 {
     // Set serial transmission rate for debug prints
     Serial.begin(9600);
+    Serial.println("Setup...");
+    
     // Initialize the piece detector
     initPieceDetector();
 
@@ -46,7 +48,7 @@ void setup()
     initLedDisp();
 
     // Run LED diagnostics
-    cycleArray();
+    // cycleArray();
 
     // Init web posting code
     //initPoster();
@@ -54,15 +56,21 @@ void setup()
     // Init chess engine
 //    chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     chess = Chess("4k3/8/8/8/4Q3/8/8/4K3 w KQkq - 0 1");
+    
+    // Piece is placed, turn off leds
+    turnOffDisplay();
 }
 
 // Main firmware loop
 void loop()
 {
+    Serial.println("Looping...");
     // Get current position
     bitboard currentPosition;
     currentPosition = chess.getCurrentPosition();
     static uint64_t board = currentPosition;
+
+    Serial.println("Got current pos...");
 
     // Scan piece array
     /*static uint64_t board = 0x0000000000000000LL;*/
@@ -72,9 +80,12 @@ void loop()
     int sq_source;
     do
     {
+        Serial.println("*");
         sq_source = scanPieceArray(&board);
     }
     while(sq_source == -1);
+    
+    Serial.print("Found lifted piece: "); Serial.println(sq_source, DEC);
 
     // Obtain a bitboard with the legal moves for a piece on the square sq
     bitboard moves;
@@ -103,7 +114,7 @@ void loop()
     if(sq_source == sq_dest)
     {
         //TODO: check if empty return is safe.
-        return;
+        //return;
     }
 
     uint64_t error_board = 0;
@@ -126,7 +137,7 @@ void loop()
          if(sq_dest == sq_source)
          {
             //TODO: check if empty return is safe.
-            return;
+            //return;
          }
 
     }
