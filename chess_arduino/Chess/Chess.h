@@ -10,6 +10,9 @@ public:
     Chess(char FEN[]);
     bitboard getPieceMoves(const int sq_source);
     int playPieceMove(int sq_dest);
+    bitboard getCurrentPos();
+    bitboard getMask(const int sq);
+    char[] getFENFromPos();
 
     void printBitboard(const bitboard* bb);
     void printPosition(const position* pos);

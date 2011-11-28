@@ -53,6 +53,9 @@ extern const bitboard _mask[64];
         return realMoves;
   }
 
+    // Returns:
+    // 0 = Legal Move
+    // 1 = Illegal Move
   int Chess::playPieceMove(int sq_dest)
   {
     //get move that goes to sq_dest
@@ -70,6 +73,11 @@ extern const bitboard _mask[64];
     // There was no move to play.
     return 1;
   }
+
+    bitboard Chess:getCurrentPos()
+    {
+        return (pos.board[WHITE] || pos.board[BLACK]);
+    }
 
     void Chess::printBitboard(const bitboard* bb)
     {
@@ -90,6 +98,19 @@ extern const bitboard _mask[64];
 
         Serial.print('\n');
     }
+
+bitboard Chess::getMask(const int sq)
+{
+    return _mask[sq];
+}
+
+char[] Chess::getFENFromPos()
+{
+   static char fen[256] = {0};
+   savePositionToFEN(&pos, &fen);
+   return fen;
+}
+
 
 void Chess::printPosition(const position* pos)
 {

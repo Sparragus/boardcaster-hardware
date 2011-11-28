@@ -4,17 +4,17 @@
 
 // Compare board1 against board2 for the specified amount of sensors
 // Under normal operation SENSOR_COUNT = SCAN_SIZE
-// Return: 0 = Equal boards
-// Return: 1 = Different boards;
+// Return: -1 = Equal boards
+// Return: >= 0 = Different boards; Square that is different.
 int compareBoards(uint64_t* board1, uint64_t* board2)
 {
   unsigned int i;
-  unsigned ret = 0;
+  int ret = -1;
   for(i = 0; i < SENSOR_COUNT; i++)
     {
       if(getBit(board1, i)!= getBit(board2, i))
         {
-          ret = 1;
+          ret = i;
         }
     }
   return ret;
@@ -45,7 +45,7 @@ void arrayToBitBoard(uchar* array, uint64_t* board)
     {
       if(array[63-i] == 1)
         {
-          temp |= 1LL<<i; 
+          temp |= 1LL<<i;
         }
     }
   *board = temp;
@@ -57,7 +57,7 @@ uchar getBit(uint64_t* board, uchar bit)
   unsigned long int res = 0L;
   uint64_t hi  = (*board >> 32) & 0x00000000FFFFFFFFULL;
   uint64_t lo =  *board & 0x00000000FFFFFFFFULL;
-  
+
   if(bit < 31)
     res = (hi >> (31-bit)) & 1L;
   else
@@ -96,9 +96,9 @@ void putBit(uint64_t* board, uchar data, uchar bit)
         {
           bit -= 32;
           board_lo |= (1L<<(31-bit));
-        } 
+        }
     }
-  
+
   *board  = board_lo | (board_hi << 32);
 
   // Assert the bits. This should NEVER assert false
