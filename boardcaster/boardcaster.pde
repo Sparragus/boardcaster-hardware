@@ -30,6 +30,9 @@ void setup()
     // Initialize the LED array
     initLedDisp();
 
+    // Run LED diagnostics
+    cycleArray();
+
     // Init web posting code
     //initPoster();
 
