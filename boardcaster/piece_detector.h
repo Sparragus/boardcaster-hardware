@@ -35,6 +35,6 @@ extern struct sig_t {
 
 int scanPieceArray(uint64_t* board);
 void initPieceDetector();
-
+void cycleArray();
 
 #endif //PIECE_DETECTOR_H
