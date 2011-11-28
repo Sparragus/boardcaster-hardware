@@ -7,23 +7,38 @@
 #include <Chess.h>
 // Chess Engine <END>
 
-
+#include "boardcaster.h"
 #include "piece_detector.h"
 #include "led_disp.h"
 //#include "poster.h"
 #include "utils.h"
 #include "hw_signals.h"
 #include "bitboard_ops.h"
-
+#include <stdlib.h>
 
 Chess chess;
+
+int __cxa_guard_acquire(__guard *g) {return !*(char *)(g);};
+void __cxa_guard_release (__guard *g) {*(char *)g = 1;};
+void __cxa_guard_abort (__guard *) {};
+
+void * operator new(size_t size)
+{
+ return malloc(size);
+}
+
+void operator delete(void * ptr)
+{
+ free(ptr);
+}
+
+
 
 // Main firmware setup call
 void setup()
 {
     // Set serial transmission rate for debug prints
     Serial.begin(9600);
-
     // Initialize the piece detector
     initPieceDetector();
 
@@ -37,7 +52,8 @@ void setup()
     //initPoster();
 
     // Init chess engine
-    chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+//    chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    chess = Chess("4k3/8/8/8/4Q3/8/8/4K3 w KQkq - 0 1");
 }
 
 // Main firmware loop
@@ -58,7 +74,7 @@ void loop()
     {
         sq_source = scanPieceArray(&board);
     }
-    while(sq_source == -1)
+    while(sq_source == -1);
 
     // Obtain a bitboard with the legal moves for a piece on the square sq
     bitboard moves;
@@ -77,7 +93,7 @@ void loop()
     {
         sq_dest = scanPieceArray(&board);
     }
-    while(sq_dest == -1)
+    while(sq_dest == -1);
 
     // Piece is placed, turn off leds
     turnOffDisplay();
@@ -100,7 +116,7 @@ void loop()
             error_board = chess.getMask(sq_dest);
          }
          uint16_t* parts  = getParts(&error_board);
-         display_positions(&parts);
+         displaypositions(parts);
          delay(100);
          turnOffDisplay();
          delay(100);
@@ -117,7 +133,7 @@ void loop()
 
      //TODO: convert fen to an Arduino String
      // Send FEN to boardcaster.com
-     char[] fen_char = chess.getFENFromPosition();
+    char* fen_char = chess.getFENFromPosition();
     String fen_string = String(fen_char);
      /*setNextFEN(fen_string);*/
      /*sendData();*/
