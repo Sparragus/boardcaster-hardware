@@ -3,14 +3,16 @@ extern "C" {
 #endif
 
 #include "bitboard.h"
-#include "position.h"
-#include "move.h"
-#include "fen.h"
+
+
+
 
 #ifdef __cplusplus
 }
 #endif
-
+#include "position.h"
+#include "fen.h"
+#include "move.h"
 #include "Chess.h"
 #include "WProgram.h"
 
@@ -82,7 +84,7 @@ extern const bitboard _mask[64];
 bitboard Chess::getCurrentPosition()
     {
         bitboard b = pos.pieces[WHITE]|pos.pieces[BLACK];
-        printBitboard(&b);
+	//  printBitboard(&b);
 
         return (b);
     }
