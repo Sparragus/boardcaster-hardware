@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "move.h"
 
 #include "attack.h"
+#include "WProgram.h"
 
 extern const bitboard _mask[64];
 extern const bitboard _king[64];
@@ -53,7 +54,12 @@ int getMoves(const position * const pos, const int player, const int piece, cons
     bitboard pieces;
     opponent = OPPONENT(player);
     /* opponent in check = player won. should be checked somewhere before this */
-    assert(!inCheck(pos, opponent, pos->kingSquare[opponent]));
+    int ret = inCheck(pos, opponent, pos->kingSquare[opponent]);
+       Serial.println("inChecked passed");
+    
+    assert(!ret);
+    //    assert(!inCheck(pos, opponent, pos->kingSquare[opponent]));
+    Serial.println("assert passed!");
     pieces = getPieceBitboard(pos, piece);
     sq = 0;
     if(IS_KING(piece)) {
@@ -62,14 +68,20 @@ int getMoves(const position * const pos, const int player, const int piece, cons
         pieces = pieces >> sq;
         assert(pieces != 0); /* we should not move the king off the board */
     }
+    Serial.println("Entering while()");
     while(pieces != 0) {
         if(LSB_SET(pieces)) {
+
             rawMoves = getRawMoves(pos, player, piece, type, sq);
+	    Serial.println("getRawMoves() passed");
             numMoves += getPieceMoves(pos, player, type, rawMoves, sq, &store[numMoves]);
+	    Serial.println("getPieceMoves() passed");
         }
         pieces = pieces >> 1;
+
         sq++;
     }
+    Serial.println("Returning from getMoves()");
     return numMoves;
 }
 
@@ -79,10 +91,12 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
     bitboard attackRange = 0;
     bitboard allPieces = 0;
     bitboard opponentSquares = 0;
+
     assert(sq >= 0 && sq <= 63);
     allPieces = pos->pieces[BLACK] | pos->pieces[WHITE];
+    
     if(CAPTURE == type) {
-        attackRange = getAttackRange(piece, type, sq, allPieces, pos->epSquare);
+      attackRange = getAttackRange(piece, type, sq, allPieces, pos->epSquare);
         opponentSquares = pos->pieces[OPPONENT(player)];
         if(pos->epSquare != -1) {
             opponentSquares |= _mask[pos->epSquare];
@@ -101,8 +115,9 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
     return rawMoves;
 }
 
-static bitboard getAttackRange(const int piece, const int type, const int sq, const bitboard allPieces, const int epSquare)
+static bitboard getAttackRange(const int piece, const int type, const int sq, const bitboard allPieces_p, const int epSquare)
 {
+  bitboard allPieces = allPieces_p;
     bitboard attackRange = 0;
     int state = 0;
     int rank;
@@ -174,6 +189,7 @@ static int getPieceMoves(const position * const pos, const int player, const int
     move temp;
     int valueCaptured;
     int valueThis;
+   
     while(rawMoves != 0) {
         if(LSB_SET(rawMoves)) {
             m.from = sq;
@@ -206,6 +222,7 @@ static int getPieceMoves(const position * const pos, const int player, const int
                     m.eval += valueCaptured - valueThis;
                 }
             }
+	    Serial.println("IS_PAWN?");
             if(IS_PAWN(m.thisPiece) && IS_PROMOTION_SQUARE(player, m.to)) {
                 m.flags |= PROMOTION;
                 temp = m;
@@ -229,6 +246,7 @@ static int getPieceMoves(const position * const pos, const int player, const int
                     m.promoteTo = WHITE_KNIGHT;
                     m.eval += WHITE_KNIGHT;
                     storeMoveIfLegal(pos, &m, player, store, &numMoves);
+		    Serial.println("exiting... IS_PAWN");
                 }
                 else {
                     /* promote to queen */
@@ -246,19 +264,29 @@ static int getPieceMoves(const position * const pos, const int player, const int
                     /* promote to knight */
                     m.promoteTo = BLACK_KNIGHT;
                     storeMoveIfLegal(pos, &m, player, store, &numMoves);
+		    Serial.println("IS_PAWN else");
                 }
             }
             else {
                 storeMoveIfLegal(pos, &m, player, store, &numMoves);
+			Serial.println("StoringMoveIfLegal");
             }
         }
-        rawMoves = rawMoves >> 1;
+	//	Serial.println("Decrement rawMoves");
+     rawMoves = rawMoves >> 1;
         target++;
     }
+    Serial.println("Checking castling");
     /* castling */
-    if(NORMAL == type && IS_KING(pos->board[sq])) {
-        getCastlingMoves(pos, player, store, &numMoves);
+     if(NORMAL == type && IS_KING(pos->board[sq]))
+    {
+      //  Serial.println("getCastlingMoves..");  
+      // getCastlingMoves(pos, player, store, &numMoves);
+      //  Serial.println("getCastlingMoves..passed");
     }
+     //  Serial.println("Exiting getMoves");
+
+
     return numMoves;
 }
 

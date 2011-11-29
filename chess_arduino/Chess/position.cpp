@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-
+#include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 #include "position.h"
@@ -35,8 +35,8 @@ void assertPosition(const position * const pos)
     bitboard allPieces;
 
     /* check that kings are present and in correct positions */
-    assert(pos->king[WHITE] != 0);
-    assert(pos->king[BLACK] != 0);
+     assert(pos->king[WHITE] != 0);
+     assert(pos->king[BLACK] != 0);
 
     /* white and black kings cannot be in the same place */
     assert(pos->kingSquare[WHITE] != pos->kingSquare[BLACK]);

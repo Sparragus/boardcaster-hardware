@@ -10,13 +10,14 @@
 #include "boardcaster.h"
 #include "piece_detector.h"
 #include "led_disp.h"
-#include "poster.h"
+//#include "poster.h"
 #include "utils.h"
 #include "hw_signals.h"
 #include "bitboard_ops.h"
 #include <stdlib.h>
 
 
+#define NDEBUG
 
 Chess chess;
 
@@ -71,10 +72,12 @@ void loop()
     bitboard currentPosition;
     currentPosition = chess.getCurrentPosition();
     static uint64_t board = currentPosition;
+
+    Serial.println("BOARD=");
     chess.printBitboard(&board);
-    Serial.println("---");
+    Serial.println("CurrentPosition=");
     chess.printBitboard(&currentPosition);
-    Serial.println("Got current pos...");
+
 
     // Scan piece array
     /*static uint64_t board = 0x0000000000000000LL;*/
@@ -116,6 +119,7 @@ sq_source = 63 - sq_source;
         sq_dest = scanPieceArray(&board);
     }
     while(sq_dest == -1);
+sq_dest = 63 - sq_dest;
     Serial.print("Found placed piece: "); Serial.println(sq_dest, DEC);
     // Piece is placed, turn off leds
     turnOffDisplay();
@@ -160,8 +164,8 @@ sq_source = 63 - sq_source;
     char* fen_char = chess.getFENFromPosition();
     Serial.println("Got FEN from position");
     String fen_string = String(fen_char);
-     setNextFEN(fen_string);
-     sendData();
+    //     setNextFEN(fen_string);
+    //     sendData();
 
     Serial.print("FEN: "); Serial.println(fen_string);
 
