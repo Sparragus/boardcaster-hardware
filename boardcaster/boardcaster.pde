@@ -18,6 +18,7 @@
 
 
 #define NDEBUG
+#define assert(x) ;
 //#define assert(x) Serial.println("asserting..");
 Chess chess;
 
