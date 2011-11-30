@@ -40,10 +40,10 @@ static bitboard getPieceBitboard(const position * const pos, const int piece);
 static int getPieceMoves(const position * const pos, const int player, const int type, bitboard rawMoves, const int sq, move store[]);
 static bitboard getRawMoves(const position * const pos, const int piece, const int player, const int type, const int sq);
 static bitboard getAttackRange(const int piece, const int type, const int sq, const bitboard allPieces, const int epSquare);
-static void storeMoveIfLegal(const position* const pos, move*  m, const int player, move store[], int *numMoves);
+void storeMoveIfLegal(const position* const pos, move*  m, const int player, move store[], int *numMoves);
 static void movePawnExtra(position *pos, const move * const m, const int player);
-static void getCastlingMoves(const position * const pos, const int player, move store[], int *numMoves);
-static void moveCastlingExtra(position *pos, const move * const m);
+ void getCastlingMoves(const position * const pos, const int player, move store[], int *numMoves);
+ void moveCastlingExtra(position *pos, const move * const m);
 
 int getMoves(const position * const pos, const int player, const int piece, const int type, move store[])
 {
@@ -115,7 +115,7 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
     return rawMoves;
 }
 
-static bitboard getAttackRange(const int piece, const int type, const int sq, const bitboard allPieces_p, const int epSquare)
+ bitboard getAttackRange(const int piece, const int type, const int sq, const bitboard allPieces_p, const int epSquare)
 {
   bitboard allPieces = allPieces_p;
     bitboard attackRange = 0;
@@ -181,7 +181,7 @@ static bitboard getAttackRange(const int piece, const int type, const int sq, co
     return attackRange;
 }
 
-static int getPieceMoves(const position * const pos, const int player, const int type, bitboard rawMoves, const int sq, move store[])
+ int getPieceMoves(const position * const pos, const int player, const int type, bitboard rawMoves, const int sq, move store[])
 {
     int numMoves = 0;
     int target = 0;
@@ -290,7 +290,7 @@ static int getPieceMoves(const position * const pos, const int player, const int
     return numMoves;
 }
 
-static void getCastlingMoves(const position * const pos, const int player, move store[], int *numMoves)
+void getCastlingMoves(const position * const pos, const int player, move store[], int *numMoves)
 {
     int colour;
     int sq;
@@ -344,8 +344,7 @@ static void getCastlingMoves(const position * const pos, const int player, move 
         }
     }
 }
-
-static void storeMoveIfLegal(const position* const pos, move* m, const int player, move store[], int *numMoves)
+void storeMoveIfLegal(const position* const pos, move* m, const int player, move store[], int *numMoves)
 {
     position newPosition;
     int status;
@@ -365,8 +364,8 @@ static void storeMoveIfLegal(const position* const pos, move* m, const int playe
         }
     }
 }
-#define assert(x) ;
-static bitboard getPieceBitboard(const position * const pos, const int piece)
+
+bitboard getPieceBitboard(const position * const pos, const int piece)
 {
     bitboard b = 0;
     int colour = COLOUR(piece);
@@ -394,8 +393,8 @@ static bitboard getPieceBitboard(const position * const pos, const int piece)
          * This must NEVER happen; move generation is screwed.
          */
         Serial.println("is it nevermore");
-         assert(0);
-        Serial.println("Nevermore..");
+        // assert(0);
+        // Serial.println("Nevermore..");
     }
     Serial.println("ret getPieceBitBoard()");
     return b;
@@ -432,7 +431,7 @@ int playMove(const position * const pos, position *newPosition, const move * con
     return 0;
 }
 
-static void movePawnExtra(position *pos, const move * const m, const int player)
+ void movePawnExtra(position *pos, const move * const m, const int player)
 {
     /* if ep, remove the opponents pawn */
     if(IS_EP(m)) {
@@ -480,7 +479,7 @@ static void movePawnExtra(position *pos, const move * const m, const int player)
     }
 }
 
-static void moveRookExtra(position *pos, const move * const m, const int player)
+ void moveRookExtra(position *pos, const move * const m, const int player)
 {
     int castleBits;
     /* check if castle flags need to be updated for appropriate player and (k | q) side */
@@ -502,7 +501,7 @@ static void moveRookExtra(position *pos, const move * const m, const int player)
     }
 }
 
-static void moveCastlingExtra(position *pos, const move * const m)
+ void moveCastlingExtra(position *pos, const move * const m)
 {
     if(1 == m->to) {
         pos->board[0] = 0;
@@ -541,7 +540,7 @@ static void moveCastlingExtra(position *pos, const move * const m)
     }
 }
 
-static int movePiece(position *pos, const move * const m, const int player)
+ int movePiece(position *pos, const move * const m, const int player)
 {
     int piece;
     int castleBits;
@@ -601,7 +600,7 @@ static int movePiece(position *pos, const move * const m, const int player)
     return 0;
 }
 
-static void clearCapturedPiece(position *pos, const move * const m)
+ void clearCapturedPiece(position *pos, const move * const m)
 {
     int piece;
     int colour;

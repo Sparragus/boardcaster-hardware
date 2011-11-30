@@ -3,7 +3,7 @@ TARGET = boardcaster
 BOARD_TAG = atmega328
 ARDUINO_PORT = /dev/ttyUSB0
 
-ARDUINO_LIBS = WiShield
+ARDUINO_LIBS = WiShield Chess
 
 AVR_TOOLS_PATH = /usr/bin
 

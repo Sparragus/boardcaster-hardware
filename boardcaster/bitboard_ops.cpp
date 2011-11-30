@@ -1,7 +1,7 @@
 #include <WProgram.h>
 #include "piece_detector.h"
 #include "bitboard_ops.h"
-
+#define NDEBUG
 // Compare board1 against board2 for the specified amount of sensors
 // Under normal operation SENSOR_COUNT = SCAN_SIZE
 // Return: -1 = Equal boards
