@@ -372,29 +372,35 @@ bitboard getPieceBitboard(const position * const pos, const int piece)
     Serial.println("in getPieceBitBoard()");
     if(IS_KING(piece)) {
         b = pos->king[colour];
+        Serial.println("piece is KING");
     }
     else if(IS_PAWN(piece)) {
         b = pos->pawns[colour];
+        Serial.println("piece is PAWN");
     }
     else if(IS_KNIGHT(piece)) {
         b = pos->knights[colour];
+        Serial.println("piece is KNIGHT");
     }
     else if(IS_BISHOP(piece)) {
         b = pos->bishops[colour];
+        Serial.println("piece is BISHOP"); 
     }
     else if(IS_ROOK(piece)) {
         b = pos->rooks[colour];
+        Serial.println("piece is ROOK");
     }
     else if(IS_QUEEN(piece)) {
         b = pos->queens[colour];
+        Serial.println("piece is QUEEN");
     }
     else {
         /* Something is wrong, I don't know which piece this is.
          * This must NEVER happen; move generation is screwed.
          */
         Serial.println("is it nevermore");
-        // assert(0);
-        // Serial.println("Nevermore..");
+//        assert(0)
+        Serial.println("Nevermore..");
     }
     Serial.println("ret getPieceBitBoard()");
     return b;
