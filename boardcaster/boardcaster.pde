@@ -18,7 +18,7 @@
 
 
 #define NDEBUG
-
+//#define assert(x) Serial.println("asserting..");
 Chess chess;
 
 int __cxa_guard_acquire(__guard *g) {return !*(char *)(g);};
@@ -33,6 +33,51 @@ void * operator new(size_t size)
 void operator delete(void * ptr)
 {
  free(ptr);
+}
+
+
+int hack_board(uint64_t* in_board, int state)
+{
+    switch(state)
+    {
+        case 0:
+        {
+            uchar board[] = {
+                1,1,1,1,1,1,1,1,
+                1,0,1,1,1,1,1,1,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                1,1,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1
+            };
+            arrayToBitBoard(board, in_board);
+            return 9;
+            break;
+
+        }
+        case 1:
+
+        {
+                uchar board[] = {
+                1,1,1,1,1,1,1,1,
+                1,0,1,1,1,1,1,1,
+                0,1,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                1,1,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1
+            };
+                arrayToBitBoard(board, in_board);
+                return 17;
+
+
+
+            break;
+        }
+    }
 }
 
 
@@ -51,17 +96,17 @@ void setup()
     initLedDisp();
 
     // Run LED diagnostics
-     cycleArray();
+    cycleArray();
 
     // Init web posting code
     //initPoster();
 
     // Init chess engine
-//    chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
+    chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+//    chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
     
     // Piece is placed, turn off leds
-    turnOffDisplay();
+     turnOffDisplay();
 }
 
 // Main firmware loop
@@ -85,14 +130,15 @@ void loop()
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
     int sq_source = -1;
-    do
+    /*do
     {
         Serial.println("*");
         sq_source = scanPieceArray(&board);
     }
     while(sq_source == -1);
-
-sq_source = 63 - sq_source;
+    */
+    sq_source = hack_board(&board, 0);
+    sq_source = 63 - sq_source;
     Serial.print("Found lifted piece: "); Serial.println(sq_source, DEC);
 
     // Obtain a bitboard with the legal moves for a piece on the square sq
@@ -113,13 +159,15 @@ sq_source = 63 - sq_source;
     // Scan piece array until a change is detected
     // sq_source >= 0 if Board changed; Square that changed, sq_source = -1 = No change
     int sq_dest;
-    do
+/*    do
     {
         Serial.print(" s ");
         sq_dest = scanPieceArray(&board);
     }
     while(sq_dest == -1);
-sq_dest = 63 - sq_dest;
+*/
+    sq_dest = hack_board(&board, 1);
+  sq_dest = 63 - sq_dest;
     Serial.print("Found placed piece: "); Serial.println(sq_dest, DEC);
     // Piece is placed, turn off leds
     turnOffDisplay();

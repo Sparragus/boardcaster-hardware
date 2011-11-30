@@ -365,11 +365,12 @@ static void storeMoveIfLegal(const position* const pos, move* m, const int playe
         }
     }
 }
-
+#define assert(x) ;
 static bitboard getPieceBitboard(const position * const pos, const int piece)
 {
     bitboard b = 0;
     int colour = COLOUR(piece);
+    Serial.println("in getPieceBitBoard()");
     if(IS_KING(piece)) {
         b = pos->king[colour];
     }
@@ -392,8 +393,11 @@ static bitboard getPieceBitboard(const position * const pos, const int piece)
         /* Something is wrong, I don't know which piece this is.
          * This must NEVER happen; move generation is screwed.
          */
-        assert(0);
+        Serial.println("is it nevermore");
+         assert(0);
+        Serial.println("Nevermore..");
     }
+    Serial.println("ret getPieceBitBoard()");
     return b;
 }
 
