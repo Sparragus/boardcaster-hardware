@@ -263,7 +263,7 @@ void Chess::printPosition(const position* pos)
     bitboard Chess::getRealMoves(const move moves[], int sq_source, int numMoves)
     {
           int i;
-          bitboard realMoves;
+          bitboard realMoves=0;
           for(i=0; i<numMoves; i++)
           {
               //If the move comes from where we want...
