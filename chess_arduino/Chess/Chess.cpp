@@ -18,13 +18,13 @@ extern "C" {
 
 extern const bitboard _mask[64];
 
-  Chess::Chess()
-  {
+Chess::Chess()
+{
     Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-  }
+}
 
-  Chess::Chess(char FEN[])
-  {
+Chess::Chess(char FEN[])
+{
     init_bitboard();
 
     memset(moves, 0, STORE_SIZE);
@@ -34,30 +34,30 @@ extern const bitboard _mask[64];
 
     printPosition(&pos);
     Serial.println("Printed pos...");
-  }
+}
 
-  bitboard Chess::getPieceMoves(const int sq_source)
-  {
+bitboard Chess::getPieceMoves(const int sq_source)
+{
 
-        //Init all moves to 0;
-        memset(moves, 0, STORE_SIZE*sizeof(move));
+    //Init all moves to 0;
+    memset(moves, 0, STORE_SIZE*sizeof(move));
  
-        int player = pos.toPlay;
-        int piece = getPieceToPlay(sq_source);
-        int numMoves = 0;
-        numMoves += getMoves(&pos, player, piece, NORMAL, &moves[numMoves]);
-        numMoves += getMoves(&pos, player, piece, CAPTURE, &moves[numMoves]);
+    int player = pos.toPlay;
+    int piece = getPieceToPlay(sq_source);
+    int numMoves = 0;
+    numMoves += getMoves(&pos, player, piece, NORMAL, &moves[numMoves]);
+    numMoves += getMoves(&pos, player, piece, CAPTURE, &moves[numMoves]);
 
-        bitboard realMoves = 0;
-        realMoves = getRealMoves(moves, sq_source, numMoves);
-        return realMoves;
-  }
+    bitboard realMoves = 0;
+    realMoves = getRealMoves(moves, sq_source, numMoves);
+    return realMoves;
+}
 
-    // Returns:
-    // 0 = Legal Move
-    // 1 = Illegal Move
-  int Chess::playPieceMove(int sq_dest)
-  {
+// Returns:
+// 0 = Legal Move
+// 1 = Illegal Move
+int Chess::playPieceMove(int sq_dest)
+{
     //get move that goes to sq_dest
     int i;
     for(i=0; i<STORE_SIZE; i++)
@@ -72,35 +72,35 @@ extern const bitboard _mask[64];
 
     // There was no move to play.
     return 1;
-  }
+}
 
 bitboard Chess::getCurrentPosition()
-    {
-        bitboard b = pos.pieces[WHITE]|pos.pieces[BLACK];
-	//  printBitboard(&b);
+{
+    bitboard b = pos.pieces[WHITE]|pos.pieces[BLACK];
+    //  printBitboard(&b);
 
-        return (b);
-    }
+    return (b);
+}
 
-    void Chess::printBitboard(const bitboard* bb)
-    {
-        int i;
+void Chess::printBitboard(const bitboard* bb)
+{
+    int i;
 
-        for(i = 63; i >=0; i--) {
-            if(*bb & _mask[i]) {
-                Serial.print('1');
-            }
-            else {
-                Serial.print('0');
-            }
-
-            if(i % 8 == 0) {
-                Serial.print('\n');
-            }
+    for(i = 63; i >=0; i--) {
+        if(*bb & _mask[i]) {
+            Serial.print('1');
+        }
+        else {
+            Serial.print('0');
         }
 
-        Serial.print('\n');
+        if(i % 8 == 0) {
+            Serial.print('\n');
+        }
     }
+
+    Serial.print('\n');
+}
 
 bitboard Chess::getMask(const int sq)
 {
@@ -109,9 +109,9 @@ bitboard Chess::getMask(const int sq)
 
 char* Chess::getFENFromPosition()
 {
-   static char fen[256];
-   savePositionToFEN(&pos, fen);
-   return fen;
+    static char fen[256];
+    savePositionToFEN(&pos, fen);
+    return fen;
 }
 
 
@@ -204,7 +204,7 @@ void Chess::printPosition(const position* pos)
                     castle[3] = 'q';
                 }
 
-                    Serial.print("["); Serial.print(castle); Serial.print("]");
+                Serial.print("["); Serial.print(castle); Serial.print("]");
 
             }
 
@@ -218,55 +218,55 @@ void Chess::printPosition(const position* pos)
 
 
 
-    int Chess::getPieceToPlay(int sq_source)
+int Chess::getPieceToPlay(int sq_source)
+{
+    if(pos.king[pos.toPlay] & _mask[sq_source])
     {
-        if(pos.king[pos.toPlay] & _mask[sq_source])
+        if(pos.toPlay == WHITE) {return WHITE_KING;}
+        else {return BLACK_KING;}
+    }
+    else if(pos.queens[pos.toPlay] & _mask[sq_source])
+    {
+        if(pos.toPlay == WHITE) {return WHITE_QUEEN;}
+        else {return BLACK_QUEEN;}
+    }
+    else if(pos.rooks[pos.toPlay] & _mask[sq_source])
+    {
+        if(pos.toPlay == WHITE) {return WHITE_ROOK;}
+        else {return BLACK_ROOK;}
+    }
+    else if(pos.bishops[pos.toPlay] & _mask[sq_source])
+    {
+        if(pos.toPlay == WHITE) {return WHITE_BISHOP;}
+        else {return BLACK_BISHOP;}
+    }
+    else if(pos.knights[pos.toPlay] & _mask[sq_source])
+    {
+        if(pos.toPlay == WHITE) {return WHITE_KNIGHT;}
+        else {return BLACK_KNIGHT;}
+    }
+    else if(pos.pawns[pos.toPlay] & _mask[sq_source])
+    {
+        if(pos.toPlay == WHITE) {return WHITE_PAWN;}
+        else {return BLACK_PAWN;}
+    }
+    else {return 0;} //SHOULD NEVER GET HERE. Piece is unknown.
+}
+
+bitboard Chess::getRealMoves(const move moves[], int sq_source, int numMoves)
+{
+    int i;
+    bitboard realMoves=0;
+    for(i=0; i<numMoves; i++)
+    {
+        //If the move comes from where we want...
+        if(moves[i].from == sq_source)
         {
-            if(pos.toPlay == WHITE) {return WHITE_KING;}
-            else {return BLACK_KING;}
+            // ...add it's destination as a possible move.
+            realMoves |= _mask[moves[i].to];
         }
-        else if(pos.queens[pos.toPlay] & _mask[sq_source])
-        {
-            if(pos.toPlay == WHITE) {return WHITE_QUEEN;}
-            else {return BLACK_QUEEN;}
-        }
-        else if(pos.rooks[pos.toPlay] & _mask[sq_source])
-        {
-            if(pos.toPlay == WHITE) {return WHITE_ROOK;}
-            else {return BLACK_ROOK;}
-        }
-        else if(pos.bishops[pos.toPlay] & _mask[sq_source])
-        {
-            if(pos.toPlay == WHITE) {return WHITE_BISHOP;}
-            else {return BLACK_BISHOP;}
-        }
-        else if(pos.knights[pos.toPlay] & _mask[sq_source])
-        {
-            if(pos.toPlay == WHITE) {return WHITE_KNIGHT;}
-            else {return BLACK_KNIGHT;}
-        }
-        else if(pos.pawns[pos.toPlay] & _mask[sq_source])
-        {
-            if(pos.toPlay == WHITE) {return WHITE_PAWN;}
-            else {return BLACK_PAWN;}
-        }
-        else {return 0;} //SHOULD NEVER GET HERE. Piece is unknown.
     }
 
-    bitboard Chess::getRealMoves(const move moves[], int sq_source, int numMoves)
-    {
-          int i;
-          bitboard realMoves=0;
-          for(i=0; i<numMoves; i++)
-          {
-              //If the move comes from where we want...
-            if(moves[i].from == sq_source)
-            {
-                // ...add it's destination as a possible move.
-                realMoves |= _mask[moves[i].to];
-            }
-          }
-
-          return realMoves;
-    }
+    return realMoves;
+}
 

@@ -1,17 +1,17 @@
 /*
-AshChess - A simple and stupid computer chess program
-Copyright (C) 2005 Ashwin Phatak
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  AshChess - A simple and stupid computer chess program
+  Copyright (C) 2005 Ashwin Phatak
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 #include <stdio.h>
@@ -42,8 +42,8 @@ static bitboard getRawMoves(const position * const pos, const int piece, const i
 static bitboard getAttackRange(const int piece, const int type, const int sq, const bitboard allPieces, const int epSquare);
 void storeMoveIfLegal(const position* const pos, move*  m, const int player, move store[], int *numMoves);
 static void movePawnExtra(position *pos, const move * const m, const int player);
- void getCastlingMoves(const position * const pos, const int player, move store[], int *numMoves);
- void moveCastlingExtra(position *pos, const move * const m);
+void getCastlingMoves(const position * const pos, const int player, move store[], int *numMoves);
+void moveCastlingExtra(position *pos, const move * const m);
 
 int getMoves(const position * const pos, const int player, const int piece, const int type, move store[])
 {
@@ -94,7 +94,7 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
     allPieces = pos->pieces[BLACK] | pos->pieces[WHITE];
     
     if(CAPTURE == type) {
-      attackRange = getAttackRange(piece, type, sq, allPieces, pos->epSquare);
+        attackRange = getAttackRange(piece, type, sq, allPieces, pos->epSquare);
         opponentSquares = pos->pieces[OPPONENT(player)];
         if(pos->epSquare != -1) {
             opponentSquares |= _mask[pos->epSquare];
@@ -113,9 +113,9 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
     return rawMoves;
 }
 
- bitboard getAttackRange(const int piece, const int type, const int sq, const bitboard allPieces_p, const int epSquare)
+bitboard getAttackRange(const int piece, const int type, const int sq, const bitboard allPieces_p, const int epSquare)
 {
-  bitboard allPieces = allPieces_p;
+    bitboard allPieces = allPieces_p;
     bitboard attackRange = 0;
     int state = 0;
     int rank;
@@ -179,7 +179,7 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
     return attackRange;
 }
 
- int getPieceMoves(const position * const pos, const int player, const int type, bitboard rawMoves, const int sq, move store[])
+int getPieceMoves(const position * const pos, const int player, const int type, bitboard rawMoves, const int sq, move store[])
 {
     int numMoves = 0;
     int target = 0;
@@ -271,15 +271,15 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
             }
         }
 
-     rawMoves = rawMoves >> 1;
+        rawMoves = rawMoves >> 1;
         target++;
     }
   
     /* castling */
-     if(NORMAL == type && IS_KING(pos->board[sq]))
+    if(NORMAL == type && IS_KING(pos->board[sq]))
     {
    
-         getCastlingMoves(pos, player, store, &numMoves);
+        getCastlingMoves(pos, player, store, &numMoves);
    
     }
  
@@ -303,42 +303,42 @@ void getCastlingMoves(const position * const pos, const int player, move store[]
     m.eval = 0;
     if(WHITE == player && !inCheck(pos, WHITE, pos->kingSquare[WHITE])) {
         if((pos->castleFlags & CASTLE_WK) && (0 == pos->board[1]) && (0 == pos->board[2])) {
-              if(!inCheck(pos, WHITE, 1) && !inCheck(pos, WHITE, 2)) {
+            if(!inCheck(pos, WHITE, 1) && !inCheck(pos, WHITE, 2)) {
 
-                    assert(WHITE_ROOK == pos->board[0]);
+                assert(WHITE_ROOK == pos->board[0]);
 
-                    m.to = 1;
-                    storeMoveIfLegal(pos, &m, WHITE, store, numMoves);
-              }
+                m.to = 1;
+                storeMoveIfLegal(pos, &m, WHITE, store, numMoves);
+            }
         }
         if((pos->castleFlags & CASTLE_WQ) && (0 == pos->board[4]) && (0 == pos->board[5]) && (0 == pos->board[6])) {
-              if(!inCheck(pos, WHITE, 4) && !inCheck(pos, WHITE, 5)) {
+            if(!inCheck(pos, WHITE, 4) && !inCheck(pos, WHITE, 5)) {
 
-                    assert(WHITE_ROOK == pos->board[7]);
+                assert(WHITE_ROOK == pos->board[7]);
 
-                    m.to = 5;
-                    storeMoveIfLegal(pos, &m, WHITE, store, numMoves);
-              }
+                m.to = 5;
+                storeMoveIfLegal(pos, &m, WHITE, store, numMoves);
+            }
         }
     }
     else if(!inCheck(pos, BLACK, pos->kingSquare[BLACK])) {
         if((pos->castleFlags & CASTLE_BK) && (0 == pos->board[57]) && (0 == pos->board[58])) {
-              if(!inCheck(pos, BLACK, 57) && !inCheck(pos, BLACK, 58)) {
+            if(!inCheck(pos, BLACK, 57) && !inCheck(pos, BLACK, 58)) {
 
-                    assert(BLACK_ROOK == pos->board[56]);
+                assert(BLACK_ROOK == pos->board[56]);
 
-                    m.to = 57;
-                    storeMoveIfLegal(pos, &m, BLACK, store, numMoves);
-              }
+                m.to = 57;
+                storeMoveIfLegal(pos, &m, BLACK, store, numMoves);
+            }
         }
         if((pos->castleFlags & CASTLE_BQ) && (0 == pos->board[62]) && (0 == pos->board[61]) && (0 == pos->board[60])) {
-              if(!inCheck(pos, BLACK, 61) && !inCheck(pos, BLACK, 60)) {
+            if(!inCheck(pos, BLACK, 61) && !inCheck(pos, BLACK, 60)) {
 
-                    assert(BLACK_ROOK == pos->board[63]);
+                assert(BLACK_ROOK == pos->board[63]);
 
-                    m.to = 61;
-                    storeMoveIfLegal(pos, &m, BLACK, store, numMoves);
-              }
+                m.to = 61;
+                storeMoveIfLegal(pos, &m, BLACK, store, numMoves);
+            }
         }
     }
 }
@@ -399,11 +399,11 @@ bitboard getPieceBitboard(const position * const pos, const int piece)
 }
 
 /*
-    Types of moves:
-    1) King normal move
-    2) King captures
-    3) King castles
-    4)
+  Types of moves:
+  1) King normal move
+  2) King captures
+  3) King castles
+  4)
 */
 int playMove(const position * const pos, position *newPosition, const move * const m, const int player)
 {
@@ -429,7 +429,7 @@ int playMove(const position * const pos, position *newPosition, const move * con
     return 0;
 }
 
- void movePawnExtra(position *pos, const move * const m, const int player)
+void movePawnExtra(position *pos, const move * const m, const int player)
 {
     /* if ep, remove the opponents pawn */
     if(IS_EP(m)) {
@@ -477,7 +477,7 @@ int playMove(const position * const pos, position *newPosition, const move * con
     }
 }
 
- void moveRookExtra(position *pos, const move * const m, const int player)
+void moveRookExtra(position *pos, const move * const m, const int player)
 {
     int castleBits;
     /* check if castle flags need to be updated for appropriate player and (k | q) side */
@@ -499,7 +499,7 @@ int playMove(const position * const pos, position *newPosition, const move * con
     }
 }
 
- void moveCastlingExtra(position *pos, const move * const m)
+void moveCastlingExtra(position *pos, const move * const m)
 {
     if(1 == m->to) {
         pos->board[0] = 0;
@@ -538,7 +538,7 @@ int playMove(const position * const pos, position *newPosition, const move * con
     }
 }
 
- int movePiece(position *pos, const move * const m, const int player)
+int movePiece(position *pos, const move * const m, const int player)
 {
     int piece;
     int castleBits;
@@ -598,26 +598,26 @@ int playMove(const position * const pos, position *newPosition, const move * con
     return 0;
 }
 
- void clearCapturedPiece(position *pos, const move * const m)
+void clearCapturedPiece(position *pos, const move * const m)
 {
     int piece;
     int colour;
     int castleBits;
 
     /*
-        ep is handled in movePiece(...) method and not here
-        this only handles the "simple" capture
-        TODO: change later?
-     */
+      ep is handled in movePiece(...) method and not here
+      this only handles the "simple" capture
+      TODO: change later?
+    */
     piece = m->capturedPiece;
     colour = COLOUR(piece);
     assert(!IS_KING(piece));
     /* clear all pieces bitboard */
     CLR_BIT(pos->pieces[colour], m->to);
     /*
-        Do NOT set m->to to 0, as board[m->to] contains the moved piece!
-        Just update the bitboards.
-     */
+      Do NOT set m->to to 0, as board[m->to] contains the moved piece!
+      Just update the bitboards.
+    */
     if(IS_PAWN(piece)) {
         CLR_BIT(pos->pawns[colour], m->to);
     }
@@ -683,7 +683,7 @@ int inCheck(const position * const pos, const int player, const int targetSquare
     bitboard target;
     /* should be used only for kings or empty squares */
     assert(((targetSquare == pos->kingSquare[player])) ||
-        ((_mask[targetSquare] & (pos->pieces[WHITE] | pos->pieces[BLACK])) == 0));
+           ((_mask[targetSquare] & (pos->pieces[WHITE] | pos->pieces[BLACK])) == 0));
     if(targetSquare == pos->kingSquare[player]) {
         target = pos->king[player];
     }
