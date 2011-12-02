@@ -55,11 +55,10 @@ int getMoves(const position * const pos, const int player, const int piece, cons
     opponent = OPPONENT(player);
     /* opponent in check = player won. should be checked somewhere before this */
     int ret = inCheck(pos, opponent, pos->kingSquare[opponent]);
-       Serial.println("inChecked passed");
     
     assert(!ret);
     //    assert(!inCheck(pos, opponent, pos->kingSquare[opponent]));
-    Serial.println("assert passed!");
+
     pieces = getPieceBitboard(pos, piece);
     sq = 0;
     if(IS_KING(piece)) {
@@ -68,20 +67,19 @@ int getMoves(const position * const pos, const int player, const int piece, cons
         pieces = pieces >> sq;
         assert(pieces != 0); /* we should not move the king off the board */
     }
-    Serial.println("Entering while()");
+
     while(pieces != 0) {
         if(LSB_SET(pieces)) {
 
             rawMoves = getRawMoves(pos, player, piece, type, sq);
-	    Serial.println("getRawMoves() passed");
             numMoves += getPieceMoves(pos, player, type, rawMoves, sq, &store[numMoves]);
-	    Serial.println("getPieceMoves() passed");
+
         }
         pieces = pieces >> 1;
 
         sq++;
     }
-    Serial.println("Returning from getMoves()");
+
     return numMoves;
 }
 
@@ -222,7 +220,7 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
                     m.eval += valueCaptured - valueThis;
                 }
             }
-	    Serial.println("IS_PAWN?");
+
             if(IS_PAWN(m.thisPiece) && IS_PROMOTION_SQUARE(player, m.to)) {
                 m.flags |= PROMOTION;
                 temp = m;
@@ -246,7 +244,7 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
                     m.promoteTo = WHITE_KNIGHT;
                     m.eval += WHITE_KNIGHT;
                     storeMoveIfLegal(pos, &m, player, store, &numMoves);
-		    Serial.println("exiting... IS_PAWN");
+		
                 }
                 else {
                     /* promote to queen */
@@ -264,27 +262,27 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
                     /* promote to knight */
                     m.promoteTo = BLACK_KNIGHT;
                     storeMoveIfLegal(pos, &m, player, store, &numMoves);
-		    Serial.println("IS_PAWN else");
+		 
                 }
             }
             else {
                 storeMoveIfLegal(pos, &m, player, store, &numMoves);
-			Serial.println("StoringMoveIfLegal");
+		
             }
         }
-	//	Serial.println("Decrement rawMoves");
+
      rawMoves = rawMoves >> 1;
         target++;
     }
-    Serial.println("Checking castling");
+  
     /* castling */
      if(NORMAL == type && IS_KING(pos->board[sq]))
     {
-      //  Serial.println("getCastlingMoves..");  
-      // getCastlingMoves(pos, player, store, &numMoves);
-      //  Serial.println("getCastlingMoves..passed");
+   
+         getCastlingMoves(pos, player, store, &numMoves);
+   
     }
-     //  Serial.println("Exiting getMoves");
+ 
 
 
     return numMoves;
@@ -369,40 +367,34 @@ bitboard getPieceBitboard(const position * const pos, const int piece)
 {
     bitboard b = 0;
     int colour = COLOUR(piece);
-    Serial.println("in getPieceBitBoard()");
+
     if(IS_KING(piece)) {
         b = pos->king[colour];
-        Serial.println("piece is KING");
     }
     else if(IS_PAWN(piece)) {
         b = pos->pawns[colour];
-        Serial.println("piece is PAWN");
     }
     else if(IS_KNIGHT(piece)) {
         b = pos->knights[colour];
-        Serial.println("piece is KNIGHT");
     }
     else if(IS_BISHOP(piece)) {
         b = pos->bishops[colour];
-        Serial.println("piece is BISHOP"); 
     }
     else if(IS_ROOK(piece)) {
         b = pos->rooks[colour];
-        Serial.println("piece is ROOK");
     }
     else if(IS_QUEEN(piece)) {
         b = pos->queens[colour];
-        Serial.println("piece is QUEEN");
     }
     else {
         /* Something is wrong, I don't know which piece this is.
          * This must NEVER happen; move generation is screwed.
          */
-        Serial.println("is it nevermore");
+ 
 //        assert(0)
-        Serial.println("Nevermore..");
+
     }
-    Serial.println("ret getPieceBitBoard()");
+ 
     return b;
 }
 
