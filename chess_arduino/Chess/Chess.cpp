@@ -38,25 +38,18 @@ extern const bitboard _mask[64];
 
   bitboard Chess::getPieceMoves(const int sq_source)
   {
-      Serial.println("memset?");
+
         //Init all moves to 0;
-      memset(moves, 0, STORE_SIZE*sizeof(move));
-        Serial.println((long int)&moves, HEX);
-        Serial.println("yup!");
+        memset(moves, 0, STORE_SIZE*sizeof(move));
+ 
         int player = pos.toPlay;
-        Serial.println("getPieceToPlay()");
         int piece = getPieceToPlay(sq_source);
-        Serial.println("getMoves?");
         int numMoves = 0;
         numMoves += getMoves(&pos, player, piece, NORMAL, &moves[numMoves]);
-        Serial.println("1?");
         numMoves += getMoves(&pos, player, piece, CAPTURE, &moves[numMoves]);
 
         bitboard realMoves = 0;
-        Serial.println("getREalMoves()");
         realMoves = getRealMoves(moves, sq_source, numMoves);
-        
-        Serial.println("ret getPiecesMoves");
         return realMoves;
   }
 

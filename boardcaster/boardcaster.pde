@@ -15,11 +15,11 @@
 #include "hw_signals.h"
 #include "bitboard_ops.h"
 #include <stdlib.h>
-
+#include <avr/pgmspace.h>
 
 #define NDEBUG
 #define assert(x) ;
-//#define assert(x) Serial.println("asserting..");
+//#define assert(x) showString(PSTR("asserting..");
 Chess chess;
 
 int __cxa_guard_acquire(__guard *g) {return !*(char *)(g);};
@@ -36,6 +36,11 @@ void operator delete(void * ptr)
  free(ptr);
 }
 
+void showString (PGM_P s) {
+        char c;
+        while ((c = pgm_read_byte(s++)) != 0)
+            Serial.print(c);
+    }
 
 int hack_board(uint64_t* in_board, int state)
 {
@@ -45,16 +50,16 @@ int hack_board(uint64_t* in_board, int state)
         {
             uchar board[] = {
                 1,1,1,1,1,1,1,1,
-                1,0,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,
                 0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,
                 1,1,1,1,1,1,1,1,
-                1,1,1,1,1,1,1,1
+                1,0,1,1,1,1,1,1
             };
             arrayToBitBoard(board, in_board);
-            return 9;
+            return 57;
             break;
 
         }
@@ -63,16 +68,16 @@ int hack_board(uint64_t* in_board, int state)
         {
                 uchar board[] = {
                 1,1,1,1,1,1,1,1,
-                1,0,1,1,1,1,1,1,
-                0,1,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,
                 1,1,1,1,1,1,1,1,
-                1,1,1,1,1,1,1,1
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,1,0,0,0,0,0,
+                1,1,1,1,1,1,1,1,
+                1,0,1,1,1,1,1,1
             };
                 arrayToBitBoard(board, in_board);
-                return 17;
+                return 42;
 
 
 
@@ -86,9 +91,10 @@ int hack_board(uint64_t* in_board, int state)
 // Main firmware setup call
 void setup()
 {
+    delay(2000);
     // Set serial transmission rate for debug prints
     Serial.begin(9600);
-    Serial.println("Setup...");
+    showString(PSTR("Setup..."));
     
     // Initialize the piece detector
     initPieceDetector();
@@ -113,15 +119,13 @@ void setup()
 // Main firmware loop
 void loop()
 {
-    Serial.println("Looping...");
+    showString(PSTR("START---ITERATION----------------------------------------------\n"));
     // Get current position
     bitboard currentPosition;
     currentPosition = chess.getCurrentPosition();
     static uint64_t board = currentPosition;
 
-    Serial.println("BOARD=");
-    chess.printBitboard(&board);
-    Serial.println("CurrentPosition=");
+    showString(PSTR("CurrentPosition="));
     chess.printBitboard(&currentPosition);
 
 
@@ -133,14 +137,14 @@ void loop()
     int sq_source = -1;
     /*do
     {
-        Serial.println("*");
+        showString(PSTR("*");
         sq_source = scanPieceArray(&board);
     }
     while(sq_source == -1);
     */
     sq_source = hack_board(&board, 0);
     sq_source = 63 - sq_source;
-    Serial.print("Found lifted piece: "); Serial.println(sq_source, DEC);
+    showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
 
     // Obtain a bitboard with the legal moves for a piece on the square sq
     bitboard moves = 0xFFFFFFFFFFFFFFF;
@@ -148,28 +152,28 @@ void loop()
     //moves = chess.getPieceMoves( 27 );
 
     
-    Serial.println("Just moved board");
+    showString(PSTR("Board change detected!"));
     chess.printBitboard(&moves);
 
     // Turn on LEDs using moves
     uint16_t* parts  = getParts(&moves);
     displaypositions(parts);
     
-    Serial.println("Displayed positions");
+    showString(PSTR("Displayed positions\n"));
 
     // Scan piece array until a change is detected
     // sq_source >= 0 if Board changed; Square that changed, sq_source = -1 = No change
     int sq_dest;
 /*    do
     {
-        Serial.print(" s ");
+        showString(PSTR(" s ");
         sq_dest = scanPieceArray(&board);
     }
     while(sq_dest == -1);
 */
     sq_dest = hack_board(&board, 1);
-  sq_dest = 63 - sq_dest;
-    Serial.print("Found placed piece: "); Serial.println(sq_dest, DEC);
+    sq_dest = 63 - sq_dest;
+    showString(PSTR("Found placed piece: ")); Serial.println(sq_dest, DEC);
     // Piece is placed, turn off leds
     turnOffDisplay();
 
@@ -188,7 +192,7 @@ void loop()
     {
          if( sq_dest >= 0 )
          {
-             Serial.println("Error board!");
+            showString(PSTR("Error board!\n"));
             error_board = chess.getMask(sq_dest);
          }
          uint16_t* parts  = getParts(&error_board);
@@ -204,18 +208,21 @@ void loop()
             //TODO: check if empty return is safe.
             //return;
          }
+	 showString(PSTR("Waiting for a valid move\n"));
 
     }
 
      //TODO: convert fen to an Arduino String
      // Send FEN to boardcaster.com
-    Serial.println("Getting FEN from position");
+    showString(PSTR("Getting FEN from position\n"));
     char* fen_char = chess.getFENFromPosition();
-    Serial.println("Got FEN from position");
+    showString(PSTR("Got FEN from position\n"));
     String fen_string = String(fen_char);
+    showString(PSTR("Posting FEN\n"));
     //     setNextFEN(fen_string);
     //     sendData();
 
-    Serial.print("FEN: "); Serial.println(fen_string);
+   showString(PSTR("FEN: ")); Serial.println(fen_string);
+   showString(PSTR("END---ITERATION----------------------------------------------\n"));
 
 }
