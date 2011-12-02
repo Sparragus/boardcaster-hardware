@@ -49,17 +49,24 @@ void setup()
     // Set serial transmission rate for debug prints
     Serial.begin(9600);
     delay(1000);
-
-    showString(PSTR("\nSetup...\n"));
+    showString(PSTR(""));
+    showBanner();
+    showString(PSTR("\n"));
+    showString(PSTR("\nInitializing Piece Detector..."));
     
     // Initialize the piece detector
     initPieceDetector();
+    showString(PSTR("done\n"));
 
+    showString(PSTR("Initializing LED Array..."));
     // Initialize the LED array
     initLedDisp();
+    showString(PSTR("done\n"));
 
+    showString(PSTR("Cycling LED Array..."));
     // Run LED diagnostics
     cycleArray();
+    showString(PSTR("done\n"));
 
     // Init web posting code
     //initPoster();
@@ -68,8 +75,10 @@ void setup()
     chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
     
+    showString(PSTR("Turning off LED display\n"));
     // Piece is placed, turn off leds
     turnOffDisplay();
+    showString(PSTR("\nReady\n"));
 }
 
 // Main firmware loop

@@ -116,8 +116,6 @@ int scanPieceArray(uint64_t* board)
 // Piece Detector Initializer
 void initPieceDetector()
 {
-    Serial.print("Initializing Piece Array Scanner");	
-
     // Set up pin directions
     pinMode(PD_DEC_PA0, OUTPUT);
     pinMode(PD_DEC_PA1, OUTPUT);
@@ -169,7 +167,7 @@ void initPieceDetector()
     Serial.print("  [");
     Serial.print(realTimeToScan, DEC);
     Serial.print("]ms/scan..");
-    Serial.println("\nInitialization Done.");	
+
 }
 
 
