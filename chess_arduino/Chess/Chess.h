@@ -13,10 +13,10 @@ public:
     bitboard getCurrentPosition();
     bitboard getMask(const int sq);
     char* getFENFromPosition();
-
+ 
     void printBitboard(const bitboard* bb);
     void printPosition(const position* pos);
-
+    void printOwnPosition();
 private:
     static const int STORE_SIZE = 64;
 

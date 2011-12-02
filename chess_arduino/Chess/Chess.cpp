@@ -32,8 +32,6 @@ Chess::Chess(char FEN[])
 
     loadPositionFromFEN(FEN, &pos);
 
-    printPosition(&pos);
-    Serial.println("Printed pos...");
 }
 
 bitboard Chess::getPieceMoves(const int sq_source)
@@ -114,6 +112,10 @@ char* Chess::getFENFromPosition()
     return fen;
 }
 
+void Chess::printOwnPosition()
+{
+  printPosition(&pos);
+}
 
 void Chess::printPosition(const position* pos)
 {

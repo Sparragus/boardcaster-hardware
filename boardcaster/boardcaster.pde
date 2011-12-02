@@ -78,7 +78,12 @@ void setup()
     showString(PSTR("Turning off LED display\n"));
     // Piece is placed, turn off leds
     turnOffDisplay();
-    showString(PSTR("\nReady\n"));
+
+    showString(PSTR("Expected starting board\n\n"));
+
+    chess.printOwnPosition();
+
+    showString(PSTR("\nReady\n\n"));
 }
 
 // Main firmware loop
