@@ -32,12 +32,12 @@ void __cxa_guard_abort (__guard *) {};
 
 void * operator new(size_t size)
 {
- return malloc(size);
+    return malloc(size);
 }
 
 void operator delete(void * ptr)
 {
- free(ptr);
+    free(ptr);
 }
 
 
@@ -63,10 +63,10 @@ void setup()
 
     // Init chess engine
     chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
- // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
+    // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
     
     // Piece is placed, turn off leds
-     turnOffDisplay();
+    turnOffDisplay();
 }
 
 // Main firmware loop
@@ -89,11 +89,11 @@ void loop()
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
     int sq_source = -1;
     /*do
-    {
-        showString(PSTR("^");
-        sq_source = scanPieceArray(&board);
-    }
-    while(sq_source == -1);
+      {
+      showString(PSTR("^");
+      sq_source = scanPieceArray(&board);
+      }
+      while(sq_source == -1);
     */
     sq_source = emulate_board(&board, 0);
     sq_source = 63 - sq_source;
@@ -101,7 +101,7 @@ void loop()
 
     // Obtain a bitboard with the legal moves for a piece on the square sq
     bitboard moves = 0xFFFFFFFFFFFFFFF;
-     moves = chess.getPieceMoves( sq_source );
+    moves = chess.getPieceMoves( sq_source );
     
     showString(PSTR("Board change detected!"));
     chess.printBitboard(&moves);
@@ -117,8 +117,8 @@ void loop()
     int sq_dest;
 /*  do
     {
-        showString(PSTR("v");
-        sq_dest = scanPieceArray(&board);
+    showString(PSTR("v");
+    sq_dest = scanPieceArray(&board);
     }
     while(sq_dest == -1);
 */
@@ -141,30 +141,30 @@ void loop()
     // while move is illegal...
     while(chess.playPieceMove(sq_dest) != 0)
     {
-         if( sq_dest >= 0 )
-         {
+        if( sq_dest >= 0 )
+        {
             showString(PSTR("Error board!\n"));
             error_board = chess.getMask(sq_dest);
-         }
-         uint16_t* parts  = getParts(&error_board);
-         displaypositions(parts);
-         delay(100);
-         turnOffDisplay();
-         delay(100);
-         sq_dest = scanPieceArray(&board);
+        }
+        uint16_t* parts  = getParts(&error_board);
+        displaypositions(parts);
+        delay(100);
+        turnOffDisplay();
+        delay(100);
+        sq_dest = scanPieceArray(&board);
 
         //If the piece goes back to its original square...
-         if(sq_dest == sq_source)
-         {
+        if(sq_dest == sq_source)
+        {
             //TODO: check if empty return is safe.
             //return;
-         }
-	 showString(PSTR("Waiting for a valid move\n"));
+        }
+        showString(PSTR("Waiting for a valid move\n"));
 
     }
 
-     //TODO: convert fen to an Arduino String
-     // Send FEN to boardcaster.com
+    //TODO: convert fen to an Arduino String
+    // Send FEN to boardcaster.com
     showString(PSTR("Getting FEN from position\n"));
     char* fen_char = chess.getFENFromPosition();
     showString(PSTR("Got FEN from position\n"));
@@ -173,7 +173,7 @@ void loop()
     //     setNextFEN(fen_string);
     //     sendData();
 
-   showString(PSTR("FEN: ")); Serial.println(fen_string);
-   showString(PSTR("END---ITERATION----------------------------------------------\n"));
+    showString(PSTR("FEN: ")); Serial.println(fen_string);
+    showString(PSTR("END---ITERATION----------------------------------------------\n"));
 
 }

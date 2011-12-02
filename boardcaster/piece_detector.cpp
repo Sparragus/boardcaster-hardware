@@ -14,33 +14,33 @@ long unsigned realTimeToScan = 0;
 
 void cycleArray()
 {
-   uint64_t board = 0x0000000000000000LL;
-   uint16_t* parts = 0LL; 
-   int dir = 1;
+    uint64_t board = 0x0000000000000000LL;
+    uint16_t* parts = 0LL; 
+    int dir = 1;
 
-   int bitPos = 0;
-   int p =0;
+    int bitPos = 0;
+    int p =0;
 
-   for(int j = 0; j < 8; j++)
-   {
-       bitPos = p;
-       for(int i = 0; i < 8; i++)
+    for(int j = 0; j < 8; j++)
+    {
+        bitPos = p;
+        for(int i = 0; i < 8; i++)
 
-       { 
-           putBit(&board, 1, bitPos);
-           parts  = getParts(&board);
-           delay(30);
-           displaypositions(parts);
-           delay(50);
-           bitPos += dir;
-       }
+        { 
+            putBit(&board, 1, bitPos);
+            parts  = getParts(&board);
+            delay(30);
+            displaypositions(parts);
+            delay(50);
+            bitPos += dir;
+        }
      
-       dir = -dir;
-       if(j%2==0)
-           p+=15;
-       else
-           p+=1;
-   } 
+        dir = -dir;
+        if(j%2==0)
+            p+=15;
+        else
+            p+=1;
+    } 
 
 
 }
