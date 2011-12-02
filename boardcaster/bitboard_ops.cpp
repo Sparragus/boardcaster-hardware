@@ -113,3 +113,4 @@ void putBit(uint64_t* board, uchar data, uchar bit)
 #endif
     }
 }
+

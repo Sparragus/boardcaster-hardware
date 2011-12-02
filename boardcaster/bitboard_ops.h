@@ -9,3 +9,4 @@ void putBit(uint64_t* board, uchar data, uchar bit);
 uchar getBit(uint64_t* board, uchar bit);
 
 #endif //BITBOARD_OPS_H
+

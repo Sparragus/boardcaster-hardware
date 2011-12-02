@@ -44,10 +44,13 @@ void operator delete(void * ptr)
 // Main firmware setup call
 void setup()
 {
-    delay(2000);
+    delay(1000);
+    Serial.end();
     // Set serial transmission rate for debug prints
     Serial.begin(9600);
-    showString(PSTR("Setup..."));
+    delay(1000);
+
+    showString(PSTR("\nSetup...\n"));
     
     // Initialize the piece detector
     initPieceDetector();
@@ -177,3 +180,4 @@ void loop()
     showString(PSTR("END---ITERATION----------------------------------------------\n"));
 
 }
+

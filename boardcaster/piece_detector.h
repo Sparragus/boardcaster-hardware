@@ -38,3 +38,4 @@ void initPieceDetector();
 void cycleArray();
 
 #endif //PIECE_DETECTOR_H
+

@@ -9,3 +9,4 @@ int emulate_board(uint64_t* in_board, int state);
 
 
 #endif //
+

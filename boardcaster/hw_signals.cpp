@@ -72,3 +72,4 @@ void generateSig(uchar i, sig_t* s)
     s->m_port2 = b;
     s->m_port3 = c;
 }
+
