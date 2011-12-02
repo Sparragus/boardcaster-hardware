@@ -17,32 +17,16 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifndef _FEN_H_
-#define _FEN_H_
+#ifndef _DIAG_H_
+#define _DIAG_H_
 
+#include "bitboard.h"
 #include "position.h"
+#include "move.h"
 
-/* A FEN string (line) cannot be more than this limit */
-#define FEN_MAX_LINE 256
-
-/* Error codes for FEN parsing */
-#define ERR_PARSE       -1  /* General parse error */
-#define ERR_MAX_LENGTH  -2  /* FEN string is too long */
-#define ERR_NO_WKING    -3  /* white king missing */
-#define ERR_NO_BKING    -4  /* black king missing */
-
-/*
- * Load position from the given FEN string.
- * Return 0 on success or error code.
- */
-int loadPositionFromFEN(const char* const fen, position *pos);
-
-/*
- * Save position to the given char array in FEN notation
- * The caller should ensure the array length is FEN_MAX_LINE
- */
-int savePositionToFEN(const position * const pos, char *fen);
+void print(const bitboard b);
+void printPosition(const position * const pos);
+void printPositionAsFEN(const position * const pos);
+void printMove(const move * const m);
 
 #endif
-
-

@@ -67,8 +67,6 @@ typedef struct {
 int inCheck(const position * const pos, const int player, const int targetSquare);
 int getMoves(const position * const pos, const int player, const int piece, const int type, move store[]);
 int playMove(const position * const pos, position *newPosition, const move * const m, const int player);
-int getAllMoves(const position * const pos, const int player, const int storeIndex);
-int getAllMovesSorted(const position * const pos, const int player, const int storeIndex);
 
 #endif
 

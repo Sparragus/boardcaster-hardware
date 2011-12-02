@@ -20,30 +20,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "bitboard.h"
 #include "position.h"
 #include "move.h"
-#include "diag.h"
+
+#include "attack.h"
 
 extern const bitboard _mask[64];
 extern const bitboard _king[64];
 extern const bitboard _knight[64];
-extern const bitboard _horz[64][256];
-extern const bitboard _vert[64][256];
-extern const bitboard _a1h8[64][256];
-extern const bitboard _h1a8[64][256];
 extern const bitboard _wpawn_attack[64];
 extern const bitboard _bpawn_attack[64];
 extern const bitboard _wpawn_advance1[64];
 extern const bitboard _bpawn_advance1[64];
 extern const bitboard _wpawn_advance2[64];
 extern const bitboard _bpawn_advance2[64];
-extern const int _a1h8_shiftMask[64][2];
-extern const int _h1a8_shiftMask[64][2];
-
-/* Move storage.
- */
-move _moveStore[64][256]; /* TODO: is 256 a decent limit?? */
-
-bitboard counterMove;
-
 
 static void clearCapturedPiece(position *pos, const move * const m);
 static int movePiece(position *pos, const move * const m, const int player);
@@ -55,79 +43,6 @@ static void storeMoveIfLegal(const position* const pos, move*  m, const int play
 static void movePawnExtra(position *pos, const move * const m, const int player);
 static void getCastlingMoves(const position * const pos, const int player, move store[], int *numMoves);
 static void moveCastlingExtra(position *pos, const move * const m);
-
-int getAllMoves(const position * const pos, const int player, const int storeIndex)
-{
-    int numMoves = 0;
-
-    if(WHITE == player) {
-        numMoves += getMoves(pos, player, WHITE_KING, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_PAWN, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_KNIGHT, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_BISHOP, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_ROOK, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_QUEEN, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_KING, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_PAWN, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_KNIGHT, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_BISHOP, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_ROOK, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, WHITE_QUEEN, NORMAL, &_moveStore[storeIndex][numMoves]);
-    }
-    else {
-        numMoves += getMoves(pos, player, BLACK_KING, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_PAWN, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_KNIGHT, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_BISHOP, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_ROOK, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_QUEEN, CAPTURE, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_KING, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_PAWN, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_KNIGHT, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_BISHOP, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_ROOK, NORMAL, &_moveStore[storeIndex][numMoves]);
-        numMoves += getMoves(pos, player, BLACK_QUEEN, NORMAL, &_moveStore[storeIndex][numMoves]);
-    }
-
-    if(0 == numMoves) { /* no moves */
-        if(inCheck(pos, player, pos->kingSquare[player])) {
-            return LOST;
-        }
-        else {
-            return STALEMATE;
-        }
-    }
-
-    counterMove += numMoves;
-
-    return numMoves;
-}
-
-int getAllMovesSorted(const position * const pos, const int player, const int storeIndex)
-{
-    int numMoves = 0;
-    int i;
-    int j;
-    move temp;
-
-    numMoves = getAllMoves(pos, player, storeIndex);
-
-    if(numMoves != LOST && numMoves != STALEMATE) {
-        /* sort the moves according to evaluation */
-        for(i = numMoves - 1; i >= 0; i--) {
-            for(j = 1; j <= i; j++) {
-                if(_moveStore[storeIndex][j - 1].eval < _moveStore[storeIndex][j].eval) {
-                    /* swap the moves */
-                    temp = _moveStore[storeIndex][j];
-                    _moveStore[storeIndex][j] = _moveStore[storeIndex][j - 1];
-                    _moveStore[storeIndex][j - 1] = temp;
-                }
-            }
-        }
-    }
-
-    return numMoves;
-}
 
 int getMoves(const position * const pos, const int player, const int piece, const int type, move store[])
 {
@@ -158,7 +73,7 @@ int getMoves(const position * const pos, const int player, const int piece, cons
     return numMoves;
 }
 
-static bitboard getRawMoves(const position * const pos, const int player, const int piece, const int type, const int sq)
+bitboard getRawMoves(const position * const pos, const int player, const int piece, const int type, const int sq)
 {
     bitboard rawMoves = 0;
     bitboard attackRange = 0;
@@ -234,38 +149,13 @@ static bitboard getAttackRange(const int piece, const int type, const int sq, co
         attackRange = _knight[sq];
     }
     else if(IS_BISHOP(piece)) {
-        rot_a1h8_allPieces = rotate_a1h8(allPieces);
-        state = A1H8_STATE(rot_a1h8_allPieces, sq);
-        attackRange = _a1h8[sq][state];
-        rot_h1a8_allPieces = rotate_h1a8(allPieces);
-        state = H1A8_STATE(rot_h1a8_allPieces, sq);
-        attackRange |= _h1a8[sq][state];
+        attackRange = bishopAttacks(&allPieces, sq);
     }
     else if(IS_ROOK(piece)) {
-        rank = sq / 8;
-        file = sq % 8;
-        state = RANK_STATE(allPieces, rank);
-        attackRange = _horz[sq][state];
-        rotAllPieces = rotate(allPieces);
-        state = FILE_STATE(rotAllPieces, file);
-        attackRange |= _vert[sq][state];
+        attackRange = rookAttacks(&allPieces, sq);
     }
     else if(IS_QUEEN(piece)) {
-        /* rook like moves */
-        rank = sq / 8;
-        file = sq % 8;
-        state = RANK_STATE(allPieces, rank);
-        attackRange = _horz[sq][state];
-        rotAllPieces = rotate(allPieces);
-        state = FILE_STATE(rotAllPieces, file);
-        attackRange |= _vert[sq][state];
-        /* bishop like moves */
-        rot_a1h8_allPieces = rotate_a1h8(allPieces);
-        state = A1H8_STATE(rot_a1h8_allPieces, sq);
-        attackRange |= _a1h8[sq][state];
-        rot_h1a8_allPieces = rotate_h1a8(allPieces);
-        state = H1A8_STATE(rot_h1a8_allPieces, sq);
-        attackRange |= _h1a8[sq][state];
+        attackRange = queenAttacks(&allPieces, sq);
     }
     else {
         /* Something is wrong, I don't know which piece this is.
@@ -667,9 +557,9 @@ static int movePiece(position *pos, const move * const m, const int player)
         SET_BIT(pos->queens[player], m->to);
     }
     else {
-        printPosition(pos);
-        printMove(m);
-        fprintf(stderr, "Piece = %d\n", piece);
+        /*printPosition(pos);*/
+        /*printMove(m);*/
+        /*fprintf(stderr, "Piece = %d\n", piece);*/
 
         /* Something is wrong, I don't know which piece this is.
          * This must NEVER happen; move generation is screwed.
@@ -799,13 +689,7 @@ int inCheck(const position * const pos, const int player, const int targetSquare
     sq = 0;
     while(rooks != 0) {
         if(LSB_SET(rooks)) {
-            rank = sq / 8;
-            rankState = RANK_STATE(allPieces, rank);
-            attacks |= _horz[sq][rankState];
-            file = sq % 8;
-            fileState = FILE_STATE(rotate(allPieces), file);
-            attacks |= _vert[sq][fileState];
-
+            attacks |= rookAttacks(&allPieces, sq);
 
             /* incremental checking... */
             if(attacks & target) {
@@ -823,12 +707,7 @@ int inCheck(const position * const pos, const int player, const int targetSquare
     while(bishops != 0) {
         if(LSB_SET(bishops)) {
 
-            rot_a1h8 = rotate_a1h8(allPieces);
-            state = A1H8_STATE(rot_a1h8, sq);
-            attacks |= _a1h8[sq][state];
-            rot_h1a8 = rotate_h1a8(allPieces);
-            state = H1A8_STATE(rot_h1a8, sq);
-            attacks |= _h1a8[sq][state];
+            attacks |= bishopAttacks(&allPieces, sq);
 
             /* incremental checking... */
             if(attacks & target) {

@@ -283,7 +283,7 @@ static int loadEnPassantSquare(const char *fen, int i, int length, position *pos
     return i;
 }
 
-int savePositionToFEN(const position * const pos, char *fen)
+int savePositionToFEN(const position * const pos, char* fen)
 {
     int sq;
     int i = 0;

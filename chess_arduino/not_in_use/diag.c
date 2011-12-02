@@ -26,10 +26,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "diag.h"
 
 extern const bitboard _mask[64];
-extern const bitboard _king[64];
-extern const bitboard _knight[64];
-extern const bitboard _horz[64][256];
-extern const bitboard _vert[64][256];
 
 /* Print a bitboard */
 void print(const bitboard b)
