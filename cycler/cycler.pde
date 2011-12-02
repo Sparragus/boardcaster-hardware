@@ -38,7 +38,7 @@ void loop()
     scanPieceArray(&board);
     uint16_t* parts  = getParts(&board);
     displaypositions(parts);
-   
+    delay(50);
     turnOffDisplay();
 
 }
