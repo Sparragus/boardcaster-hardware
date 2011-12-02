@@ -14,12 +14,16 @@
 #include "utils.h"
 #include "hw_signals.h"
 #include "bitboard_ops.h"
+#include "utils.h"
+
+
 #include <stdlib.h>
 #include <avr/pgmspace.h>
 
 #define NDEBUG
+// Just in case.
 #define assert(x) ;
-//#define assert(x) showString(PSTR("asserting..");
+
 Chess chess;
 
 int __cxa_guard_acquire(__guard *g) {return !*(char *)(g);};
@@ -35,57 +39,6 @@ void operator delete(void * ptr)
 {
  free(ptr);
 }
-
-void showString (PGM_P s) {
-        char c;
-        while ((c = pgm_read_byte(s++)) != 0)
-            Serial.print(c);
-    }
-
-int hack_board(uint64_t* in_board, int state)
-{
-    switch(state)
-    {
-        case 0:
-        {
-            uchar board[] = {
-                1,1,1,1,1,1,1,1,
-                1,1,1,1,1,1,1,1,
-                0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,
-                1,1,1,1,1,1,1,1,
-                1,0,1,1,1,1,1,1
-            };
-            arrayToBitBoard(board, in_board);
-            return 57;
-            break;
-
-        }
-        case 1:
-
-        {
-                uchar board[] = {
-                1,1,1,1,1,1,1,1,
-                1,1,1,1,1,1,1,1,
-                0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,
-                0,0,1,0,0,0,0,0,
-                1,1,1,1,1,1,1,1,
-                1,0,1,1,1,1,1,1
-            };
-                arrayToBitBoard(board, in_board);
-                return 42;
-
-
-
-            break;
-        }
-    }
-}
-
 
 
 // Main firmware setup call
@@ -110,7 +63,7 @@ void setup()
 
     // Init chess engine
     chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-//    chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
+ // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
     
     // Piece is placed, turn off leds
      turnOffDisplay();
@@ -125,7 +78,7 @@ void loop()
     currentPosition = chess.getCurrentPosition();
     static uint64_t board = currentPosition;
 
-    showString(PSTR("CurrentPosition="));
+    showString(PSTR("CurrentPosition=\n"));
     chess.printBitboard(&currentPosition);
 
 
@@ -137,20 +90,18 @@ void loop()
     int sq_source = -1;
     /*do
     {
-        showString(PSTR("*");
+        showString(PSTR("^");
         sq_source = scanPieceArray(&board);
     }
     while(sq_source == -1);
     */
-    sq_source = hack_board(&board, 0);
+    sq_source = emulate_board(&board, 0);
     sq_source = 63 - sq_source;
     showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
 
     // Obtain a bitboard with the legal moves for a piece on the square sq
     bitboard moves = 0xFFFFFFFFFFFFFFF;
      moves = chess.getPieceMoves( sq_source );
-    //moves = chess.getPieceMoves( 27 );
-
     
     showString(PSTR("Board change detected!"));
     chess.printBitboard(&moves);
@@ -164,14 +115,14 @@ void loop()
     // Scan piece array until a change is detected
     // sq_source >= 0 if Board changed; Square that changed, sq_source = -1 = No change
     int sq_dest;
-/*    do
+/*  do
     {
-        showString(PSTR(" s ");
+        showString(PSTR("v");
         sq_dest = scanPieceArray(&board);
     }
     while(sq_dest == -1);
 */
-    sq_dest = hack_board(&board, 1);
+    sq_dest = emulate_board(&board, 1);
     sq_dest = 63 - sq_dest;
     showString(PSTR("Found placed piece: ")); Serial.println(sq_dest, DEC);
     // Piece is placed, turn off leds
