@@ -39,7 +39,7 @@ void operator delete(void * ptr)
 {
     free(ptr);
 }
-
+uint64_t board = 0x0ULL;
 
 // Main firmware setup call
 void setup()
@@ -66,6 +66,7 @@ void setup()
     showString(PSTR("Cycling LED Array..."));
     // Run LED diagnostics
     cycleArray();
+    clearDisplay();
     showString(PSTR("done\n"));
 
     // Init web posting code
@@ -75,15 +76,18 @@ void setup()
     chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
     
-    showString(PSTR("Turning off LED display\n"));
-    // Piece is placed, turn off leds
-    turnOffDisplay();
-
     showString(PSTR("Expected starting board\n\n"));
 
     chess.printOwnPosition();
 
+    showString(PSTR("Getting board state"));
+
+    // Scan the board a few times first
+    scanPieceArray(&board);
+    scanPieceArray(&board);
     showString(PSTR("\nReady\n\n"));
+
+    
 }
 
 // Main firmware loop
@@ -91,12 +95,11 @@ void loop()
 {
     showString(PSTR("START---ITERATION----------------------------------------------\n"));
     // Get current position
-    bitboard currentPosition;
-    currentPosition = chess.getCurrentPosition();
-    static uint64_t board = currentPosition;
+ 
+    board  = chess.getCurrentPosition();
 
     showString(PSTR("CurrentPosition=\n"));
-    chess.printBitboard(&currentPosition);
+    chess.printBitboard(&board);
         
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
@@ -107,7 +110,7 @@ void loop()
         sq_source = scanPieceArray(&board);
        
     }
-    while(sq_source == -1 || board == 0);
+    while(sq_source == -1);
     showString(PSTR("\n"));
     //    sq_source = emulate_board(&board, 0);
     sq_source = 63 - sq_source;
@@ -122,7 +125,7 @@ void loop()
 
     // Turn on LEDs using moves
     uint16_t* parts  = getParts(&moves);
-    displaypositions(parts);
+    displayPositions(parts);
     
     showString(PSTR("Displayed positions\n"));
 
@@ -141,8 +144,7 @@ void loop()
     sq_dest = 63 - sq_dest;
     showString(PSTR("Found placed piece: ")); Serial.println(sq_dest, DEC);
     // Piece is placed, turn off leds
-    turnOffDisplay();
-
+  
     // If sq_source == sq_dest, then piece was placed back to it's original pos
     // Don't play the move. Loop again.
     if(sq_source == sq_dest)
@@ -162,9 +164,7 @@ void loop()
             error_board = chess.getMask(sq_dest);
         }
         uint16_t* parts  = getParts(&error_board);
-        displaypositions(parts);
-        delay(100);
-        turnOffDisplay();
+        displayPositions(parts);
         delay(100);
         sq_dest = scanPieceArray(&board);
 

@@ -46,7 +46,7 @@ void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t va
 
 // This will turn on the given positions. A call to turnOffDisplay
 // is necessarry after this call to turn off the positions.
-void displaypositions(uint16_t* positions)
+void displayPositions(uint16_t* positions)
 {
     // Set xenPin high to disable the drivers.
     // Set the latch low to allow data through latch. This might
@@ -68,10 +68,34 @@ void displaypositions(uint16_t* positions)
     digitalWrite(LA_LATCH_PIN, HIGH);
     digitalWrite(LA_XEN_PIN, LOW);
 
+    lockDisplay();
+}
+void clearDisplay()
+{
+    // Set xenPin high to disable the drivers.
+    // Set the latch low to allow data through latch. This might
+    // have to be revised.
+    digitalWrite(LA_XEN_PIN, HIGH);
+    digitalWrite(LA_LATCH_PIN, LOW);
+
+    // Set the clockPin low to prepare for rising edge trigger
+    digitalWrite(LA_CLOCK_PIN, LOW);  
+    // Shift out the data
+    for(int i = 0; i < 4; i++)
+    {
+        shiftOut16(LA_DATA_PIN, LA_CLOCK_PIN, LSBFIRST, 0);
+    }
+        
+    // Set latch high to capture latch
+    // Set xenPin low to enable the drivers
+    // Set LA_LATCH_PIN low to allow data to pass through
+    digitalWrite(LA_LATCH_PIN, HIGH);
+    digitalWrite(LA_XEN_PIN, LOW);
+    
+    lockDisplay();
 }
 
-// Turn off the display, only to be called after displaypositions
-void turnOffDisplay()
+void lockDisplay()
 {
     digitalWrite(LA_LATCH_PIN, LOW);
 }
