@@ -87,6 +87,7 @@ int scanPieceArray(uint64_t* board)
     
         // Read Result
         uchar data = readPieceArrayLine();
+       
         tboard[i] = data;
     }
  

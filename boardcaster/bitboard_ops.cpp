@@ -41,12 +41,14 @@ void arrayToBitBoard(uchar* array, uint64_t* board)
 {
     uint64_t temp = 0LL;
     int i;
+   
     for(i = 0; i < SCAN_SIZE; i++)
     {
         if(array[63-i] == 1)
         {
             temp |= 1LL<<i;
         }
+   
     }
     *board = temp;
 }
@@ -57,7 +59,7 @@ uchar getBit(uint64_t* board, uchar bit)
     unsigned long int res = 0L;
     uint64_t hi  = (*board >> 32) & 0x00000000FFFFFFFFULL;
     uint64_t lo =  *board & 0x00000000FFFFFFFFULL;
-
+   
     if(bit < 31)
         res = (hi >> (31-bit)) & 1L;
     else
@@ -65,6 +67,7 @@ uchar getBit(uint64_t* board, uchar bit)
         bit -=32;
         res = (lo >> (31-bit)) & 1L;
     }
+   
     return res;
 }
 
