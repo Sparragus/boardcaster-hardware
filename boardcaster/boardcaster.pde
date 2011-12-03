@@ -190,7 +190,10 @@ void loop()
         uint16_t* parts  = getParts(&error_board);
         displayPositions(parts);
         delay(100);
-        sq_dest = scanPieceArray(&board);
+        
+        // HACK
+        //sq_dest = scanPieceArray(&board);
+        sq_dest = 23;
         sq_dest = 63 - sq_dest;
 
         //If the piece goes back to its original square...
