@@ -96,7 +96,7 @@ void loop()
 {
     showString(PSTR("START---ITERATION----------------------------------------------\n"));
     // Get current position
- 
+   
     board  = chess.getCurrentPosition();
 
     showString(PSTR("CurrentPosition=\n"));
@@ -111,15 +111,17 @@ void loop()
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
     int sq_source = -1;
-    do
+    /*  do
     {
         showString(PSTR("^ "));
         sq_source = scanPieceArray(&board);
        
     }
     while(sq_source == -1);
+    */
     showString(PSTR("\n"));
-    //    sq_source = emulate_board(&board, 0);
+    sq_source = emulate_board(&board, 0);
+
     sq_source = 63 - sq_source;
     showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
 
@@ -139,6 +141,13 @@ void loop()
     //
     // ---------------------------------------------------
 
+
+
+
+
+
+
+
     // --------------------------------------------------
     // SET PIECE
     //
@@ -147,15 +156,15 @@ void loop()
     // Scan piece array until a change is detected
     // sq_source >= 0 if Board changed; Square that changed, sq_source = -1 = No change
     int sq_dest = -1;
-    do
+    /*do
     {
         showString(PSTR("v "));
         sq_dest = scanPieceArray(&board);
     }
     while(sq_dest == -1);
     showString(PSTR("\n"));
-
-    //  sq_dest = emulate_board(&board, 1);
+    */
+    sq_dest = emulate_board(&board, 1);
     sq_dest = 63 - sq_dest;
     showString(PSTR("Found placed piece: ")); Serial.println(sq_dest, DEC);
     // Piece is placed, turn off leds
