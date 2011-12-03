@@ -146,7 +146,7 @@ void loop()
 
     // Scan piece array until a change is detected
     // sq_source >= 0 if Board changed; Square that changed, sq_source = -1 = No change
-    int sq_dest;
+    int sq_dest = -1;
     do
     {
         showString(PSTR("v "));
@@ -168,7 +168,7 @@ void loop()
         //return;
     }
 
-    uint64_t error_board = 0;
+    uint64_t error_board = 0x0ULL;
     // legal == 0 if move is legal, else legal == 1, meaning move is illegal
     // while move is illegal...
     while(chess.playPieceMove(sq_dest) != 0)
