@@ -177,6 +177,8 @@ void loop()
         //return;
     }
 
+    // TODO: Confirn correct code logic
+
     uint64_t error_board = 0x0ULL;
     // legal == 0 if move is legal, else legal == 1, meaning move is illegal
     // while move is illegal...
@@ -189,8 +191,8 @@ void loop()
         }
         uint16_t* parts  = getParts(&error_board);
         displayPositions(parts);
-        delay(100);
-        
+        delay(200);
+        clearDisplay();
         // HACK
         //sq_dest = scanPieceArray(&board);
         sq_dest = 23;
