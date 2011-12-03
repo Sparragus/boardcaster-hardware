@@ -24,6 +24,7 @@ int compareBoards(uint64_t* board1, uint64_t* board2)
 void printBoard(uint64_t* board, int n)
 {
     unsigned int i;
+  
     Serial.print("[");
     for(i = 0; i < n && i < SCAN_SIZE; i++)
     {
@@ -46,10 +47,12 @@ void arrayToBitBoard(uchar* array, uint64_t* board)
     {
         if(array[63-i] == 1)
         {
-            temp |= 1LL<<i;
+            temp |= 1ULL<<i;
         }
-   
+      
     }
+   
+   
     *board = temp;
 }
 
@@ -60,7 +63,7 @@ uchar getBit(uint64_t* board, uchar bit)
     uint64_t hi  = (*board >> 32) & 0x00000000FFFFFFFFULL;
     uint64_t lo =  *board & 0x00000000FFFFFFFFULL;
    
-    if(bit < 31)
+    if(bit <= 31)
         res = (hi >> (31-bit)) & 1L;
     else
     {
