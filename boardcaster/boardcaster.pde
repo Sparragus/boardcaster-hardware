@@ -107,11 +107,12 @@ void loop()
     int sq_source = -1;
     do
     {
-        showString(PSTR("^"));
+        showString(PSTR("^ "));
         sq_source = scanPieceArray(&board);
+        printBoard(&board,64);
     }
-    while(sq_source == -1);
-    
+    while(sq_source == -1 || board == 0);
+    showString(PSTR("\n"));
     //    sq_source = emulate_board(&board, 0);
     sq_source = 63 - sq_source;
     showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
@@ -120,7 +121,7 @@ void loop()
     bitboard moves = 0xFFFFFFFFFFFFFFF;
     moves = chess.getPieceMoves( sq_source );
     
-    showString(PSTR("Board change detected!"));
+    showString(PSTR("Board change detected\n"));
     chess.printBitboard(&moves);
 
     // Turn on LEDs using moves
@@ -134,10 +135,11 @@ void loop()
     int sq_dest;
     do
     {
-        showString(PSTR("v"));
+        showString(PSTR("v "));
         sq_dest = scanPieceArray(&board);
     }
     while(sq_dest == -1);
+    showString(PSTR("\n"));
 
     //  sq_dest = emulate_board(&board, 1);
     sq_dest = 63 - sq_dest;
