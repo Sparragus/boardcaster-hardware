@@ -105,7 +105,7 @@ void loop()
     {
         showString(PSTR("^ "));
         sq_source = scanPieceArray(&board);
-        printBoard(&board,64);
+       
     }
     while(sq_source == -1 || board == 0);
     showString(PSTR("\n"));

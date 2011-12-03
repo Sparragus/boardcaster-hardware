@@ -102,7 +102,7 @@ int scanPieceArray(uint64_t* board)
     // This should NEVER happen.
     if(tboard[0] != getBit(board, 0) && tboard[1] != getBit(board, 1))
         Serial.print("getBitFailure");
-#define PRINT_RES 1
+
 #if PRINT_RES == 1
     Serial.print("NEW BOARD ");
     printBoard(board, SENSOR_COUNT);
