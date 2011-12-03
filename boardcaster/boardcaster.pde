@@ -67,6 +67,7 @@ void setup()
     // Run LED diagnostics
     cycleArray();
     clearDisplay();
+
     showString(PSTR("done\n"));
 
     // Init web posting code
@@ -100,7 +101,13 @@ void loop()
 
     showString(PSTR("CurrentPosition=\n"));
     chess.printBitboard(&board);
-        
+     
+    // ---------------------------------------
+    // LIFT PIECE
+    //
+    //
+
+       
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
     int sq_source = -1;
@@ -125,9 +132,17 @@ void loop()
 
     // Turn on LEDs using moves
     uint16_t* parts  = getParts(&moves);
-    displayPositions(parts);
-    
-    showString(PSTR("Displayed positions\n"));
+    showString(PSTR("Displaying positions\n"));
+    displayPositions(parts);    
+
+    //
+    //
+    // ---------------------------------------------------
+
+    // --------------------------------------------------
+    // SET PIECE
+    //
+    //
 
     // Scan piece array until a change is detected
     // sq_source >= 0 if Board changed; Square that changed, sq_source = -1 = No change
@@ -167,6 +182,7 @@ void loop()
         displayPositions(parts);
         delay(100);
         sq_dest = scanPieceArray(&board);
+        sq_dest = 63 - sq_dest;
 
         //If the piece goes back to its original square...
         if(sq_dest == sq_source)
@@ -175,8 +191,11 @@ void loop()
             //return;
         }
         showString(PSTR("Waiting for a valid move\n"));
-
     }
+
+    // -------------------------------------------------
+
+
 
     //TODO: convert fen to an Arduino String
     // Send FEN to boardcaster.com
