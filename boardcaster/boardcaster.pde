@@ -16,6 +16,7 @@
 #include "bitboard_ops.h"
 #include "utils.h"
 
+#include "MemoryFree.h"
 
 #include <stdlib.h>
 #include <avr/pgmspace.h>
@@ -88,7 +89,8 @@ void setup()
    
     scanPieceArray(&board);
     showString(PSTR("\nReady\n\n"));
-
+    showString(PSTR("MEM: "));
+    Serial.println(freeMemory(), DEC);
     
 }
 
@@ -109,7 +111,7 @@ void loop()
     //
 
     scanPieceArray(&board);
-       
+    
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
     int sq_source = -1;
@@ -135,13 +137,14 @@ void loop()
     //   showString(PSTR("Found the following moves\n"));
 //    chess.printBitboard(&moves);
 
-    // Turn on LEDs using moves
-//showString(PSTR("Displaying positions\n"));    
-    //   noInterrupts();  
+
+    showString(PSTR("preDisplayPositions -> MEM: "));
+    Serial.println(freeMemory(), DEC);
  
      displayPositions(&moves);  
-//    interrupts();
-//    showString(PSTR("Scanning 8 times"));
+
+     showString(PSTR("postDisplayPositions -> MEM: "));
+    Serial.println(freeMemory(), DEC);
 
    
     //
@@ -193,6 +196,9 @@ void loop()
         return;
     }
     chess.playPieceMove(sq_dest);
+
+    showString(PSTR("chess.playPieceMove -> MEM: "));
+    Serial.println(freeMemory(), DEC);
 
     // TODO: Confirn correct code logic
 /*
