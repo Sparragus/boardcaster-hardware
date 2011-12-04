@@ -42,7 +42,7 @@ bitboard Chess::getPieceMoves(const int sq_source)
 
     //Init all moves to 0;
     memset(moves, 0, STORE_SIZE*sizeof(move));
- 
+
     int player = pos.toPlay;
     int piece = getPieceToPlay(sq_source);
     int numMoves = 0;
@@ -190,7 +190,7 @@ void Chess::printPosition(const position* pos)
                 }
                 else {
                     showString(PSTR("[-]"));
-                }               
+                }
             }
             else if(40 == sq) {
                 if(pos->castleFlags & CASTLE_WK) {
@@ -220,7 +220,7 @@ void Chess::printPosition(const position* pos)
 }
 
 
- 
+
 
 
 
@@ -229,7 +229,9 @@ void Chess::printPosition(const position* pos)
 
 int Chess::getPieceToPlay(int sq_source)
 {
-    if(pos.king[pos.toPlay] & _mask[sq_source])
+    return pos.board[sq_source];
+
+    /*if(pos.king[pos.toPlay] & _mask[sq_source])
     {
         if(pos.toPlay == WHITE) {return WHITE_KING;}
         else {return BLACK_KING;}
@@ -259,7 +261,7 @@ int Chess::getPieceToPlay(int sq_source)
         if(pos.toPlay == WHITE) {return WHITE_PAWN;}
         else {return BLACK_PAWN;}
     }
-    else {return 0;} //SHOULD NEVER GET HERE. Piece is unknown.
+    else {return 0;} //SHOULD NEVER GET HERE. Piece is unknown.*/
 }
 
 bitboard Chess::getRealMoves(const move moves[], int sq_source, int numMoves)
