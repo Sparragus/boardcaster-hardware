@@ -16,18 +16,19 @@ void initLedDisp()
   
     digitalWrite(LA_LATCH_PIN, HIGH);
 }
-
+uint16_t board_parts[4];
 /*  Split bitboard into 4 segments of an array 
     array. The returned pointer is to static data which is overwritten with each call*/
-uint16_t *getParts(uint64_t* m_board)
+uint16_t *getParts(uint64_t t_board)
 {
-    uint64_t board = *m_board;
-    mirrorBitboardX(&board);
-    static uint16_t board_parts[4];
-    board_parts[0] = board;
-    board_parts[1] = (board >> 16);
-    board_parts[2] = (board >> 32);
-    board_parts[3] = (board >> 48);
+
+    //  uint64_t t_board  = m_board;
+    t_board =  mirrorBitboardX(t_board);
+    
+    board_parts[0] = t_board;
+    board_parts[1] = (t_board >> 16);
+    board_parts[2] = (t_board >> 32);
+    board_parts[3] = (t_board >> 48);
 
     return board_parts;
 }
@@ -51,7 +52,8 @@ void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t va
 // is necessarry after this call to turn off the positions.
 void displayPositions(uint16_t* positions)
 {
-Serial.println("p");
+    // clearDisplay();
+  
     // Set xenPin high to disable the drivers.
     // Set the latch low to allow data through latch. This might
     // have to be revised.
@@ -71,8 +73,8 @@ Serial.println("p");
     // Set LA_LATCH_PIN low to allow data to pass through
     digitalWrite(LA_LATCH_PIN, HIGH);
     digitalWrite(LA_XEN_PIN, LOW);
-
-    lockDisplay();
+    
+//  lockDisplay();
 }
 void clearDisplay()
 {
@@ -95,13 +97,14 @@ void clearDisplay()
     // Set LA_LATCH_PIN low to allow data to pass through
     digitalWrite(LA_LATCH_PIN, HIGH);
     digitalWrite(LA_XEN_PIN, LOW);
-    
-// lockDisplay();
+  
+   lockDisplay();
 }
 
 void lockDisplay()
 {
-    digitalWrite(LA_LATCH_PIN, LOW);
+ 
+   digitalWrite(LA_LATCH_PIN, HIGH);
 }
 
 

@@ -21,39 +21,40 @@ int compareBoards(uint64_t* board1, uint64_t* board2)
     return ret;
 }
 // Mirrors bitboard in place
-void mirrorBitboardX(uint64_t* board)
+uint64_t mirrorBitboardX(uint64_t iboard)
 {
     // Maybe make volatile?
     uint64_t mboard = 0x0ULL;
+    
     uchar bit = 0;
-    uchar pos = 0;
+  
     for(int j = 0; j < 8; j++)
     {
         for(int i = 0; i < 8; i++)
         {
             
             
-            bit = getBit(board, j*8+i);
+            bit = getBit(&iboard, j*8+i);
             
             putBit(&mboard, bit, j*8+(7-i));
 
         }
     }
 
-    *board = mboard;
+    return mboard;
 
 }
 // Prints a bitboard up to n positions
 void printBoard(uint64_t* board, int n)
 {
     unsigned int i;
-  
+    uint64_t temp_board = *board;
     Serial.print("[");
     for(i = 0; i < n && i < SCAN_SIZE; i++)
     {
         if(n > 8 && i%8 == 0)
             Serial.println("");
-        Serial.print(getBit(board,i), DEC);
+        Serial.print(getBit(&temp_board,i), DEC);
         if(i+1 != n && i != SCAN_SIZE)
             Serial.print(", ");
     }
@@ -63,6 +64,12 @@ void printBoard(uint64_t* board, int n)
 // Convert array of board into a bitboard
 void arrayToBitBoard(uchar* array, uint64_t* board)
 {
+    //Serial.println("");
+    //  for(int i = 0; i < 64; i++)
+    // {
+    //   Serial.print(array[i], DEC); Serial.print(".");
+    //}
+    //  Serial.println("");
     uint64_t temp = 0LL;
     int i;
    

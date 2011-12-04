@@ -76,7 +76,7 @@ void setup()
     // Init chess engine
     //chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
-    chess = Chess("3k3r/8/8/8/8/8/K7/RNB5 w KQkq - 0 1");
+    chess = Chess("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
 
     showString(PSTR("Expected starting board\n\n"));
 
@@ -85,13 +85,13 @@ void setup()
     showString(PSTR("Getting board state"));
 
     // Scan the board a few times first
-    scanPieceArray(&board);
+   
     scanPieceArray(&board);
     showString(PSTR("\nReady\n\n"));
 
     
 }
-
+uint16_t* parts = 0;
 // Main firmware loop
 void loop()
 {
@@ -120,27 +120,32 @@ void loop()
        
     }
     while(sq_source == -1 || 63-sq_source==27);
-    
+  
     showString(PSTR("\n"));
     // sq_source = emulate_board(&board, 0);
 
     sq_source = 63 - sq_source;
     showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
     showString(PSTR("Current board\n"));
-    printBoard(&board,64);
+    // chess.printBitboard(&board); 
+   //printBoard(&board,64);
     // Obtain a bitboard with the legal moves for a piece on the square sq
     bitboard moves = 0x0LL;
     moves = chess.getPieceMoves( sq_source );
     
-    showString(PSTR("Found the following moves\n"));
-    chess.printBitboard(&moves);
+    //   showString(PSTR("Found the following moves\n"));
+//    chess.printBitboard(&moves);
 
     // Turn on LEDs using moves
-    uint16_t* parts  = getParts(&moves);
-    showString(PSTR("Displaying positions\n"));
-    displayPositions(parts);    
-    delay(10000);
-    //  clearDisplay();
+//showString(PSTR("Displaying positions\n"));    
+    //   noInterrupts();  
+    parts  = getParts(moves);
+
+     displayPositions(parts);  
+//    interrupts();
+//    showString(PSTR("Scanning 8 times"));
+
+   
     //
     //
     // ---------------------------------------------------
@@ -162,8 +167,11 @@ void loop()
     int sq_dest = -1;
     do
     {
-        showString(PSTR("v "));
+  
+        // showString(PSTR("v "));
         sq_dest = scanPieceArray(&board);
+ 
+ 
     }
     while(sq_dest == -1 || 63-sq_dest==27);
     showString(PSTR("\n"));
@@ -171,6 +179,8 @@ void loop()
    // sq_dest = emulate_board(&board, 1);
     sq_dest = 63 - sq_dest;
     showString(PSTR("Found placed piece: ")); Serial.println(sq_dest, DEC);
+    clearDisplay();
+   
 
     // Piece is placed, turn off leds
   
@@ -179,11 +189,15 @@ void loop()
     if(sq_source == sq_dest)
     {
         //TODO: check if empty return is safe.
-        //return;
+        clearDisplay();
+        showString(PSTR("Set piece at same position!\n"));
+        showString(PSTR("END---ITERATION----------------------------------------------\n"));
+        return;
     }
+    chess.playPieceMove(sq_dest);
 
     // TODO: Confirn correct code logic
-
+/*
     uint64_t error_board = 0x0ULL;
     // legal == 0 if move is legal, else legal == 1, meaning move is illegal
     // while move is illegal...
@@ -196,12 +210,12 @@ void loop()
         }
         uint16_t* parts  = getParts(&error_board);
         displayPositions(parts);
-        delay(200);
+        delay(500);
         clearDisplay();
         // HACK
         sq_dest = scanPieceArray(&board);
         printBoard(&board, 64);
-        //  sq_dest = 23;
+     
         sq_dest = 63 - sq_dest;
 
         //If the piece goes back to its original square...
@@ -212,9 +226,10 @@ void loop()
         }
         showString(PSTR("Waiting for a valid move\n"));
     }
+*/
 
     // -------------------------------------------------
-
+    
 
 
     //TODO: convert fen to an Arduino String

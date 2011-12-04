@@ -14,7 +14,7 @@ long unsigned realTimeToScan = 0;
 
 void cycleArray()
 {
-    uint64_t board = 0x0000000000000000LL;
+    uint64_t dboard = 0x0ULL;
     uint16_t* parts = 0LL; 
     int dir = 1;
 
@@ -27,8 +27,8 @@ void cycleArray()
         for(int i = 0; i < 8; i++)
 
         { 
-            putBit(&board, 1, bitPos);
-            parts  = getParts(&board);
+            putBit(&dboard, 1, bitPos);
+            parts  = getParts(dboard);
             delay(30);
             displayPositions(parts);
             delay(200);
@@ -47,20 +47,24 @@ void cycleArray()
 }
 
 
-
 // Scan the board into the long long board (64 bits)
 // Return: 1 = Board Change
 //       : 0 = No Board Change
 int scanPieceArray(uint64_t* board)
 {
-    // Read the board as uchars into tboard
+noInterrupts();
+   // Save old board
+    old_board = *board;
+ 
+   // Read the board as uchars into tboard
     uchar tboard[SCAN_SIZE];
-
+    
     long start_time, end_time = 0;
     uchar x, y = 0;
 
     // Scan the board
     // Run i from 0 to 63
+   
     for(unsigned int i = 0; i < SCAN_SIZE; i++)
     {
         linTo2D(i, &x, &y);
@@ -88,16 +92,15 @@ int scanPieceArray(uint64_t* board)
     
         // Read Result
         uchar data = readPieceArrayLine();
-       
+        data = digitalRead(PD_OUT_DATA);
+
         tboard[i] = data;
     }
  
-    // Save old board
-    old_board = *board;
  
     // Convert array bit board into a long long 
     arrayToBitBoard(tboard, board);
-   
+interrupts();
 
     // Assert conversion failure
     // This should NEVER happen.
