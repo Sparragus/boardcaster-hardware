@@ -16,22 +16,9 @@ void initLedDisp()
   
     digitalWrite(LA_LATCH_PIN, HIGH);
 }
-uint16_t board_parts[4];
+
 /*  Split bitboard into 4 segments of an array 
     array. The returned pointer is to static data which is overwritten with each call*/
-uint16_t *getParts(uint64_t* inBoard)
-{
-
-    uint64_t t_board  = *inBoard;
-    mirrorBitboardX(&t_board);
-    
-    board_parts[0] = t_board;
-    board_parts[1] = (t_board >> 16);
-    board_parts[2] = (t_board >> 32);
-    board_parts[3] = (t_board >> 48);
-
-    return board_parts;
-}
 
 void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t val)
 {
@@ -50,10 +37,19 @@ void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t va
 
 // This will turn on the given positions. A call to turnOffDisplay
 // is necessarry after this call to turn off the positions.
-void displayPositions(uint16_t* positions)
+void displayPositions(const uint64_t* inBoard)
 {
-    // clearDisplay();
-  
+    clearDisplay();
+   
+    uint16_t board_parts[4] = { 0x0FUL, 0x0FUL, 0x0FUL};
+    uint64_t tBoard =0x0FULL;
+    mirrorBitboardX(&tBoard);
+    
+    board_parts[0] = tBoard;
+    board_parts[1] = (tBoard >> 16);
+    board_parts[2] = (tBoard >> 32);
+    board_parts[3] = (tBoard >> 48);
+
     // Set xenPin high to disable the drivers.
     // Set the latch low to allow data through latch. This might
     // have to be revised.
@@ -65,7 +61,7 @@ void displayPositions(uint16_t* positions)
     // Shift out the data
     for(int i = 0; i < 4; i++)
     {
-        shiftOut16(LA_DATA_PIN, LA_CLOCK_PIN, LSBFIRST, positions[i]);
+        shiftOut16(LA_DATA_PIN, LA_CLOCK_PIN, LSBFIRST, board_parts[i]);
     }
         
     // Set latch high to capture latch

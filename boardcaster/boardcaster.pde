@@ -91,7 +91,7 @@ void setup()
 
     
 }
-uint16_t* parts = 0;
+
 // Main firmware loop
 void loop()
 {
@@ -130,8 +130,7 @@ void loop()
     // chess.printBitboard(&board); 
    //printBoard(&board,64);
     // Obtain a bitboard with the legal moves for a piece on the square sq
-    bitboard moves = 0x0LL;
-    moves = chess.getPieceMoves( sq_source );
+    const uint64_t moves = chess.getPieceMoves( sq_source );
     
     //   showString(PSTR("Found the following moves\n"));
 //    chess.printBitboard(&moves);
@@ -139,9 +138,8 @@ void loop()
     // Turn on LEDs using moves
 //showString(PSTR("Displaying positions\n"));    
     //   noInterrupts();  
-    parts  = getParts(&moves);
-
-     displayPositions(parts);  
+ 
+     displayPositions(&moves);  
 //    interrupts();
 //    showString(PSTR("Scanning 8 times"));
 

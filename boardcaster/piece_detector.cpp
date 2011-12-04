@@ -15,7 +15,7 @@ long unsigned realTimeToScan = 0;
 void cycleArray()
 {
     uint64_t dboard = 0x0ULL;
-    uint16_t* parts = 0LL; 
+
     int dir = 1;
 
     int bitPos = 0;
@@ -28,9 +28,8 @@ void cycleArray()
 
         { 
             putBit(&dboard, 1, bitPos);
-            parts  = getParts(&dboard);
             delay(30);
-            displayPositions(parts);
+            displayPositions(&dboard);
             delay(200);
 //            clearDisplay();
             bitPos += dir;

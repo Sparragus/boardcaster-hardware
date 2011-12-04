@@ -19,7 +19,7 @@ public:
     void printOwnPosition();
 private:
     static const int STORE_SIZE = 64;
-
+ 
     position pos;
     move moves[STORE_SIZE];
 
