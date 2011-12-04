@@ -1,6 +1,7 @@
 #include <WProgram.h>
 #include "piece_detector.h"
 #include "bitboard_ops.h"
+
 #define NDEBUG
 // Compare board1 against board2 for the specified amount of sensors
 // Under normal operation SENSOR_COUNT = SCAN_SIZE
@@ -19,7 +20,29 @@ int compareBoards(uint64_t* board1, uint64_t* board2)
     }
     return ret;
 }
+// Mirrors bitboard in place
+void mirrorBitboardX(uint64_t* board)
+{
+    // Maybe make volatile?
+    uint64_t mboard = 0x0ULL;
+    uchar bit = 0;
+    uchar pos = 0;
+    for(int j = 0; j < 8; j++)
+    {
+        for(int i = 0; i < 8; i++)
+        {
+            
+            
+            bit = getBit(board, j*8+i);
+            
+            putBit(&mboard, bit, j*8+(7-i));
 
+        }
+    }
+
+    *board = mboard;
+
+}
 // Prints a bitboard up to n positions
 void printBoard(uint64_t* board, int n)
 {

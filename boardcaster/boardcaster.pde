@@ -65,7 +65,7 @@ void setup()
 
     showString(PSTR("Cycling LED Array..."));
     // Run LED diagnostics
-    cycleArray();
+    //  cycleArray();
     clearDisplay();
 
     showString(PSTR("done\n"));
@@ -74,9 +74,10 @@ void setup()
     //initPoster();
 
     // Init chess engine
-    chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    //chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
-    
+    chess = Chess("3k3r/8/8/8/8/8/K7/RNB5 w KQkq - 0 1");
+
     showString(PSTR("Expected starting board\n\n"));
 
     chess.printOwnPosition();
@@ -107,36 +108,39 @@ void loop()
     //
     //
 
+    scanPieceArray(&board);
        
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
     int sq_source = -1;
-    /*  do
+     do
     {
         showString(PSTR("^ "));
         sq_source = scanPieceArray(&board);
        
     }
-    while(sq_source == -1);
-    */
+    while(sq_source == -1 || 63-sq_source==27);
+    
     showString(PSTR("\n"));
-    sq_source = emulate_board(&board, 0);
+    // sq_source = emulate_board(&board, 0);
 
     sq_source = 63 - sq_source;
     showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
-
+    showString(PSTR("Current board\n"));
+    printBoard(&board,64);
     // Obtain a bitboard with the legal moves for a piece on the square sq
     bitboard moves = 0x0LL;
     moves = chess.getPieceMoves( sq_source );
     
-    showString(PSTR("Board change detected\n"));
+    showString(PSTR("Found the following moves\n"));
     chess.printBitboard(&moves);
 
     // Turn on LEDs using moves
     uint16_t* parts  = getParts(&moves);
     showString(PSTR("Displaying positions\n"));
     displayPositions(parts);    
-
+    delay(10000);
+    //  clearDisplay();
     //
     //
     // ---------------------------------------------------
@@ -156,17 +160,18 @@ void loop()
     // Scan piece array until a change is detected
     // sq_source >= 0 if Board changed; Square that changed, sq_source = -1 = No change
     int sq_dest = -1;
-    /*do
+    do
     {
         showString(PSTR("v "));
         sq_dest = scanPieceArray(&board);
     }
-    while(sq_dest == -1);
+    while(sq_dest == -1 || 63-sq_dest==27);
     showString(PSTR("\n"));
-    */
-    sq_dest = emulate_board(&board, 1);
+    
+   // sq_dest = emulate_board(&board, 1);
     sq_dest = 63 - sq_dest;
     showString(PSTR("Found placed piece: ")); Serial.println(sq_dest, DEC);
+
     // Piece is placed, turn off leds
   
     // If sq_source == sq_dest, then piece was placed back to it's original pos
@@ -194,8 +199,9 @@ void loop()
         delay(200);
         clearDisplay();
         // HACK
-        //sq_dest = scanPieceArray(&board);
-        sq_dest = 23;
+        sq_dest = scanPieceArray(&board);
+        printBoard(&board, 64);
+        //  sq_dest = 23;
         sq_dest = 63 - sq_dest;
 
         //If the piece goes back to its original square...
