@@ -134,8 +134,8 @@ void loop()
     // Obtain a bitboard with the legal moves for a piece on the square sq
     const uint64_t moves = chess.getPieceMoves( sq_source );
     
-    //   showString(PSTR("Found the following moves\n"));
-//    chess.printBitboard(&moves);
+    showString(PSTR("Found the following moves\n"));
+    chess.printBitboard(&moves);
 
 
     showString(PSTR("preDisplayPositions -> MEM: "));
@@ -169,7 +169,7 @@ void loop()
     do
     {
   
-        // showString(PSTR("v "));
+        showString(PSTR("v "));
         sq_dest = scanPieceArray(&board);
  
  
