@@ -10,7 +10,7 @@
 #include "boardcaster.h"
 #include "piece_detector.h"
 #include "led_disp.h"
-//#include "poster.h"
+#include "poster.h"
 #include "utils.h"
 #include "hw_signals.h"
 #include "bitboard_ops.h"
@@ -62,11 +62,16 @@ void setup()
     //initPoster();
 
     // Init chess engine
-    chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+     chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
     
     // Piece is placed, turn off leds
     turnOffDisplay();
+
+    setNextFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    sendData();
+
+
 }
 
 // Main firmware loop
@@ -170,8 +175,8 @@ void loop()
     showString(PSTR("Got FEN from position\n"));
     String fen_string = String(fen_char);
     showString(PSTR("Posting FEN\n"));
-    //     setNextFEN(fen_string);
-    //     sendData();
+    setNextFEN(fen_string);
+    sendData();
 
     showString(PSTR("FEN: ")); Serial.println(fen_string);
     showString(PSTR("END---ITERATION----------------------------------------------\n"));
