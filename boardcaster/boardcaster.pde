@@ -104,14 +104,19 @@ void loop()
 
     showString(PSTR("CurrentPosition=\n"));
     chess.printBitboard(&board);
-     
+   
+    
     // ---------------------------------------
     // LIFT PIECE
     //
     //
 
     scanPieceArray(&board);
-    
+   
+    showString(PSTR("CurrentPosition= printBoard\n"));
+    printBoard(&board,64);
+   
+ 
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
     int sq_source = -1;
@@ -121,7 +126,7 @@ void loop()
         sq_source = scanPieceArray(&board);
        
     }
-    while(sq_source == -1 || 63-sq_source==27);
+    while(sq_source == -1 || 63-sq_source==27 || 63-sq_source==9);
   
     showString(PSTR("\n"));
     // sq_source = emulate_board(&board, 0);
@@ -130,7 +135,7 @@ void loop()
     showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
     showString(PSTR("Current board\n"));
     // chess.printBitboard(&board); 
-    //printBoard(&board,64);
+   
     // Obtain a bitboard with the legal moves for a piece on the square sq
     const uint64_t moves = chess.getPieceMoves( sq_source );
     
@@ -174,7 +179,7 @@ void loop()
  
  
     }
-    while(sq_dest == -1 || 63-sq_dest==27);
+    while(sq_dest == -1 || 63-sq_dest==27 || 63-sq_dest == 9);
     showString(PSTR("\n"));
     
     // sq_dest = emulate_board(&board, 1);

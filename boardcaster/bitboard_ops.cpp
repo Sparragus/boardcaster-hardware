@@ -37,6 +37,8 @@ void mirrorBitboardX(uint64_t *iboard)
         }
     }
 
+    *iboard = mboard;
+
 }
 // Prints a bitboard up to n positions
 void printBoard(uint64_t* board, int n)

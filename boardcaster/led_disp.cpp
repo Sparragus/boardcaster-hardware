@@ -6,6 +6,8 @@
 
 #include "piece_detector.h"
 #include "bitboard_ops.h"
+#include "utils.h"
+
 void initLedDisp() 
 {
     //set pins to output so you can control the shift register
@@ -40,15 +42,40 @@ void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t va
 void displayPositions(const uint64_t* inBoard)
 {
     clearDisplay();
+    showString(PSTR("This is inBoard=\n"));
    
+    uint64_t inBoardNC = *inBoard;
+    printBoard(&inBoardNC, 64);
+
     uint16_t board_parts[4] = { 0x0FUL, 0x0FUL, 0x0FUL};
-    uint64_t tBoard =0x0FULL;
-    mirrorBitboardX(&tBoard);
-    
-    board_parts[0] = tBoard;
-    board_parts[1] = (tBoard >> 16);
-    board_parts[2] = (tBoard >> 32);
-    board_parts[3] = (tBoard >> 48);
+    //uint64_t tBoard = 0xFFFF0000000;
+    uchar tBoard[] = 
+        {
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,0,0,1,
+            0,0,0,0,0,0,1,0,
+            0,0,0,0,0,1,0,0,
+            0,0,0,0,1,0,0,0,
+            0,0,0,1,0,0,0,0,
+            0,0,0,0,0,0,0,0,
+
+
+        };
+    uint64_t bishopBoard = 0x0FULL;
+    //arrayToBitBoard(tBoard, &bishopBoard);
+    //mirrorBitboardX(&bishopBoard);
+    mirrorBitboardX(&inBoardNC);
+    showString(PSTR("This is the mirrored board=\n"));
+      printBoard(&inBoardNC, 64);
+    // board_parts[0] = bishopBoard;
+    // board_parts[1] = (bishopBoard >> 16);
+    // board_parts[2] = (bishopBoard >> 32);
+    // board_parts[3] = (bishopBoard >> 48);
+    board_parts[0] = inBoardNC;
+    board_parts[1] = (inBoardNC >> 16);
+    board_parts[2] = (inBoardNC >> 32);
+    board_parts[3] = (inBoardNC >> 48);
 
     // Set xenPin high to disable the drivers.
     // Set the latch low to allow data through latch. This might
