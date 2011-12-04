@@ -139,7 +139,7 @@ void loop()
     // Turn on LEDs using moves
 //showString(PSTR("Displaying positions\n"));    
     //   noInterrupts();  
-    parts  = getParts(moves);
+    parts  = getParts(&moves);
 
      displayPositions(parts);  
 //    interrupts();

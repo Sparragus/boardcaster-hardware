@@ -28,7 +28,7 @@ void cycleArray()
 
         { 
             putBit(&dboard, 1, bitPos);
-            parts  = getParts(dboard);
+            parts  = getParts(&dboard);
             delay(30);
             displayPositions(parts);
             delay(200);

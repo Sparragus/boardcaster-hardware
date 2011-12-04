@@ -23,7 +23,7 @@ extern const bitboard _mask[64];
 
 Chess::Chess()
 {
-    Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    // Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
 
 Chess::Chess(char FEN[])

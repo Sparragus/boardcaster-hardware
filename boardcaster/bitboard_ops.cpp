@@ -21,7 +21,7 @@ int compareBoards(uint64_t* board1, uint64_t* board2)
     return ret;
 }
 // Mirrors bitboard in place
-uint64_t mirrorBitboardX(uint64_t iboard)
+void mirrorBitboardX(uint64_t *iboard)
 {
     // Maybe make volatile?
     uint64_t mboard = 0x0ULL;
@@ -32,16 +32,10 @@ uint64_t mirrorBitboardX(uint64_t iboard)
     {
         for(int i = 0; i < 8; i++)
         {
-            
-            
-            bit = getBit(&iboard, j*8+i);
-            
+            bit = getBit(iboard, j*8+i);
             putBit(&mboard, bit, j*8+(7-i));
-
         }
     }
-
-    return mboard;
 
 }
 // Prints a bitboard up to n positions

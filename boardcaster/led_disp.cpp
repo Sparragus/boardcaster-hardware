@@ -19,11 +19,11 @@ void initLedDisp()
 uint16_t board_parts[4];
 /*  Split bitboard into 4 segments of an array 
     array. The returned pointer is to static data which is overwritten with each call*/
-uint16_t *getParts(uint64_t t_board)
+uint16_t *getParts(uint64_t* inBoard)
 {
 
-    //  uint64_t t_board  = m_board;
-    t_board =  mirrorBitboardX(t_board);
+    uint64_t t_board  = *inBoard;
+    mirrorBitboardX(&t_board);
     
     board_parts[0] = t_board;
     board_parts[1] = (t_board >> 16);

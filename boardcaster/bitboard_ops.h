@@ -8,6 +8,6 @@ int compareBoards(uint64_t* board1, uint64_t* board2);
 // Bit Operations
 void putBit(uint64_t* board, uchar data, uchar bit);
 uchar getBit(uint64_t* board, uchar bit);
-uint64_t mirrorBitboardX(uint64_t board);
+void mirrorBitboardX(uint64_t* board);
 #endif //BITBOARD_OPS_H
 
