@@ -96,7 +96,7 @@ void setup()
     
 
     // Piece is placed, turn off leds
-    turnOffDisplay();
+    clearDisplay();
 
     setNextFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     sendData();
