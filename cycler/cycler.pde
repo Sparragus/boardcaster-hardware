@@ -1,3 +1,4 @@
+
 #include "piece_detector.h"
 #include "led_disp.h"
 //#include "poster.h"
@@ -13,6 +14,9 @@ void setup()
     delay(1000);
     // Set serial transmission rate for debug prints
     Serial.begin(9600);
+    
+    Serial.println("Initializing REED Array");
+    initPieceDetector();
 
     Serial.println("Initializing LED Array");
     // Initialize the LED array
@@ -35,12 +39,15 @@ void loop()
 
     // Check for board changes
     // 1 = Board changed, 0 = No change
-    scanPieceArray(&board);
+    if(scanPieceArray(&board) == 1)
+    {
+    printBoard(&board, SENSOR_COUNT);
+    }    
     uint16_t* parts  = getParts(&board);
     displaypositions(parts);
-   
+    delay(100);
     turnOffDisplay();
-
+    
 }
 
 

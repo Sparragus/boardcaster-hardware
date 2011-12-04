@@ -7,3 +7,4 @@ void setMux(sig_t* s);
 int readPieceArrayLine();
 
 #endif // HW_SIGNALS_H
+
