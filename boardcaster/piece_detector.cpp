@@ -51,11 +51,11 @@ void cycleArray()
 //       : 0 = No Board Change
 int scanPieceArray(uint64_t* board)
 {
-noInterrupts();
-   // Save old board
+    noInterrupts();
+    // Save old board
     old_board = *board;
  
-   // Read the board as uchars into tboard
+    // Read the board as uchars into tboard
     uchar tboard[SCAN_SIZE];
     
     long start_time, end_time = 0;
@@ -99,7 +99,7 @@ noInterrupts();
  
     // Convert array bit board into a long long 
     arrayToBitBoard(tboard, board);
-interrupts();
+    interrupts();
 
     // Assert conversion failure
     // This should NEVER happen.

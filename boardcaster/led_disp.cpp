@@ -94,13 +94,13 @@ void clearDisplay()
     digitalWrite(LA_LATCH_PIN, HIGH);
     digitalWrite(LA_XEN_PIN, LOW);
   
-   lockDisplay();
+    lockDisplay();
 }
 
 void lockDisplay()
 {
  
-   digitalWrite(LA_LATCH_PIN, HIGH);
+    digitalWrite(LA_LATCH_PIN, HIGH);
 }
 
 

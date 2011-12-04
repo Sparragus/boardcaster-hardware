@@ -115,7 +115,7 @@ void loop()
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
     int sq_source = -1;
-     do
+    do
     {
         showString(PSTR("^ "));
         sq_source = scanPieceArray(&board);
@@ -130,7 +130,7 @@ void loop()
     showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
     showString(PSTR("Current board\n"));
     // chess.printBitboard(&board); 
-   //printBoard(&board,64);
+    //printBoard(&board,64);
     // Obtain a bitboard with the legal moves for a piece on the square sq
     const uint64_t moves = chess.getPieceMoves( sq_source );
     
@@ -141,9 +141,9 @@ void loop()
     showString(PSTR("preDisplayPositions -> MEM: "));
     Serial.println(freeMemory(), DEC);
  
-     displayPositions(&moves);  
+    displayPositions(&moves);  
 
-     showString(PSTR("postDisplayPositions -> MEM: "));
+    showString(PSTR("postDisplayPositions -> MEM: "));
     Serial.println(freeMemory(), DEC);
 
    
@@ -177,7 +177,7 @@ void loop()
     while(sq_dest == -1 || 63-sq_dest==27);
     showString(PSTR("\n"));
     
-   // sq_dest = emulate_board(&board, 1);
+    // sq_dest = emulate_board(&board, 1);
     sq_dest = 63 - sq_dest;
     showString(PSTR("Found placed piece: ")); Serial.println(sq_dest, DEC);
     clearDisplay();
@@ -202,34 +202,34 @@ void loop()
 
     // TODO: Confirn correct code logic
 /*
-    uint64_t error_board = 0x0ULL;
-    // legal == 0 if move is legal, else legal == 1, meaning move is illegal
-    // while move is illegal...
-    while(chess.playPieceMove(sq_dest) != 0)
-    {
-        if( sq_dest >= 0 )
-        {
-            showString(PSTR("Error board!\n"));
-            error_board = chess.getMask(sq_dest);
-        }
-        uint16_t* parts  = getParts(&error_board);
-        displayPositions(parts);
-        delay(500);
-        clearDisplay();
-        // HACK
-        sq_dest = scanPieceArray(&board);
-        printBoard(&board, 64);
+  uint64_t error_board = 0x0ULL;
+  // legal == 0 if move is legal, else legal == 1, meaning move is illegal
+  // while move is illegal...
+  while(chess.playPieceMove(sq_dest) != 0)
+  {
+  if( sq_dest >= 0 )
+  {
+  showString(PSTR("Error board!\n"));
+  error_board = chess.getMask(sq_dest);
+  }
+  uint16_t* parts  = getParts(&error_board);
+  displayPositions(parts);
+  delay(500);
+  clearDisplay();
+  // HACK
+  sq_dest = scanPieceArray(&board);
+  printBoard(&board, 64);
      
-        sq_dest = 63 - sq_dest;
+  sq_dest = 63 - sq_dest;
 
-        //If the piece goes back to its original square...
-        if(sq_dest == sq_source)
-        {
-            //TODO: check if empty return is safe.
-            //return;
-        }
-        showString(PSTR("Waiting for a valid move\n"));
-    }
+  //If the piece goes back to its original square...
+  if(sq_dest == sq_source)
+  {
+  //TODO: check if empty return is safe.
+  //return;
+  }
+  showString(PSTR("Waiting for a valid move\n"));
+  }
 */
 
     // -------------------------------------------------
