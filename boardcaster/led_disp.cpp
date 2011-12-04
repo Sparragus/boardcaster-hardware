@@ -67,7 +67,7 @@ void displayPositions(const uint64_t* inBoard)
     uint64_t bishopBoard = 0x0FULL;
 //    arrayToBitBoard(disparateBoard, &bishopBoard);
     //   mirrorBitboardX(&bishopBoard);
-    // mirrorBitboardX(&inBoardNC);
+    mirrorBitboardX(&inBoardNC);
     showString(PSTR("This is the mirrored board=\n"));
     printBoard(&inBoardNC, 64);
     // board_parts[0] = bishopBoard;
