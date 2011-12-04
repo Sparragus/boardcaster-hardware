@@ -42,33 +42,33 @@ void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t va
 void displayPositions(const uint64_t* inBoard)
 {
     clearDisplay();
-    showString(PSTR("This is inBoard=\n"));
+    //showString(PSTR("This is inBoard=\n"));
    
     uint64_t inBoardNC = *inBoard;
-    printBoard(&inBoardNC, 64);
+    //printBoard(&inBoardNC, 64);
 
     uint16_t board_parts[4] = { 0x0FUL, 0x0FUL, 0x0FUL};
     //uint64_t tBoard = 0xFFFF0000000;
-    uchar tBoard[] = 
-        {
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,1,
-            0,0,0,0,0,0,1,0,
-            0,0,0,0,0,1,0,0,
-            0,0,0,0,1,0,0,0,
-            0,0,0,1,0,0,0,0,
-            0,0,0,0,0,0,0,0,
+    // uchar tBoard[] = 
+    //     {
+    //         0,0,0,0,0,0,0,0,
+    //         0,0,0,0,0,0,0,0,
+    //         0,0,0,0,0,0,0,1,
+    //         0,0,0,0,0,0,1,0,
+    //         0,0,0,0,0,1,0,0,
+    //         0,0,0,0,1,0,0,0,
+    //         0,0,0,1,0,0,0,0,
+    //         0,0,0,0,0,0,0,0,
 
 
-        };
+    //     };
 
 
-    uint64_t bishopBoard = 0x0FULL;
+    // uint64_t bishopBoard = 0x0FULL;
 //    arrayToBitBoard(disparateBoard, &bishopBoard);
     //   mirrorBitboardX(&bishopBoard);
     mirrorBitboardX(&inBoardNC);
-    showString(PSTR("This is the mirrored board=\n"));
+    //showString(PSTR("This is the mirrored board=\n"));
     printBoard(&inBoardNC, 64);
     // board_parts[0] = bishopBoard;
     // board_parts[1] = (bishopBoard >> 16);

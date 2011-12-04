@@ -30,7 +30,7 @@ void cycleArray()
             putBit(&dboard, 1, bitPos);
             delay(30);
             displayPositions(&dboard);
-            delay(200);
+            delay(100);
 //            clearDisplay();
             bitPos += dir;
         }

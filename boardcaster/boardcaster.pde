@@ -66,17 +66,17 @@ void setup()
 
     showString(PSTR("Cycling LED Array..."));
     // Run LED diagnostics
-    //  cycleArray();
+    cycleArray();
     clearDisplay();
 
     showString(PSTR("done\n"));
 
     // Init web posting code
-    //initPoster();
+    initPoster();
 
     // Init chess engine
 
-     chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    //chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
     // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
     chess = Chess("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
@@ -98,7 +98,7 @@ void setup()
     // Piece is placed, turn off leds
     clearDisplay();
 
-    setNextFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    setNextFEN("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
     sendData();
 
 

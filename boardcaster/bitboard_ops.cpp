@@ -36,10 +36,10 @@ void mirrorBitboardX(uint64_t *iboard)
               bit = getBit(iboard, xpos);
               putBit(&mboard, bit, j*8+i);
         }
-        Serial.println("");
+	//  Serial.println("");
     }
-     Serial.println("GennedBoard\n");
-    printBoard(iboard, 64);
+    //     Serial.println("GennedBoard\n");
+    //printBoard(iboard, 64);
    
     *iboard = mboard;
 
@@ -114,7 +114,7 @@ void putBit(uint64_t* iboard, uchar data, uchar bit)
     {
         if(bit >= 0 && bit < 32)
         {
-            Serial.println("bit >=0");
+	  //Serial.println("bit >=0");
             board_hi = board_hi &  ~(1ULL<<(31-bit));
         }
         else if(bit >=32 && bit < 64)
@@ -130,13 +130,13 @@ void putBit(uint64_t* iboard, uchar data, uchar bit)
     {
         if(bit >= 0 && bit < 32)
         {
-            Serial.println("bit >=1");
+	  //Serial.println("bit >=1");
             board_hi = board_hi | (1ULL<<(31-bit));
         }
         else if(bit >=32 && bit < 64)
         {
-            Serial.print("bit: ");
-            Serial.println(bit, DEC);
+            // Serial.print("bit: ");
+            // Serial.println(bit, DEC);
             bit -= 32;
             if(bit == 0) // Set bit 32
             {
