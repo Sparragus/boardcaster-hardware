@@ -34,7 +34,6 @@
 
  *****************************************************************************/
 
-
 #include "WProgram.h"
 #include "WiServer.h"
 
@@ -713,10 +712,11 @@ void Server::server_task() {
 	if (queue) {
 		// Attempt to connect to the server
 		struct uip_conn *conn = uip_connect(&(queue->ipAddr), queue->port);
+		Serial.print("uip_connect");
 
 		if (conn != NULL) {
 #ifdef DEBUG
-			Serial.print("Got connection for ");
+		  		Serial.print("Got connection for ");
 			Serial.println(queue->hostName);
 #endif // DEBUG
 

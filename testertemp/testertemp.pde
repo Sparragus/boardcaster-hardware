@@ -3,15 +3,16 @@
  * it via the Serial API
  */
 
-#include <WProgram.h>
 #include <WiServer.h>
-#include "poster.h"
+#include "testertemp.h"
+#define DEBUG
+
 
 #define WIRELESS_MODE_INFRA	1
 #define WIRELESS_MODE_ADHOC	2
 
-// Wireless configuration parameters ---------------------------------------n-
-unsigned char local_ip[] = {192,168,0,105};	// IP address of WiShield
+// Wireless configuration parameters ----------------------------------------
+unsigned char local_ip[] = {192,168,0,106};	// IP address of WiShield
 unsigned char gateway_ip[] = {192,168,0,1};	// router or gateway IP address
 unsigned char subnet_mask[] = {255,255,255,0};	// subnet mask for the local network
 const prog_char ssid[] PROGMEM = {"boardcaster"};		// max 32 bytes
@@ -38,19 +39,71 @@ unsigned char ssid_len;
 unsigned char security_passphrase_len;
 // End of wireless configuration parameters ----------------------------------------
 
-String nextFEN = "";   
-String endString = "***";
+boolean received = false;
 
 // Function that prints data from the server
 void printData(char* data, int len) {
   
+  received = true;
+  Serial.println("I was called");
+
   // Print the data returned by the server
   // Note that the data is not null-terminated, may be broken up into smaller packets, and 
   // includes the HTTP header. 
   while (len-- > 0) {
-    
-Serial.print(*(data++));
+    Serial.print(*(data++));
   } 
+}
+
+String nextFEN = "";   
+String endString = "***";
+
+uint8 ip[] = {192,168,0,199};
+
+
+void setup()
+{
+
+
+
+   // Initialize WiServer (we'll pass NULL for the page serving function since we don't need to serve web pages) 
+ WiServer.init(NULL);
+  Serial.begin(9600);  
+  Serial.println("init");
+  // Enable Serial output and ask WiServer to generate log messages (optional)
+  WiServer.enableVerboseMode(true);
+
+  setNextFEN("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
+
+  Serial.println("Donde setup");
+}
+
+
+
+int x = 0;
+
+void loop(){
+
+
+
+  do{
+// IP Address for boardcaster website
+  POSTrequest sendInfo(ip, 3000, "http://192.168.0.199", "/moves/", printPost);
+  sendInfo.setReturnFunc(printData);  
+  sendInfo.submit();
+  WiServer.server_task();
+  }while(!received);
+
+  
+
+  Serial.println("Got it baby");
+  WiServer.server_task();
+ }
+
+void sendEndGamePost()
+{
+  setNextFEN(endString);
+  sendData();
 }
 
 // This function generates the body of our POST request
@@ -58,36 +111,8 @@ void printPost() {
        WiServer.print("move_data=" + nextFEN);
 }
 
-// IP Address for boardcaster 
-uint8 ip[] = {192,168,0,199};
-// A request that gets the latest METAR weather data for LAX
-POSTrequest sendInfo(ip, 3000, "http://192.168.0.199", "/moves/", printPost);o
-
-
-
-void initPoster() {
-    // Initialize WiServer (we'll pass NULL for the page serving function since we don't need to serve web pages) 
-  Serial.println("Starting post init");
-  WiServer.init(NULL);
-  WiServer.enableVerboseMode(true);
-  sendInfo.setReturnFunc(printData);
-  Serial.println("Finished post init");
-
-}
-
-void sendData(){
-
-  sendInfo.submit();
-  WiServer.server_task();
-}
-
 void setNextFEN(String fen)
 {
   nextFEN = fen;
 }
 
-void sendEndGamePost()
-{
-  setNextFEN(endString);
-  sendData();
-}

@@ -71,8 +71,15 @@ void setup()
 
     showString(PSTR("done\n"));
 
+
+    showString(PSTR("MEM: "));
+    Serial.println(freeMemory(), DEC);
+
     // Init web posting code
     initPoster();
+
+    showString(PSTR("MEM: "));
+    Serial.println(freeMemory(), DEC);
 
     // Init chess engine
 
