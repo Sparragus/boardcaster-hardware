@@ -53,13 +53,12 @@ void printData(char* data, int len) {
   while (len-- > 0) {
     Serial.print(*(data++));
   } 
-  Serial.println("recv data END--------------\n;
+  Serial.println("recv data END--------------\n");
 
 }
 
 String nextFEN = "";   
 String endString = "***";
-
 uint8 ip[] = {192,168,0,197};
 
 
@@ -113,9 +112,5 @@ void sendEndGamePost()
 void printPost() {
        WiServer.print("move_data=" + nextFEN);
 }
-
-void setNextFEN(String fen)
-{
-  nextFEN = fen;
-}
+p
 

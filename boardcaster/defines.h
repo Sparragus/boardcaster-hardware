@@ -18,15 +18,15 @@
 
 // MUX = Columns
 // DECs = ROWS
-#define PD_MUX_PA 5  // LSB //
-#define PD_MUX_PB 6         //
-#define PD_MUX_PC 7 // MSB  //
+#define PD_MUX_PA 36  // LSB //
+#define PD_MUX_PB 34         //
+#define PD_MUX_PC 32 // MSB  //
 	
-#define PD_DEC_PA0 2 // LSB //
-#define PD_DEC_PA1 3        //
-#define PD_DEC_PA2 4 // MSB //
+#define PD_DEC_PA0 42 // LSB //
+#define PD_DEC_PA1 40       //
+#define PD_DEC_PA2 38 // MSB //
 		
-#define PD_OUT_DATA 8
+#define PD_OUT_DATA 30
 
 
 #endif // _DEFINES_H
