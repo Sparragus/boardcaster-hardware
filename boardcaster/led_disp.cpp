@@ -7,7 +7,40 @@
 #include "piece_detector.h"
 #include "bitboard_ops.h"
 #include "utils.h"
-
+void flashOK()
+{
+  uchar o_arr[] = {
+    0,1,1,1,1,1,0,0,
+    0,1,0,0,0,0,1,0,
+    0,1,0,0,0,0,1,0,
+    0,1,1,1,1,1,1,0,
+    0,1,0,0,0,0,1,0,
+    0,1,0,0,0,0,1,0,
+    0,1,0,0,0,0,1,0,
+    0,1,1,1,1,1,0,0,
+  };
+  uchar k_arr[] = {
+    0,0,1,1,1,1,1,0,
+    0,1,0,0,0,0,0,1,
+    1,0,0,0,0,0,0,0,
+    1,0,0,0,0,0,0,0,
+    1,0,0,0,0,0,0,0,
+    1,0,0,0,0,0,0,0,
+    0,1,0,0,0,0,0,1,
+    0,0,1,1,1,1,1,0,
+  };
+  uint64_t O;
+  uint64_t K;
+  arrayToBitBoard(o_arr, &O);
+  arrayToBitBoard(k_arr, &K);
+  clearDisplay();
+  displayPositions(&O);
+  delay(1500);
+  clearDisplay();
+  displayPositions(&K);
+  delay(1500);
+  clearDisplay();
+}
 void initLedDisp() 
 {
     //set pins to output so you can control the shift register

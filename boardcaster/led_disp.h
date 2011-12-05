@@ -8,5 +8,6 @@ void shiftOut16(uint8_t LA_DATA_PIN, uint8_t clockPin, uint8_t bitOrder, uint16_
 void displayPositions(const uint64_t* inBoard);
 void lockDisplay();
 void clearDisplay();
+void flashOK();
 #endif //LED_DISP_H
 

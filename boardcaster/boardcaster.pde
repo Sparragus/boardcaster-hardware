@@ -83,7 +83,7 @@ volatile boolean received = false;
 uint8 ip[] = {192,168,0,197};
 // WiShield <END>
 
-
+String nextFEN = "";
 Chess chess;
 uint64_t board = 0x0ULL;
 
@@ -165,7 +165,7 @@ void setup()
   showString(PSTR("MEM: "));
   Serial.println(freeMemory(), DEC);
 
-  
+  flashOK();
 
 
 
@@ -345,11 +345,11 @@ void loop()
   showString(PSTR("Getting FEN from position\n"));
   char* fen_char = chess.getFENFromPosition();
   showString(PSTR("Got FEN from position\n"));
-  //String fen_string = String(fen_char);
+  String fen_string = String(fen_char);
   showString(PSTR("Posting FEN\n"));
   Serial.println(fen_char);
   setNextFEN(fen_string);
-
+  received = false;
   do{
     showString(PSTR("."));
  // IP Address for boardcaster website
@@ -364,7 +364,7 @@ void loop()
 
   showString(PSTR("END---ITERATION----------------------------------------------\n"));
 
-  showString(PSTR("Got it baby, FEN sent"));
+
   WiServer.server_task();
   delay(10);
 
