@@ -39,26 +39,28 @@ unsigned char ssid_len;
 unsigned char security_passphrase_len;
 // End of wireless configuration parameters ----------------------------------------
 
-boolean received = false;
+volatile boolean received = false;
 
 // Function that prints data from the server
 void printData(char* data, int len) {
   
   received = true;
-  Serial.println("I was called");
 
+  Serial.print("recv data START---------------\n")
   // Print the data returned by the server
   // Note that the data is not null-terminated, may be broken up into smaller packets, and 
   // includes the HTTP header. 
   while (len-- > 0) {
     Serial.print(*(data++));
   } 
+  Serial.println("recv data END--------------\n;
+
 }
 
 String nextFEN = "";   
 String endString = "***";
 
-uint8 ip[] = {192,168,0,199};
+uint8 ip[] = {192,168,0,197};
 
 
 void setup()
@@ -88,7 +90,7 @@ void loop(){
 
   do{
 // IP Address for boardcaster website
-  POSTrequest sendInfo(ip, 3000, "http://192.168.0.199", "/moves/", printPost);
+  POSTrequest sendInfo(ip, 3000, "http://192.168.0.197", "/moves/", printPost);
   sendInfo.setReturnFunc(printData);  
   sendInfo.submit();
   WiServer.server_task();
@@ -96,8 +98,9 @@ void loop(){
 
   
 
-  Serial.println("Got it baby");
+  //  Serial.println("Got it baby");
   WiServer.server_task();
+delay(10);
  }
 
 void sendEndGamePost()

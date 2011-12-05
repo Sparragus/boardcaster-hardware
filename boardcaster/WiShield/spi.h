@@ -44,8 +44,8 @@
 
 
 #ifdef USE_DIG0_INTR
-#define ZG2100_ISR_DISABLE()	(EIMSK &= ~(0x01))
-#define ZG2100_ISR_ENABLE()		(EIMSK |= 0x01)
+#define ZG2100_ISR_DISABLE()	(EIMSK &= ~(0x10))
+#define ZG2100_ISR_ENABLE()		(EIMSK |= 0x10)
 #define ZG2100_ISR_GET(X)		(X = EIMSK)
 #define ZG2100_ISR_SET(X)		(EIMSK = X)
 #endif
