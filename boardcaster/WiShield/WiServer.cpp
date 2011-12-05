@@ -115,7 +115,7 @@ void Server::init(pageServingFunction function) {
 
 #ifdef DEBUG
 	verbose = true;
-	Serial.println("WiServer init called");
+	//	Serial.println("WiServer init called");
 #endif // DEBUG
 }
 
@@ -236,9 +236,9 @@ void send() {
 	len = len > (int)uip_conn->mss ? (int)uip_conn->mss : len;
 
 	if (verbose) {
-		Serial.print("TX ");
-		Serial.print(len);
-		Serial.println(" bytes");
+	  //	Serial.print("TX ");
+	  //	Serial.print(len);
+	  //	Serial.println(" bytes");
 	}
 
 #ifdef DEBUG
@@ -391,7 +391,7 @@ void server_task_impl() {
 	if (uip_connected()) {
 
 		if (verbose) {
-			Serial.println("Server connected");
+		  //	Serial.println("Server connected");
 		}
 
 		// Initialize the server request data
@@ -404,8 +404,8 @@ void server_task_impl() {
 		// Process the received packet and check if a valid GET request had been received
 		if (processPacket((char*)uip_appdata, uip_datalen()) && app->request) {
 			if (verbose) {
-				Serial.print("Processing request for ");
-				Serial.println((char*)app->request);
+			  //	Serial.print("Processing request for ");
+			  //	Serial.println((char*)app->request);
 			}
 			sendPage();
 		}
@@ -440,7 +440,7 @@ void server_task_impl() {
 		// Check if a URL was stored for this connection
 		if (app->request != NULL) {
 			if (verbose) {
-				Serial.println("Server connection closed");
+			  //	Serial.println("Server connection closed");
 			}
 
 			// Free RAM and clear the pointer
@@ -571,8 +571,8 @@ void client_task_impl() {
 	if (uip_connected()) {
 
 		if (verbose) {
-			Serial.print("Connected to ");
-			Serial.println(req->hostName);
+		  //			Serial.print("Connected to ");
+		  //	Serial.println(req->hostName);
 		}
 		app->ackedCount = 0;
 		sendRequest();
@@ -600,10 +600,10 @@ void client_task_impl() {
  		setRXPin(HIGH);
 
 		if (verbose) {
-			Serial.print("RX ");
-			Serial.print(uip_datalen());
-			Serial.print(" bytes from ");
-			Serial.println(req->hostName);
+		  //Serial.print("RX ");
+		  //	Serial.print(uip_datalen());
+		  //	Serial.print(" bytes from ");
+		  //	Serial.println(req->hostName);
 		}
 
 		// Check if the sketch cares about the returned data
@@ -616,8 +616,8 @@ void client_task_impl() {
 	if (uip_aborted() || uip_timedout() || uip_closed()) {
 		if (req != NULL) {
 			if (verbose) {
-				Serial.print("Ended connection with ");
-				Serial.println(req->hostName);
+			  //	Serial.print("Ended connection with ");
+			  //	Serial.println(req->hostName);
 			}
 
 			if (req->returnFunc) {
@@ -717,8 +717,8 @@ void Server::server_task() {
 
 		if (conn != NULL) {
 #ifdef DEBUG
-		  		Serial.print("Got connection for ");
-			Serial.println(queue->hostName);
+		  //	Serial.print("Got connection for ");
+		  //	Serial.println(queue->hostName);
 #endif // DEBUG
 
 			// Attach the request object to its connection

@@ -151,20 +151,7 @@ class POSTrequest : public GETrequest
 	};
 
 
-/*
- * Class that encapsulates a TWEET request (basically a POST request populated with Twitter-specific data)
- */
-class TWEETrequest : public POSTrequest
-	{
-	public:
 
-		/*
-		 * Creates a new TWEETrequest with the provided auth string and message function.
-		 * The body function will be called to provide the contents of the message; the
-		 * 'status=' prefix is automatically inserted before the message.
-		 */
-		TWEETrequest(char* auth, bodyFunction message);
-	};
 
 #endif // ENABLE_CLIENT_MODE
 

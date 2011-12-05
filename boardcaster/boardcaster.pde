@@ -44,7 +44,7 @@ void operator delete(void * ptr)
 // WiShield <START>
 
 
-#define DEBUG
+//#define DEBUG
 
 
 #define WIRELESS_MODE_INFRA	1
@@ -130,26 +130,25 @@ void setup()
   showString(PSTR("Getting board state"));
 
   // Scan the board a few times first
+
    
   scanPieceArray(&board);
-  showString(PSTR("\nInitializing Wifi Shield...\n\n"));
-  showString(PSTR("MEM: "));
+  showString(PSTR("\nMEM: "));
   Serial.println(freeMemory(), DEC);
+
+  showString(PSTR("\nInitializing Wifi Shield...\n\n"));
     
 
   // Piece is placed, turn off leds
   clearDisplay();
 
-  showString(PSTR("MEM: "));
-  Serial.println(freeMemory(), DEC);
-
   // Init web posting code
     
   // Initialize WiServer (we'll pass NULL for the page serving function since we don't need to serve web pages) 
   WiServer.init(NULL);
-  showString(PSTR("WiServer Init done"));
+  showString(PSTR("WiServer Init done\n"));
   // Enable Serial output and ask WiServer to generate log messages (optional)
-  WiServer.enableVerboseMode(true);
+  //  WiServer.enableVerboseMode(true);
 
   //  setNextFEN("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
   //  setNextFEN("Hello");
@@ -223,7 +222,7 @@ void loop()
    
   showString(PSTR("CurrentPosition= printBoard\n"));
   printBoard(&board,64);
-   
+
  
   // Scan piece array until a change is detected
   // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
@@ -352,11 +351,13 @@ void loop()
   //setNextFEN(fen_string);
 
   do{
-    // IP Address for boardcaster website
+    showString(PSTR("."));
+ // IP Address for boardcaster website
     POSTrequest sendInfo(ip, 3000, "http://192.168.0.197", "/moves/", printPost);
     sendInfo.setReturnFunc(printData);  
     sendInfo.submit();
     WiServer.server_task();
+   
   }while(!received);
 
 
