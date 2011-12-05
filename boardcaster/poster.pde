@@ -10,8 +10,8 @@
 #define WIRELESS_MODE_INFRA	1
 #define WIRELESS_MODE_ADHOC	2
 
-// Wireless configuration parameters ----------------------------------------
-unsigned char local_ip[] = {192,168,0,101};	// IP address of WiShield
+// Wireless configuration parameters ---------------------------------------n-
+unsigned char local_ip[] = {192,168,0,105};	// IP address of WiShield
 unsigned char gateway_ip[] = {192,168,0,1};	// router or gateway IP address
 unsigned char subnet_mask[] = {255,255,255,0};	// subnet mask for the local network
 const prog_char ssid[] PROGMEM = {"boardcaster"};		// max 32 bytes
@@ -32,7 +32,7 @@ prog_uchar wep_keys[] PROGMEM = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
 // setup the wireless mode
 // infrastructure - connect to AP
 // adhoc - connect to another WiFi device
-unsigned char wireless_mode = WIRELESS_MODE_ADHOC;
+unsigned char wireless_mode = WIRELESS_MODE_INFRA;
 
 unsigned char ssid_len;
 unsigned char security_passphrase_len;
@@ -60,17 +60,18 @@ void printPost() {
 
 // IP Address for boardcaster 
 uint8 ip[] = {192,168,0,199};
-
 // A request that gets the latest METAR weather data for LAX
-POSTrequest sendInfo(ip, 80, "http://192.168.0.199", "/moves/", printPost);
+POSTrequest sendInfo(ip, 3000, "http://192.168.0.199", "/moves/", printPost);o
 
 
 
 void initPoster() {
     // Initialize WiServer (we'll pass NULL for the page serving function since we don't need to serve web pages) 
+  Serial.println("Starting post init");
   WiServer.init(NULL);
   WiServer.enableVerboseMode(true);
   sendInfo.setReturnFunc(printData);
+  Serial.println("Finished post init");
 
 }
 

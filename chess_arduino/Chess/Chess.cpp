@@ -1,26 +1,29 @@
 #ifdef __cplusplus
+
 extern "C" {
 #endif
-
 #include "bitboard.h"
-
-
-
-
 #ifdef __cplusplus
 }
 #endif
+
 #include "position.h"
 #include "fen.h"
 #include "move.h"
 #include "Chess.h"
 #include "WProgram.h"
 
+#include <avr/pgmspace.h>
+
+
 extern const bitboard _mask[64];
+
+
+
 
 Chess::Chess()
 {
-    Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    // Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
 
 Chess::Chess(char FEN[])
@@ -39,7 +42,7 @@ bitboard Chess::getPieceMoves(const int sq_source)
 
     //Init all moves to 0;
     memset(moves, 0, STORE_SIZE*sizeof(move));
- 
+
     int player = pos.toPlay;
     int piece = getPieceToPlay(sq_source);
     int numMoves = 0;
@@ -114,7 +117,7 @@ char* Chess::getFENFromPosition()
 
 void Chess::printOwnPosition()
 {
-  printPosition(&pos);
+    printPosition(&pos);
 }
 
 void Chess::printPosition(const position* pos)
@@ -126,43 +129,43 @@ void Chess::printPosition(const position* pos)
 
     for(sq = 63; sq >= 0; sq--) {
         if(WHITE_KING == pos->board[sq]) {
-            Serial.print('K');
+            showString(PSTR("K"));
         }
         else if(BLACK_KING == pos->board[sq]) {
-            Serial.print('k');
+            showString(PSTR("k"));
         }
         else if(WHITE_QUEEN == pos->board[sq]) {
-            Serial.print('Q');
+            showString(PSTR("Q"));
         }
         else if(BLACK_QUEEN == pos->board[sq]) {
-            Serial.print('q');
+            showString(PSTR("q"));
         }
         else if(WHITE_ROOK == pos->board[sq]) {
-            Serial.print('R');
+            showString(PSTR("R"));
         }
         else if(BLACK_ROOK == pos->board[sq]) {
-            Serial.print('r');
+            showString(PSTR("r"));
         }
         else if(WHITE_BISHOP == pos->board[sq]) {
-            Serial.print('B');
+            showString(PSTR("B"));
         }
         else if(BLACK_BISHOP == pos->board[sq]) {
-            Serial.print('b');
+            showString(PSTR("b"));
         }
         else if(WHITE_KNIGHT == pos->board[sq]) {
-            Serial.print('N');
+            showString(PSTR("N"));
         }
         else if(BLACK_KNIGHT == pos->board[sq]) {
-            Serial.print('n');
+            showString(PSTR("n"));
         }
         else if(WHITE_PAWN == pos->board[sq]) {
-            Serial.print('P');
+            showString(PSTR("P"));
         }
         else if(BLACK_PAWN == pos->board[sq]) {
-            Serial.print('p');
+            showString(PSTR("p"));
         }
         else if(0 == pos->board[sq]) {
-            Serial.print('-');
+            showString(PSTR("-"));
         }
         else {
         }
@@ -172,10 +175,10 @@ void Chess::printPosition(const position* pos)
         if(sq % 8 == 0) {
             if(56 == sq) {
                 if(WHITE == pos->toPlay) {
-                    Serial.print("[White]");
+                    showString(PSTR("[White]"));
                 }
                 else {
-                    Serial.print("[Black]");
+                    showString(PSTR("[Black]"));
                 }
             }
             else if(48 == sq) {
@@ -183,10 +186,10 @@ void Chess::printPosition(const position* pos)
                     rank = RANK_NOTATION(pos->epSquare);
                     file = FILE_NOTATION(pos->epSquare);
 
-                    Serial.print("["); Serial.print(file); Serial.print(rank); Serial.print("]");
+                    showString(PSTR("[")); Serial.print(file); Serial.print(rank); showString(PSTR("]"));
                 }
                 else {
-                    Serial.print("[-]");
+                    showString(PSTR("[-]"));
                 }
             }
             else if(40 == sq) {
@@ -206,23 +209,29 @@ void Chess::printPosition(const position* pos)
                     castle[3] = 'q';
                 }
 
-                Serial.print("["); Serial.print(castle); Serial.print("]");
+                showString(PSTR("[")); Serial.print(castle); showString(PSTR("]"));
 
             }
 
-            Serial.print('\n');
+            showString(PSTR("\n"));
         }
     }
-
-    Serial.print('\n');
+    showString(PSTR("\n"));
 }
+
+
+
+
+
 
 
 
 
 int Chess::getPieceToPlay(int sq_source)
 {
-    if(pos.king[pos.toPlay] & _mask[sq_source])
+    return pos.board[sq_source];
+
+    /*if(pos.king[pos.toPlay] & _mask[sq_source])
     {
         if(pos.toPlay == WHITE) {return WHITE_KING;}
         else {return BLACK_KING;}
@@ -252,7 +261,7 @@ int Chess::getPieceToPlay(int sq_source)
         if(pos.toPlay == WHITE) {return WHITE_PAWN;}
         else {return BLACK_PAWN;}
     }
-    else {return 0;} //SHOULD NEVER GET HERE. Piece is unknown.
+    else {return 0;} //SHOULD NEVER GET HERE. Piece is unknown.*/
 }
 
 bitboard Chess::getRealMoves(const move moves[], int sq_source, int numMoves)
@@ -270,5 +279,13 @@ bitboard Chess::getRealMoves(const move moves[], int sq_source, int numMoves)
     }
 
     return realMoves;
+}
+
+
+void Chess::showString (PGM_P s)
+{
+    char c;
+    while ((c = pgm_read_byte(s++)) != 0)
+        Serial.print(c, BYTE);
 }
 

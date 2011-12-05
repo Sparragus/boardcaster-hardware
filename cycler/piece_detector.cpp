@@ -7,7 +7,7 @@
 #include "led_disp.h"
 
 uint64_t old_board = 0x0000000000000000LL;
-const long unsigned  TIME_SETTLE = 5;
+const long unsigned  TIME_SETTLE = 2;
 long unsigned realTimeToScan = 0;
 
 
@@ -87,6 +87,7 @@ int scanPieceArray(uint64_t* board)
     
         // Read Result
         uchar data = readPieceArrayLine();
+      
         tboard[i] = data;
     }
  

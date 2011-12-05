@@ -134,9 +134,9 @@
 #define ZG2100_CSon()					(ZG2100_CS_PORT |= ZG2100_CS_BIT)
 #define ZG2100_CSoff()					(ZG2100_CS_PORT &= ~ZG2100_CS_BIT)
 
-#define LEDConn_BIT					BIT5
-#define LEDConn_DDR					DDRB
-#define LEDConn_PORT				PORTB
+#define LEDConn_BIT					BIT6
+#define LEDConn_DDR					DDRH
+#define LEDConn_PORT				        PORTH
 
 #define LED0_BIT					BIT0
 #define LED0_DDR					DDRC
@@ -154,7 +154,7 @@
 #define LED3_DDR					DDRC
 #define LED3_PORT					PORTC
 
-#define LED_Init()    (DDRC |= LED0_BIT | LED1_BIT | LED2_BIT | LED3_BIT)
+#define LED_Init()    {DDRC |= LED0_BIT | LED1_BIT | LED2_BIT | LED3_BIT; DDRH |= BIT6;}
 
 #define LEDConn_on()	(LEDConn_PORT |= LEDConn_BIT)
 #define LED0_on()		(LED0_PORT |= LED0_BIT)

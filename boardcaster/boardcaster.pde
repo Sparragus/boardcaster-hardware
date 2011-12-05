@@ -10,12 +10,13 @@
 #include "boardcaster.h"
 #include "piece_detector.h"
 #include "led_disp.h"
-//#include "poster.h"
+#include "poster.h"
 #include "utils.h"
 #include "hw_signals.h"
 #include "bitboard_ops.h"
 #include "utils.h"
 
+#include "MemoryFree.h"
 
 #include <stdlib.h>
 #include <avr/pgmspace.h>
@@ -39,7 +40,7 @@ void operator delete(void * ptr)
 {
     free(ptr);
 }
-
+uint64_t board = 0x0ULL;
 
 // Main firmware setup call
 void setup()
@@ -66,24 +67,48 @@ void setup()
     showString(PSTR("Cycling LED Array..."));
     // Run LED diagnostics
     cycleArray();
+    clearDisplay();
+
     showString(PSTR("done\n"));
 
+
+    showString(PSTR("MEM: "));
+    Serial.println(freeMemory(), DEC);
+
     // Init web posting code
-    //initPoster();
+    initPoster();
+
+    showString(PSTR("MEM: "));
+    Serial.println(freeMemory(), DEC);
 
     // Init chess engine
-    chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
+    //chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
     // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
-    
-    showString(PSTR("Turning off LED display\n"));
-    // Piece is placed, turn off leds
-    turnOffDisplay();
+    chess = Chess("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
 
     showString(PSTR("Expected starting board\n\n"));
 
     chess.printOwnPosition();
 
+    showString(PSTR("Getting board state"));
+
+    // Scan the board a few times first
+   
+    scanPieceArray(&board);
     showString(PSTR("\nReady\n\n"));
+    showString(PSTR("MEM: "));
+    Serial.println(freeMemory(), DEC);
+    
+
+    // Piece is placed, turn off leds
+    clearDisplay();
+
+    setNextFEN("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
+    sendData();
+
+
 }
 
 // Main firmware loop
@@ -91,94 +116,147 @@ void loop()
 {
     showString(PSTR("START---ITERATION----------------------------------------------\n"));
     // Get current position
-    bitboard currentPosition;
-    currentPosition = chess.getCurrentPosition();
-    static uint64_t board = currentPosition;
+   
+    board  = chess.getCurrentPosition();
 
     showString(PSTR("CurrentPosition=\n"));
-    chess.printBitboard(&currentPosition);
+    chess.printBitboard(&board);
+   
+    
+    // ---------------------------------------
+    // LIFT PIECE
+    //
+    //
 
-
-    // Scan piece array
-    /*static uint64_t board = 0x0000000000000000LL;*/
-
+    scanPieceArray(&board);
+   
+    showString(PSTR("CurrentPosition= printBoard\n"));
+    printBoard(&board,64);
+   
+ 
     // Scan piece array until a change is detected
     // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
     int sq_source = -1;
-    /*do
-      {
-      showString(PSTR("^");
-      sq_source = scanPieceArray(&board);
-      }
-      while(sq_source == -1);
-    */
-    sq_source = emulate_board(&board, 0);
+    do
+    {
+        showString(PSTR("^ "));
+        sq_source = scanPieceArray(&board);
+       
+    }
+    while(sq_source == -1 || 63-sq_source==27 || 63-sq_source==9);
+  
+    showString(PSTR("\n"));
+    // sq_source = emulate_board(&board, 0);
+
     sq_source = 63 - sq_source;
     showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
-
+    showString(PSTR("Current board\n"));
+    // chess.printBitboard(&board); 
+   
     // Obtain a bitboard with the legal moves for a piece on the square sq
-    bitboard moves = 0xFFFFFFFFFFFFFFF;
-    moves = chess.getPieceMoves( sq_source );
+    const uint64_t moves = chess.getPieceMoves( sq_source );
     
-    showString(PSTR("Board change detected!"));
+    showString(PSTR("Found the following moves\n"));
     chess.printBitboard(&moves);
 
-    // Turn on LEDs using moves
-    uint16_t* parts  = getParts(&moves);
-    displaypositions(parts);
-    
-    showString(PSTR("Displayed positions\n"));
+
+    showString(PSTR("preDisplayPositions -> MEM: "));
+    Serial.println(freeMemory(), DEC);
+ 
+    displayPositions(&moves);  
+
+    showString(PSTR("postDisplayPositions -> MEM: "));
+    Serial.println(freeMemory(), DEC);
+
+   
+    //
+    //
+    // ---------------------------------------------------
+
+
+
+
+
+
+
+
+    // --------------------------------------------------
+    // SET PIECE
+    //
+    //
 
     // Scan piece array until a change is detected
     // sq_source >= 0 if Board changed; Square that changed, sq_source = -1 = No change
-    int sq_dest;
-/*  do
+    int sq_dest = -1;
+    do
     {
-    showString(PSTR("v");
-    sq_dest = scanPieceArray(&board);
+  
+        showString(PSTR("v "));
+        sq_dest = scanPieceArray(&board);
+ 
+ 
     }
-    while(sq_dest == -1);
-*/
-    sq_dest = emulate_board(&board, 1);
+    while(sq_dest == -1 || 63-sq_dest==27 || 63-sq_dest == 9);
+    showString(PSTR("\n"));
+    
+    // sq_dest = emulate_board(&board, 1);
     sq_dest = 63 - sq_dest;
     showString(PSTR("Found placed piece: ")); Serial.println(sq_dest, DEC);
-    // Piece is placed, turn off leds
-    turnOffDisplay();
+    clearDisplay();
+   
 
+    // Piece is placed, turn off leds
+  
     // If sq_source == sq_dest, then piece was placed back to it's original pos
     // Don't play the move. Loop again.
     if(sq_source == sq_dest)
     {
         //TODO: check if empty return is safe.
-        //return;
+        clearDisplay();
+        showString(PSTR("Set piece at same position!\n"));
+        showString(PSTR("END---ITERATION----------------------------------------------\n"));
+        return;
     }
+    chess.playPieceMove(sq_dest);
 
-    uint64_t error_board = 0;
-    // legal == 0 if move is legal, else legal == 1, meaning move is illegal
-    // while move is illegal...
-    while(chess.playPieceMove(sq_dest) != 0)
-    {
-        if( sq_dest >= 0 )
-        {
-            showString(PSTR("Error board!\n"));
-            error_board = chess.getMask(sq_dest);
-        }
-        uint16_t* parts  = getParts(&error_board);
-        displaypositions(parts);
-        delay(100);
-        turnOffDisplay();
-        delay(100);
-        sq_dest = scanPieceArray(&board);
+    showString(PSTR("chess.playPieceMove -> MEM: "));
+    Serial.println(freeMemory(), DEC);
 
-        //If the piece goes back to its original square...
-        if(sq_dest == sq_source)
-        {
-            //TODO: check if empty return is safe.
-            //return;
-        }
-        showString(PSTR("Waiting for a valid move\n"));
+    // TODO: Confirn correct code logic
+/*
+  uint64_t error_board = 0x0ULL;
+  // legal == 0 if move is legal, else legal == 1, meaning move is illegal
+  // while move is illegal...
+  while(chess.playPieceMove(sq_dest) != 0)
+  {
+  if( sq_dest >= 0 )
+  {
+  showString(PSTR("Error board!\n"));
+  error_board = chess.getMask(sq_dest);
+  }
+  uint16_t* parts  = getParts(&error_board);
+  displayPositions(parts);
+  delay(500);
+  clearDisplay();
+  // HACK
+  sq_dest = scanPieceArray(&board);
+  printBoard(&board, 64);
+     
+  sq_dest = 63 - sq_dest;
 
-    }
+  //If the piece goes back to its original square...
+  if(sq_dest == sq_source)
+  {
+  //TODO: check if empty return is safe.
+  //return;
+  }
+  showString(PSTR("Waiting for a valid move\n"));
+  }
+*/
+
+    // -------------------------------------------------
+    
+
 
     //TODO: convert fen to an Arduino String
     // Send FEN to boardcaster.com
@@ -187,8 +265,8 @@ void loop()
     showString(PSTR("Got FEN from position\n"));
     String fen_string = String(fen_char);
     showString(PSTR("Posting FEN\n"));
-    //     setNextFEN(fen_string);
-    //     sendData();
+    setNextFEN(fen_string);
+    sendData();
 
     showString(PSTR("FEN: ")); Serial.println(fen_string);
     showString(PSTR("END---ITERATION----------------------------------------------\n"));
