@@ -57,6 +57,7 @@ const prog_char contentLength[] = {"Content-Length:     "};
 const prog_char userAgent[] = {"User-Agent: WiServer/1.1"};
 
 // Content type form data
+//const prog_char contentTypeForm[] = {"Content-Type: text/plain"};
 const prog_char contentTypeForm[] = {"Content-Type: application/x-www-form-urlencoded"};
 
 // POST request

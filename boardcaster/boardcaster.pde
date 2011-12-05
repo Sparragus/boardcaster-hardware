@@ -80,9 +80,9 @@ unsigned char security_passphrase_len;
 
 
 volatile boolean received = false;
-uint8 ip[] = {192,168,0,197};
+uint8 ip[] = {192,168,0,196};
 // WiShield <END>
-      POSTrequest sendInfo(ip, 3000, "http://192.168.0.197", "/moves/", printPost);
+ POSTrequest sendInfo(ip, 3001, "http://192.168.0.197", "/moves/", printPost);
 String nextFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 Chess chess;
 uint64_t board = 0x0ULL;
@@ -164,18 +164,18 @@ void setup()
   */
  
  
- 
+  /*
   
   do{
     showString(PSTR("*"));
  // IP Address for boardcaster website
-sendInfo.setReturnFunc(printData);  
+    sendInfo.setReturnFunc(printData);  
     
      sendInfo.submit();
     WiServer.server_task();
    
   }while(!received);
-
+  */
   showString(PSTR("MEM: "));
   Serial.println(freeMemory(), DEC);
 
@@ -194,6 +194,7 @@ void setNextFEN(String fen)
 
 // This function generates the body of our POST request
 void printPost() {
+  Serial.println("in printPost");
   WiServer.print("move_data=" + nextFEN);
 }
 
@@ -359,24 +360,32 @@ void loop()
   showString(PSTR("Getting FEN from position\n"));
   char* fen_char = chess.getFENFromPosition();
   showString(PSTR("Got FEN from position\n"));
-  String fen_string = String(fen_char);
+  
   showString(PSTR("Posting FEN\n"));
   Serial.println(fen_char);
-  setNextFEN(fen_string);
+  setNextFEN(fen_char);
   received = false;
+  /*
   do{
+
     showString(PSTR("."));
     //showString(PSTR("MEM: "));
     //Serial.println(freeMemory(), DEC);
-
+    sendInfo.setBodyFunc(printPost);
      sendInfo.setReturnFunc(printData);  
      sendInfo.submit();
     WiServer.server_task();
    
   }while(!received);
-
-
-
+  */
+  sendInfo.setBodyFunc(printPost);
+  sendInfo.submit();  
+while(sendInfo.isActive())
+    {
+      showString(PSTR("."));
+      WiServer.server_task();
+    }
+ uip_close();
   showString(PSTR("END---ITERATION----------------------------------------------\n"));
 
 
