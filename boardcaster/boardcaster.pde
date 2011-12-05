@@ -152,7 +152,7 @@ void setup()
 
   //  setNextFEN("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
   //  setNextFEN("Hello");
-
+  /*
   do{
     // IP Address for boardcaster website
     POSTrequest sendInfo(ip, 3000, "http://192.168.0.197", "/moves/", printPost);
@@ -161,11 +161,11 @@ void setup()
     WiServer.server_task();
   }while(!received);
 
-
+  */
   showString(PSTR("MEM: "));
   Serial.println(freeMemory(), DEC);
 
-
+  
 
 
 
@@ -175,12 +175,12 @@ void setup()
 
 void setNextFEN(String fen)
 {
-  // nextFEN = fen;
+  nextFEN = fen;
 }
 
 // This function generates the body of our POST request
 void printPost() {
-  WiServer.print("move_data=HARD");
+  WiServer.print("move_data=" + nextFEN);
 }
 
 // Function that prints data from the server
@@ -348,14 +348,14 @@ void loop()
   //String fen_string = String(fen_char);
   showString(PSTR("Posting FEN\n"));
   Serial.println(fen_char);
-  //setNextFEN(fen_string);
+  setNextFEN(fen_string);
 
   do{
     showString(PSTR("."));
  // IP Address for boardcaster website
-    POSTrequest sendInfo(ip, 3000, "http://192.168.0.197", "/moves/", printPost);
-    sendInfo.setReturnFunc(printData);  
-    sendInfo.submit();
+      POSTrequest sendInfo(ip, 3000, "http://192.168.0.197", "/moves/", printPost);
+     sendInfo.setReturnFunc(printData);  
+     sendInfo.submit();
     WiServer.server_task();
    
   }while(!received);

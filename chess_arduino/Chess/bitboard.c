@@ -21,8 +21,8 @@
 
 /* Internal bitboards */
 bitboard _mask[64];
-bitboard _king[64];
-bitboard _knight[64];
+/*bitboard _king[64];*/
+/*bitboard _knight[64];*/
 bitboard _wpawn_advance1[64];
 bitboard _bpawn_advance1[64];
 bitboard _wpawn_advance2[64];
@@ -32,15 +32,15 @@ bitboard _bpawn_attack[64];
 
 /* These functions are not needed by anyone outside the file */
 static void init_mask(void);
-static void init_king(void);
-static void init_knight(void);
+/*static void init_king(void);*/
+/*static void init_knight(void);*/
 static void init_pawns(void);
 
 void init_bitboard(void)
 {
     init_mask();
-    init_king();
-    init_knight();
+    // init_king();
+    // init_knight();
     init_pawns();
 }
 
@@ -55,14 +55,14 @@ static void init_mask(void)
     }
 }
 
-static void init_king(void)
+bitboard i_king(int sq)
 {
     bitboard temp = 0;
     int i;
     int file;
     int rank;
 
-    for(i = 0; i < 64; i++) {
+    for(i = 0; i < sq; i++) {
         temp = 0;
 
         file = i % 8;
@@ -109,13 +109,14 @@ static void init_king(void)
         }
 
 
-        _king[i] = temp;
+        // _king[i] = temp;
 
     }
 
+    return temp;
 }
-
-static void init_knight(void)
+abcd;
+bitboard i_knight(int sq)
 {
     bitboard temp = 0;
     int i;
@@ -167,8 +168,10 @@ static void init_knight(void)
             temp |= _mask[i] >> 17;
         }
 
-        _knight[i] = temp;
+        /*_knight[i] = temp;*/
     }
+
+    return temp;
 }
 
 static void init_pawns(void)

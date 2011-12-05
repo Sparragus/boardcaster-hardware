@@ -40,5 +40,11 @@ typedef unsigned long long bitboard;
 /* Init the internal bitboards */
 void init_bitboard(void);
 
+// returns bitboard with moves in all directions for the king
+bitboard i_king(int sq);
+
+// returns bitboard with moves in all legal directions for the knight
+bitboard i_knight(int sq);
+
 #endif
 

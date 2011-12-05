@@ -17,7 +17,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+extern "C"{
+
 #include "bitboard.h"
+} 
 #include "position.h"
 #include "move.h"
 
@@ -25,8 +28,8 @@
 #include "WProgram.h"
 
 extern const bitboard _mask[64];
-extern const bitboard _king[64];
-extern const bitboard _knight[64];
+//extern const bitboard _king[64];
+//extern const bitboard _knight[64];
 extern const bitboard _wpawn_attack[64];
 extern const bitboard _bpawn_attack[64];
 extern const bitboard _wpawn_advance1[64];
@@ -55,7 +58,7 @@ int getMoves(const position * const pos, const int player, const int piece, cons
     opponent = OPPONENT(player);
     /* opponent in check = player won. should be checked somewhere before this */
     int ret = inCheck(pos, opponent, pos->kingSquare[opponent]);
-    
+
     assert(!ret);
     //    assert(!inCheck(pos, opponent, pos->kingSquare[opponent]));
 
@@ -92,7 +95,7 @@ bitboard getRawMoves(const position * const pos, const int player, const int pie
 
     assert(sq >= 0 && sq <= 63);
     allPieces = pos->pieces[BLACK] | pos->pieces[WHITE];
-    
+
     if(CAPTURE == type) {
         attackRange = getAttackRange(piece, type, sq, allPieces, pos->epSquare);
         opponentSquares = pos->pieces[OPPONENT(player)];
@@ -129,7 +132,7 @@ bitboard getAttackRange(const int piece, const int type, const int sq, const bit
     /* supports only normal and capture */
     assert(NORMAL == type || CAPTURE == type);
     if(IS_KING(piece)) {
-        attackRange = _king[sq];
+        attackRange = i_king(sq);
     }
     else if(IS_PAWN(piece)) {
         if(WHITE == COLOUR(piece)) {
@@ -159,7 +162,7 @@ bitboard getAttackRange(const int piece, const int type, const int sq, const bit
         }
     }
     else if(IS_KNIGHT(piece)) {
-        attackRange = _knight[sq];
+        attackRange = i_knight(sq);
     }
     else if(IS_BISHOP(piece)) {
         attackRange = bishopAttacks(&allPieces, sq);
@@ -187,7 +190,7 @@ int getPieceMoves(const position * const pos, const int player, const int type, 
     move temp;
     int valueCaptured;
     int valueThis;
-   
+
     while(rawMoves != 0) {
         if(LSB_SET(rawMoves)) {
             m.from = sq;
@@ -244,7 +247,7 @@ int getPieceMoves(const position * const pos, const int player, const int type, 
                     m.promoteTo = WHITE_KNIGHT;
                     m.eval += WHITE_KNIGHT;
                     storeMoveIfLegal(pos, &m, player, store, &numMoves);
-		
+
                 }
                 else {
                     /* promote to queen */
@@ -262,27 +265,27 @@ int getPieceMoves(const position * const pos, const int player, const int type, 
                     /* promote to knight */
                     m.promoteTo = BLACK_KNIGHT;
                     storeMoveIfLegal(pos, &m, player, store, &numMoves);
-		 
+
                 }
             }
             else {
                 storeMoveIfLegal(pos, &m, player, store, &numMoves);
-		
+
             }
         }
 
         rawMoves = rawMoves >> 1;
         target++;
     }
-  
+
     /* castling */
     if(NORMAL == type && IS_KING(pos->board[sq]))
     {
-   
+
         getCastlingMoves(pos, player, store, &numMoves);
-   
+
     }
- 
+
 
 
     return numMoves;
@@ -390,11 +393,11 @@ bitboard getPieceBitboard(const position * const pos, const int piece)
         /* Something is wrong, I don't know which piece this is.
          * This must NEVER happen; move generation is screwed.
          */
- 
+
 //        assert(0)
 
     }
- 
+
     return b;
 }
 
@@ -691,7 +694,7 @@ int inCheck(const position * const pos, const int player, const int targetSquare
         target = _mask[targetSquare];
     }
     /* opponent king attacks */
-    attacks |= _king[pos->kingSquare[opponent]];
+    attacks |= i_king(pos->kingSquare[opponent]);
     /* incremental checking... */
     if(attacks & target) {
         return 1;
@@ -701,7 +704,7 @@ int inCheck(const position * const pos, const int player, const int targetSquare
     sq = 0;
     while(knights != 0) {
         if(LSB_SET(knights)) {
-            attacks |= _knight[sq];
+            attacks |= i_knight(sq);
             /* incremental checking... */
             if(attacks & target) {
                 return 1;
