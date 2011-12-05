@@ -82,8 +82,8 @@ unsigned char security_passphrase_len;
 volatile boolean received = false;
 uint8 ip[] = {192,168,0,197};
 // WiShield <END>
-
-String nextFEN = "";
+      POSTrequest sendInfo(ip, 3000, "http://192.168.0.197", "/moves/", printPost);
+String nextFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 Chess chess;
 uint64_t board = 0x0ULL;
 
@@ -162,6 +162,20 @@ void setup()
   }while(!received);
 
   */
+ 
+ 
+ 
+  
+  do{
+    showString(PSTR("*"));
+ // IP Address for boardcaster website
+sendInfo.setReturnFunc(printData);  
+    
+     sendInfo.submit();
+    WiServer.server_task();
+   
+  }while(!received);
+
   showString(PSTR("MEM: "));
   Serial.println(freeMemory(), DEC);
 
@@ -352,8 +366,9 @@ void loop()
   received = false;
   do{
     showString(PSTR("."));
- // IP Address for boardcaster website
-      POSTrequest sendInfo(ip, 3000, "http://192.168.0.197", "/moves/", printPost);
+    //showString(PSTR("MEM: "));
+    //Serial.println(freeMemory(), DEC);
+
      sendInfo.setReturnFunc(printData);  
      sendInfo.submit();
     WiServer.server_task();
