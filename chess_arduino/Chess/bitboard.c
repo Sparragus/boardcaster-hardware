@@ -61,7 +61,7 @@ bitboard i_king(int sq)
     int i;
     int file;
     int rank;
-
+    sq++;
     for(i = 0; i < sq; i++) {
         temp = 0;
 
@@ -122,7 +122,7 @@ bitboard i_knight(int sq)
     int i;
     int file;
     int rank;
-
+    
     for(i = 0; i < 64; i++) {
         temp = 0;
 

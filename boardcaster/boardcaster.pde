@@ -83,7 +83,7 @@ volatile boolean received = false;
 uint8 ip[] = {192,168,0,196};
 // WiShield <END>
  POSTrequest sendInfo(ip, 3001, "http://192.168.0.197", "/moves/", printPost);
-String nextFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+String fen = "3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1";
 Chess chess;
 uint64_t board = 0x0ULL;
 
@@ -121,7 +121,10 @@ void setup()
   //chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
   // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
-  chess = Chess("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
+  int s = fen.length();
+  char fen_arr[s];
+  fen.toCharArray(fen_arr, s);
+  chess = Chess(fen_arr);
 
   showString(PSTR("Expected starting board\n\n"));
 
@@ -176,6 +179,16 @@ void setup()
    
   }while(!received);
   */
+
+  sendInfo.setBodyFunc(printPost);
+  sendInfo.submit();  
+while(sendInfo.isActive())
+    {
+      showString(PSTR("."));
+      WiServer.server_task();
+    }
+//uip_close();
+
   showString(PSTR("MEM: "));
   Serial.println(freeMemory(), DEC);
 
@@ -187,15 +200,12 @@ void setup()
 
 //------------ WiShield Functions -------------------
 
-void setNextFEN(String fen)
-{
-  nextFEN = fen;
-}
 
 // This function generates the body of our POST request
 void printPost() {
-  Serial.println("in printPost");
-  WiServer.print("move_data=" + nextFEN);
+  
+
+  WiServer.print("move_data=" + String(fen));
 }
 
 // Function that prints data from the server
@@ -358,12 +368,13 @@ void loop()
   //TODO: convert fen to an Arduino String
   // Send FEN to boardcaster.com
   showString(PSTR("Getting FEN from position\n"));
-  char* fen_char = chess.getFENFromPosition();
-  showString(PSTR("Got FEN from position\n"));
-  
+   char* chess_ret = chess.getFENFromPosition();
+   fen = String(chess_ret);
+   showString(PSTR("Got FEN from position\n"));
+   
   showString(PSTR("Posting FEN\n"));
-  Serial.println(fen_char);
-  setNextFEN(fen_char);
+  Serial.println(fen);
+  
   received = false;
   /*
   do{
