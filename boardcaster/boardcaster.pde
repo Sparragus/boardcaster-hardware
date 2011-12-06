@@ -24,6 +24,16 @@
 #define NDEBUG
 // Just in case.
 #define assert(x) ;
+//#define DEBUG
+
+
+volatile boolean received = false;
+uint8 ip[] = {192,168,0,196};
+POSTrequest sendInfo(ip, 3001, "http://192.168.0.197", "/moves/", printPost);
+String fen = "3k3r/8/8/8/8/8/1K5P/RNB3R1 w KQkq - 0 1";
+Chess chess;
+uint64_t board = 0x0ULL;
+
 
 
 int __cxa_guard_acquire(__guard *g) {return !*(char *)(g);};
@@ -42,10 +52,6 @@ void operator delete(void * ptr)
 
 
 // WiShield <START>
-
-
-//#define DEBUG
-
 
 #define WIRELESS_MODE_INFRA	1
 #define WIRELESS_MODE_ADHOC	2
@@ -73,23 +79,16 @@ prog_uchar wep_keys[] PROGMEM = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
 // infrastructure - connect to AP
 // adhoc - connect to another WiFi device
 unsigned char wireless_mode = WIRELESS_MODE_INFRA;
-
 unsigned char ssid_len;
 unsigned char security_passphrase_len;
 // End of wireless configuration parameters ----------------------------------------
-
-
-volatile boolean received = false;
-uint8 ip[] = {192,168,0,196};
 // WiShield <END>
- POSTrequest sendInfo(ip, 3001, "http://192.168.0.197", "/moves/", printPost);
-String fen = "3k3r/8/8/8/8/8/1K5P/RNB3R1 w KQkq - 0 1";
-Chess chess;
-uint64_t board = 0x0ULL;
+
 
 // Main firmware setup call
 void setup()
 {
+    // Wait for everything to settle
   delay(1000);
   Serial.end();
   // Set serial transmission rate for debug prints
@@ -117,84 +116,59 @@ void setup()
   showString(PSTR("done\n"));
 
   // Init chess engine
-
   //chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-
-  // chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
+  //chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
   int s = fen.length();
   char fen_arr[s];
   fen.toCharArray(fen_arr, s);
   chess = Chess(fen_arr);
 
   showString(PSTR("Expected starting board\n\n"));
-
   chess.printOwnPosition();
 
-  showString(PSTR("Getting board state"));
+  // Scan the board, AGAIN and display memory usage.
+  showString(PSTR("Getting board state."));
 
-  // Scan the board a few times first
-
-   
   scanPieceArray(&board);
   showString(PSTR("\nMEM: "));
   Serial.println(freeMemory(), DEC);
 
   showString(PSTR("\nInitializing Wifi Shield...\n\n"));
     
-
-  // Piece is placed, turn off leds
+  // Clear the LED display
   clearDisplay();
 
-  // Init web posting code
     
   // Initialize WiServer (we'll pass NULL for the page serving function since we don't need to serve web pages) 
   WiServer.init(NULL);
   showString(PSTR("WiServer Init done\n"));
-  // Enable Serial output and ask WiServer to generate log messages (optional)
-  //  WiServer.enableVerboseMode(true);
 
-  //  setNextFEN("3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1");
-  //  setNextFEN("Hello");
-  /*
-  do{
-    // IP Address for boardcaster website
-    POSTrequest sendInfo(ip, 3000, "http://192.168.0.197", "/moves/", printPost);
-    sendInfo.setReturnFunc(printData);  
-    sendInfo.submit();
-    WiServer.server_task();
-  }while(!received);
-
-  */
- 
- 
-  /*
-  
-  do{
-    showString(PSTR("*"));
- // IP Address for boardcaster website
-    sendInfo.setReturnFunc(printData);  
-    
-     sendInfo.submit();
-    WiServer.server_task();
-   
-  }while(!received);
-  */
-
+  // Set the posting function
   sendInfo.setBodyFunc(printPost);
+
+  // TODO: Assert if starting fen is not matched
+  // by pieces.
+  // Maybe send scaned pieces
+
+  // Send the initial FEN positions
   sendInfo.submit();  
-while(sendInfo.isActive())
+  // Wait for a reply...
+  while(sendInfo.isActive())
     {
       showString(PSTR("."));
       WiServer.server_task();
     }
-//uip_close();
+  //uip_close();
 
+  // Print diagnostic memory usage
   showString(PSTR("MEM: "));
   Serial.println(freeMemory(), DEC);
 
+// Flash the board logo to show user board is ready.
   flashOK();
 
-
+  // Wait a bit before letting the user play.
+  delay(500);
 
 }
 
@@ -202,25 +176,26 @@ while(sendInfo.isActive())
 
 
 // This function generates the body of our POST request
-void printPost() {
-  
-
+void printPost()
+{
   WiServer.print("move_data=" + String(fen));
 }
 
 // Function that prints data from the server
-void printData(char* data, int len) {
+void printData(char* data, int len)
+ {
   
   received = true;
 
-  showString(PSTR("recv data START---------------"));
+  showString(PSTR("\nrecv data START---------------\n"));
   // Print the data returned by the server
   // Note that the data is not null-terminated, may be broken up into smaller packets, and 
   // includes the HTTP header. 
-  while (len-- > 0) {
+  while (len-- > 0) 
+  {
     Serial.print(*(data++));
   } 
-  showString(PSTR("recv data END--------------"));
+  showString(PSTR("\nrecv data END--------------\n"));
 
 }
 
@@ -229,11 +204,13 @@ void printData(char* data, int len) {
 // Main firmware loop
 void loop()
 {
-  showString(PSTR("START---ITERATION----------------------------------------------\n"));
-  // Get current position
    
+  showString(PSTR("START---ITERATION----------------------------------------------\n"));
+
+  // Get current position
   board  = chess.getCurrentPosition();
 
+  // Print it for debug purposes
   showString(PSTR("CurrentPosition=\n"));
   chess.printBitboard(&board);
    
@@ -243,12 +220,12 @@ void loop()
   //
   //
 
+  // Scan the board
   scanPieceArray(&board);
-   
+
   showString(PSTR("CurrentPosition= printBoard\n"));
   printBoard(&board,64);
 
- 
   // Scan piece array until a change is detected
   // sq >= 0 if Board changed; Square that changed, sq = -1 = No change
   int sq_source = -1;
@@ -257,15 +234,16 @@ void loop()
       showString(PSTR("^ "));
       sq_source = scanPieceArray(&board);
        
-    }
+    } // TODO: Broken, ignored positions
   while(sq_source == -1 || 63-sq_source==27 || 63-sq_source==9);
   
   showString(PSTR("\n"));
+
   // sq_source = emulate_board(&board, 0);
 
   sq_source = 63 - sq_source;
   showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
-  showString(PSTR("Current board\n"));
+  //  showString(PSTR("Current board\n"));
   // chess.printBitboard(&board); 
    
   // Obtain a bitboard with the legal moves for a piece on the square sq
@@ -274,11 +252,10 @@ void loop()
   showString(PSTR("Found the following moves\n"));
   chess.printBitboard(&moves);
 
+  // Show positions for to the user.
   displayPositions(&moves);  
 
     
-
-   
   //
   //
   // ---------------------------------------------------
@@ -300,36 +277,39 @@ void loop()
   int sq_dest = -1;
   do
     {
-  
       showString(PSTR("v "));
       sq_dest = scanPieceArray(&board);
- 
- 
-    }
+    } // TODO:Ignored, broken positions
   while(sq_dest == -1 || 63-sq_dest==27 || 63-sq_dest == 9);
+
   showString(PSTR("\n"));
     
   // sq_dest = emulate_board(&board, 1);
+
   sq_dest = 63 - sq_dest;
   showString(PSTR("Found placed piece: ")); Serial.println(sq_dest, DEC);
+
+  // Piece is placed, turn off leds  
   clearDisplay();
    
-
-  // Piece is placed, turn off leds
   
   // If sq_source == sq_dest, then piece was placed back to it's original pos
   // Don't play the move. Loop again.
   if(sq_source == sq_dest)
     {
-      //TODO: check if empty return is safe.
+      //TODO: Flash on set at same position
+      // flashPosition(sq_dest);
+ 
       clearDisplay();
       showString(PSTR("Set piece at same position!\n"));
       showString(PSTR("END---ITERATION----------------------------------------------\n"));
       return;
     }
-  chess.playPieceMove(sq_dest);
+  
+  // Play the move
+   chess.playPieceMove(sq_dest);
 
-  // TODO: Confirn correct code logic
+  // TODO: Fix bad move logic
   /*
     uint64_t error_board = 0x0ULL;
     // legal == 0 if move is legal, else legal == 1, meaning move is illegal
@@ -364,44 +344,33 @@ void loop()
   // -------------------------------------------------
     
 
-
-  //TODO: convert fen to an Arduino String
   // Send FEN to boardcaster.com
   showString(PSTR("Getting FEN from position\n"));
-   char* chess_ret = chess.getFENFromPosition();
-   fen = String(chess_ret);
-   showString(PSTR("Got FEN from position\n"));
+  char* chess_ret = chess.getFENFromPosition();
+  fen = String(chess_ret);
    
-  showString(PSTR("Posting FEN\n"));
+  showString(PSTR("Posting FEN: "));
   Serial.println(fen);
   
+// Reset received flag
   received = false;
-  /*
-  do{
 
-    showString(PSTR("."));
-    //showString(PSTR("MEM: "));
-    //Serial.println(freeMemory(), DEC);
-    sendInfo.setBodyFunc(printPost);
-     sendInfo.setReturnFunc(printData);  
-     sendInfo.submit();
-    WiServer.server_task();
-   
-  }while(!received);
-  */
+  // Refresh the posting function
   sendInfo.setBodyFunc(printPost);
+
+  // Send just played FEN
   sendInfo.submit();  
 while(sendInfo.isActive())
     {
       showString(PSTR("."));
       WiServer.server_task();
     }
+// Close the connection, 
  uip_close();
   showString(PSTR("END---ITERATION----------------------------------------------\n"));
 
-
+  // Tick the WiShield code
   WiServer.server_task();
   delay(10);
-
 }
 
