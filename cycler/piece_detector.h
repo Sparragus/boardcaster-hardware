@@ -1,6 +1,7 @@
 #ifndef PIECE_DETECTOR_H
 #define PIECE_DETECTOR_H
 // Pin Definitions
+#include <stdlib.h> 
 
 
 // Under non-debugging operation SENSOR_COUNT = SCAN_SIZE = 64
@@ -35,4 +36,6 @@ extern struct sig_t {
 int scanPieceArray(uint64_t* board);
 void initPieceDetector();
 void cycleArray();
+
 #endif //PIECE_DETECTOR_H
+

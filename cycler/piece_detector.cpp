@@ -6,60 +6,64 @@
 #include "defines.h"
 #include "led_disp.h"
 
+#define PRINT_RES 0
+
 uint64_t old_board = 0x0000000000000000LL;
-const long unsigned  TIME_SETTLE = 2;
+const long unsigned  TIME_SETTLE = 1;
 long unsigned realTimeToScan = 0;
-
-
-
-
-
 
 void cycleArray()
 {
-   uint64_t board = 0x0000000000000000LL;
-   uint16_t* parts = 0LL; 
-   int dir = 1;
+    uint64_t dboard = 0x0ULL;
 
-   int bitPos = 0;
-   int p =0;
+    int dir = 1;
 
-   for(int j = 0; j < 8; j++)
-   {
-       bitPos = p;
-       for(int i = 0; i < 8; i++)
+    int bitPos = 0;
+    int p =0;
 
-       { 
-           putBit(&board, 1, bitPos);
-           parts  = getParts(&board);
-           delay(30);
-           displaypositions(parts);
-           delay(50);
-           bitPos += dir;
-       }
+    for(int j = 0; j < 8; j++)
+    {
+        bitPos = p;
+        for(int i = 0; i < 8; i++)
+
+        { 
+            putBit(&dboard, 1, bitPos);
+            delay(30);
+            displayPositions(&dboard);
+            delay(100);
+//            clearDisplay();
+            bitPos += dir;
+        }
      
-       dir = -dir;
-       if(j%2==0)
-           p+=15;
-       else
-           p+=1;
-   } 
+        dir = -dir;
+        if(j%2==0)
+            p+=15;
+        else
+            p+=1;
+    } 
+
 
 }
+
 
 // Scan the board into the long long board (64 bits)
 // Return: 1 = Board Change
 //       : 0 = No Board Change
 int scanPieceArray(uint64_t* board)
 {
+    noInterrupts();
+    // Save old board
+    old_board = *board;
+ 
     // Read the board as uchars into tboard
     uchar tboard[SCAN_SIZE];
-
+    
     long start_time, end_time = 0;
     uchar x, y = 0;
 
     // Scan the board
     // Run i from 0 to 63
+   
     for(unsigned int i = 0; i < SCAN_SIZE; i++)
     {
         linTo2D(i, &x, &y);
@@ -87,21 +91,21 @@ int scanPieceArray(uint64_t* board)
     
         // Read Result
         uchar data = readPieceArrayLine();
-      
+        data = digitalRead(PD_OUT_DATA);
+
         tboard[i] = data;
     }
  
-    // Save old board
-    old_board = *board;
  
     // Convert array bit board into a long long 
     arrayToBitBoard(tboard, board);
- 
+    interrupts();
+
     // Assert conversion failure
     // This should NEVER happen.
     if(tboard[0] != getBit(board, 0) && tboard[1] != getBit(board, 1))
         Serial.print("getBitFailure");
-  
+
 #if PRINT_RES == 1
     Serial.print("NEW BOARD ");
     printBoard(board, SENSOR_COUNT);
@@ -117,8 +121,6 @@ int scanPieceArray(uint64_t* board)
 // Piece Detector Initializer
 void initPieceDetector()
 {
-    Serial.print("Initializing Piece Array Scanner");	
-
     // Set up pin directions
     pinMode(PD_DEC_PA0, OUTPUT);
     pinMode(PD_DEC_PA1, OUTPUT);
@@ -170,6 +172,7 @@ void initPieceDetector()
     Serial.print("  [");
     Serial.print(realTimeToScan, DEC);
     Serial.print("]ms/scan..");
-    Serial.println("\nInitialization Done.");	
+
 }
+
 
