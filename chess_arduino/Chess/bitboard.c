@@ -123,7 +123,8 @@ bitboard i_knight(int sq)
     int file;
     int rank;
     
-    for(i = 0; i < 64; i++) {
+    sq++;
+    for(i = 0; i < sq; i++) {
         temp = 0;
 
         file = i % 8;

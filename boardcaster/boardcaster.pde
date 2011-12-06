@@ -83,7 +83,7 @@ volatile boolean received = false;
 uint8 ip[] = {192,168,0,196};
 // WiShield <END>
  POSTrequest sendInfo(ip, 3001, "http://192.168.0.197", "/moves/", printPost);
-String fen = "3k3r/8/8/8/8/8/1K6/RNBP4 w KQkq - 0 1";
+String fen = "3k3r/8/8/8/8/8/1K5P/RNB3R1 w KQkq - 0 1";
 Chess chess;
 uint64_t board = 0x0ULL;
 
