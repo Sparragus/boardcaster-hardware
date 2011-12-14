@@ -22,8 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #include <attack.h>
 #include <Chess.h>
 // Chess Engine <END>
-#include <WiServer.h>
 
+#include <WiServer.h>
 #include "boardcaster.h"
 #include "piece_detector.h"
 #include "led_disp.h"
@@ -44,16 +44,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 
 volatile boolean received = false;
+// Setup server ip
 uint8 ip[] = {192,168,0,199};
+// Setup POST request parameters
 POSTrequest sendInfo(ip, 3000, "http://192.168.0.199", "/moves/", printPost);
+// Initial FEN to send
 String fen = "3k3r/8/8/8/8/8/1K5P/RNB3R1 w KQkq - 0 1";
-
 //String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 Chess chess;
 uint64_t board = 0x0ULL;
 
-
-
+// A hack to work around the avr-gcc limitations
 int __cxa_guard_acquire(__guard *g) {return !*(char *)(g);};
 void __cxa_guard_release (__guard *g) {*(char *)g = 1;};
 void __cxa_guard_abort (__guard *) {};
@@ -99,7 +101,6 @@ prog_uchar wep_keys[] PROGMEM = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
 unsigned char wireless_mode = WIRELESS_MODE_INFRA;
 unsigned char ssid_len;
 unsigned char security_passphrase_len;
-// End of wireless configuration parameters ----------------------------------------
 // WiShield <END>
 
 
@@ -134,8 +135,6 @@ void setup()
     showString(PSTR("done\n"));
 
     // Init chess engine
-    //chess = Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    //chess = Chess("8/8/8/8/4Q3/8/8/k3K3 w KQkq - 0 1");
     int s = fen.length();
     char fen_arr[s];
     fen.toCharArray(fen_arr, s);
@@ -155,7 +154,6 @@ void setup()
     
     // Clear the LED display
     clearDisplay();
-
     
     // Initialize WiServer (we'll pass NULL for the page serving function since we don't need to serve web pages) 
     WiServer.init(NULL);
@@ -182,7 +180,7 @@ void setup()
     showString(PSTR("MEM: "));
     Serial.println(freeMemory(), DEC);
 
-// Flash the board logo to show user board is ready.
+    // Flash the board logo to show user board is ready.
     flashOK();
 
     // Wait a bit before letting the user play.
@@ -279,12 +277,6 @@ void loop()
     // ---------------------------------------------------
 
 
-
-
-
-
-
-
     // --------------------------------------------------
     // SET PIECE
     //
@@ -370,7 +362,7 @@ void loop()
     showString(PSTR("Posting FEN: "));
     Serial.println(fen);
   
-// Reset received flag
+    // Reset received flag
     received = false;
 
     // Refresh the posting function
@@ -383,7 +375,8 @@ void loop()
         showString(PSTR("."));
         WiServer.server_task();
     }
-// Close the connection, 
+    
+    // Close the connection, 
     uip_close();
     showString(PSTR("END---ITERATION----------------------------------------------\n"));
 

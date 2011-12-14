@@ -14,8 +14,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-// Code by Gabriel J. Perez
-//         Francisco De La Cruz
 #include <WProgram.h>
 #include "led_disp.h"
 #include "defines.h"
@@ -23,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #include "piece_detector.h"
 #include "bitboard_ops.h"
 #include "utils.h"
+
+// Display the letters B and C to test the display
 void flashOK()
 {
   uchar o_arr[] = {
@@ -57,6 +57,8 @@ void flashOK()
   delay(1500);
   clearDisplay();
 }
+
+// Initialize the pins to be used for the shift registers
 void initLedDisp() 
 {
     //set pins to output so you can control the shift register
@@ -67,9 +69,6 @@ void initLedDisp()
   
     digitalWrite(LA_LATCH_PIN, HIGH);
 }
-
-/*  Split bitboard into 4 segments of an array 
-    array. The returned pointer is to static data which is overwritten with each call*/
 
 void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t val)
 {
@@ -91,38 +90,18 @@ void shiftOut16(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint16_t va
 void displayPositions(const uint64_t* inBoard)
 {
     clearDisplay();
-    //showString(PSTR("This is inBoard=\n"));
    
+    // Create a copy of the board 
     uint64_t inBoardNC = *inBoard;
-    //printBoard(&inBoardNC, 64);
 
+    // Initialize the board parts as empty 
     uint16_t board_parts[4] = { 0x0FUL, 0x0FUL, 0x0FUL};
-    //uint64_t tBoard = 0xFFFF0000000;
-    // uchar tBoard[] = 
-    //     {
-    //         0,0,0,0,0,0,0,0,
-    //         0,0,0,0,0,0,0,0,
-    //         0,0,0,0,0,0,0,1,
-    //         0,0,0,0,0,0,1,0,
-    //         0,0,0,0,0,1,0,0,
-    //         0,0,0,0,1,0,0,0,
-    //         0,0,0,1,0,0,0,0,
-    //         0,0,0,0,0,0,0,0,
 
-
-    //     };
-
-
-    // uint64_t bishopBoard = 0x0FULL;
-//    arrayToBitBoard(disparateBoard, &bishopBoard);
-    //   mirrorBitboardX(&bishopBoard);
+    // Use only if the hardware board is mirrored
+    // This mirrors the output so that it is compatible
+    // with the mirrored board. 
     mirrorBitboardX(&inBoardNC);
-    //showString(PSTR("This is the mirrored board=\n"));
-    // printBoard(&inBoardNC, 64);
-    // board_parts[0] = bishopBoard;
-    // board_parts[1] = (bishopBoard >> 16);
-    // board_parts[2] = (bishopBoard >> 32);
-    // board_parts[3] = (bishopBoard >> 48);
+
     board_parts[0] = inBoardNC;
     board_parts[1] = (inBoardNC >> 16);
     board_parts[2] = (inBoardNC >> 32);
@@ -147,9 +126,9 @@ void displayPositions(const uint64_t* inBoard)
     // Set LA_LATCH_PIN low to allow data to pass through
     digitalWrite(LA_LATCH_PIN, HIGH);
     digitalWrite(LA_XEN_PIN, LOW);
-    
-//  lockDisplay();
 }
+
+// Clear all data in shift registers to clear display
 void clearDisplay()
 {
     // Set xenPin high to disable the drivers.
@@ -175,9 +154,9 @@ void clearDisplay()
     lockDisplay();
 }
 
+// Disable input to the shift registers
 void lockDisplay()
 {
- 
     digitalWrite(LA_LATCH_PIN, HIGH);
 }
 
