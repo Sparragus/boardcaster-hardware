@@ -33,9 +33,11 @@ void linTo2D(uchar i, uchar* x, uchar* y)
 // Show a string from PROGRAM
 void showString (PGM_P s)
 {
+#ifdef ENABLE_SHOWSTRING
     char c;
     while ((c = pgm_read_byte(s++)) != 0)
         Serial.print(c, BYTE);
+#endif
 }
 
 // Very rudimentary hardcoded board "emulator"

@@ -37,6 +37,10 @@
 #include <stdlib.h>
 #include <avr/pgmspace.h>
 
+
+// Define to allow calls to showString(...) to print to Serial
+#define ENABLE_SHOWSTRING
+
 // Always leave this defined to remove asserts
 #define NDEBUG
 // Just in case.
