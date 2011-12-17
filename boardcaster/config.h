@@ -14,33 +14,38 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-#ifndef PIECE_DETECTOR_H
-#define PIECE_DETECTOR_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
-#include <stdlib.h> 
+// Define to allow calls to showString(...) to print to Serial
+#define ENABLE_SHOWSTRING
+
+// Always leave this defined to remove asserts
+#define NDEBUG
+// Just remove the asserts
+#define assert(x) ;
+
+// Uncomment to print debug messages
+//#define DEBUG
+
+// Time in ms to wait until reading the data
+// units in ms.
+// 1ms SETTLE ~~ 64ms per board scan
+// 5ms SETTLE ~~ 322ms per board scan
+
+// Just settle for 1ms
+#define TIME_SETTLE 1
 
 
-typedef unsigned long long uint64_t;
+// Under non-debugging operation SENSOR_COUNT = SCAN_SIZE = 64
+#define SCAN_SIZE 64
+#define SENSOR_COUNT 64
 
-// Temporary board for delta calculation
-extern uint64_t old_board;
+#define PRINT_RES 0
+#define PRINT_TIME 0
+
+// Define for a board mirrored along the file axis
+#define MIRRORED_FILES
 
 
-extern long unsigned realTimeToScan;
-
-// Hold all the states
-typedef unsigned int uint;
-typedef unsigned char uchar;
-
-extern struct sig_t {
-    uchar m_port1;
-    uchar m_port2;
-    uchar m_port3;
-} sig;
-
-int scanPieceArray(uint64_t* board);
-void initPieceDetector();
-void cycleArray();
-
-#endif //PIECE_DETECTOR_H
-
+#endif // CONFIG_H

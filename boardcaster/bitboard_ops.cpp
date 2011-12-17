@@ -15,6 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 #include <WProgram.h>
+#include "config.h"
 #include "piece_detector.h"
 #include "bitboard_ops.h"
 

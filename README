@@ -1,5 +1,8 @@
 The main firmware sketch is: boardcaster
+
 This is the integration sketch for code targeted for flash onto the final product and demos.
+
+See the file config.h in boardcaster/ for configuration settings.
 	
 ==Build==
 make

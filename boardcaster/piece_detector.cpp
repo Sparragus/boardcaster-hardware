@@ -15,6 +15,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 #include <WProgram.h>
+#include "config.h"
 #include "piece_detector.h"
 #include "utils.h"
 #include "hw_signals.h"
@@ -24,11 +25,8 @@
 
 
 uint64_t old_board = 0x0000000000000000LL;
-// Just settle for 1ms
 
-const long unsigned  TIME_SETTLE = 1;
 // Benchmark the Scan
-
 long unsigned realTimeToScan = 0;
 
 // Illuminate all leds in a zigzag pattern

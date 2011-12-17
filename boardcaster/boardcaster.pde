@@ -14,6 +14,7 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
+#include "config.h"
 // Chess Engine <START>
 #include <bitboard.h>
 #include <position.h>
@@ -38,16 +39,6 @@
 #include <avr/pgmspace.h>
 
 
-// Define to allow calls to showString(...) to print to Serial
-#define ENABLE_SHOWSTRING
-
-// Always leave this defined to remove asserts
-#define NDEBUG
-// Just in case.
-#define assert(x) ;
-
-// To print debug messages, redefine
-//#define DEBUG
 
 // WiShield callback status
 volatile boolean received = false;
