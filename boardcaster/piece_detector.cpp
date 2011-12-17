@@ -1,18 +1,18 @@
 /*Copyright (C) 2011  Francisco De La Cruz, Gabriel J. Pérez
-and Richard B. Kaufman
+  and Richard B. Kaufman
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 #include <WProgram.h>
 #include "piece_detector.h"
@@ -22,43 +22,48 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #include "defines.h"
 #include "led_disp.h"
 
-#define PRINT_RES 0
 
 uint64_t old_board = 0x0000000000000000LL;
+// Just settle for 1ms
+
 const long unsigned  TIME_SETTLE = 1;
+// Benchmark the Scan
+
 long unsigned realTimeToScan = 0;
+
+// Illuminate all leds in a zigzag pattern
 
 void cycleArray()
 {
+    // Start with a clear board
     uint64_t dboard = 0x0ULL;
 
+    // Set traversal direction
+    // + = right , - = left
     int dir = 1;
 
+    // Bit position
     int bitPos = 0;
-    int p =0;
+    int p = 0;
 
     for(int j = 0; j < 8; j++)
     {
         bitPos = p;
         for(int i = 0; i < 8; i++)
-
         { 
             putBit(&dboard, 1, bitPos);
             delay(30);
             displayPositions(&dboard);
             delay(100);
-//            clearDisplay();
             bitPos += dir;
         }
-     
+        // Change direction for each rank
         dir = -dir;
-        if(j%2==0)
-            p+=15;
+        if(j%2==0) 
+            p+=15; // Move to the opposite side
         else
-            p+=1;
+            p+=1; // Stay on the same side
     } 
-
-
 }
 
 
@@ -67,7 +72,9 @@ void cycleArray()
 //       : 0 = No Board Change
 int scanPieceArray(uint64_t* board)
 {
+    // Disable the interrupts
     noInterrupts();
+
     // Save old board
     old_board = *board;
  
@@ -79,7 +86,6 @@ int scanPieceArray(uint64_t* board)
 
     // Scan the board
     // Run i from 0 to 63
-   
     for(unsigned int i = 0; i < SCAN_SIZE; i++)
     {
         linTo2D(i, &x, &y);
@@ -94,7 +100,6 @@ int scanPieceArray(uint64_t* board)
         // Decoder = Row Iterator
         // Multiplexer = Column Iterator
         // One multiplexer per RANK
-        // As connected DEMO
 
         // Enable Decoder
         setDecoder(&row);
@@ -112,9 +117,10 @@ int scanPieceArray(uint64_t* board)
         tboard[i] = data;
     }
  
- 
     // Convert array bit board into a long long 
     arrayToBitBoard(tboard, board);
+
+    // Reenable the interrupts
     interrupts();
 
     // Assert conversion failure
@@ -122,7 +128,7 @@ int scanPieceArray(uint64_t* board)
     if(tboard[0] != getBit(board, 0) && tboard[1] != getBit(board, 1))
         Serial.print("getBitFailure");
 
-#if PRINT_RES == 1
+#ifdef DEBUG
     Serial.print("NEW BOARD ");
     printBoard(board, SENSOR_COUNT);
     Serial.print("OLD BOARD ");
@@ -134,7 +140,7 @@ int scanPieceArray(uint64_t* board)
     return compareBoards(board, &old_board);
 }
 
-// Piece Detector Initializer
+// Initialize the Piece Detector
 void initPieceDetector()
 {
     // Set up pin directions
@@ -188,7 +194,6 @@ void initPieceDetector()
     Serial.print("  [");
     Serial.print(realTimeToScan, DEC);
     Serial.print("]ms/scan..");
-
 }
 
 
