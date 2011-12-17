@@ -1,18 +1,18 @@
 /*Copyright (C) 2011  Francisco De La Cruz, Gabriel J. Pérez
-and Richard B. Kaufman
+  and Richard B. Kaufman
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 // Chess Engine <START>
 #include <bitboard.h>
@@ -37,22 +37,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #include <stdlib.h>
 #include <avr/pgmspace.h>
 
+// Always leave this defined to remove asserts
 #define NDEBUG
 // Just in case.
 #define assert(x) ;
+
+// To print debug messages, redefine
 //#define DEBUG
 
-
+// WiShield callback status
 volatile boolean received = false;
+
 // Setup server ip
 uint8 ip[] = {192,168,0,199};
+
 // Setup POST request parameters
 POSTrequest sendInfo(ip, 3000, "http://192.168.0.199", "/moves/", printPost);
+
 // Initial FEN to send
 String fen = "3k3r/8/8/8/8/8/1K5P/RNB3R1 w KQkq - 0 1";
 //String fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 Chess chess;
+
+// Main game bitboard
 uint64_t board = 0x0ULL;
 
 // A hack to work around the avr-gcc limitations
@@ -70,9 +78,7 @@ void operator delete(void * ptr)
     free(ptr);
 }
 
-
 // WiShield <START>
-
 #define WIRELESS_MODE_INFRA	1
 #define WIRELESS_MODE_ADHOC	2
 
@@ -110,6 +116,7 @@ void setup()
     // Wait for everything to settle
     delay(1000);
     Serial.end();
+
     // Set serial transmission rate for debug prints
     Serial.begin(9600);
     delay(1000);
@@ -164,8 +171,7 @@ void setup()
 
     // TODO: Assert if starting fen is not matched
     // by pieces.
-    // Maybe send scaned pieces
-
+    
     // Send the initial FEN positions
     sendInfo.submit();  
     // Wait for a reply...
@@ -189,8 +195,6 @@ void setup()
 }
 
 //------------ WiShield Functions -------------------
-
-
 // This function generates the body of our POST request
 void printPost()
 {
@@ -200,7 +204,6 @@ void printPost()
 // Function that prints data from the server
 void printData(char* data, int len)
 {
-  
     received = true;
 
     showString(PSTR("\nrecv data START---------------\n"));
@@ -212,7 +215,6 @@ void printData(char* data, int len)
         Serial.print(*(data++));
     } 
     showString(PSTR("\nrecv data END--------------\n"));
-
 }
 
 //---------------------------------------------------
@@ -220,7 +222,6 @@ void printData(char* data, int len)
 // Main firmware loop
 void loop()
 {
-   
     showString(PSTR("START---ITERATION----------------------------------------------\n"));
 
     // Get current position
@@ -229,7 +230,6 @@ void loop()
     // Print it for debug purposes
     showString(PSTR("CurrentPosition=\n"));
     chess.printBitboard(&board);
-   
     
     // ---------------------------------------
     // LIFT PIECE
@@ -250,17 +250,16 @@ void loop()
         showString(PSTR("^ "));
         sq_source = scanPieceArray(&board);
        
-    } // TODO: Broken, ignored positions
-    while(sq_source == -1 || 63-sq_source==27 || 63-sq_source==9);
+    } 
+    while(sq_source == -1);
   
     showString(PSTR("\n"));
 
+    // Override with emulation board?
     // sq_source = emulate_board(&board, 0);
 
     sq_source = 63 - sq_source;
     showString(PSTR("Found lifted piece: ")); Serial.println(sq_source, DEC);
-    //  showString(PSTR("Current board\n"));
-    // chess.printBitboard(&board); 
    
     // Obtain a bitboard with the legal moves for a piece on the square sq
     const uint64_t moves = chess.getPieceMoves( sq_source );
@@ -270,7 +269,6 @@ void loop()
 
     // Show positions for to the user.
     displayPositions(&moves);  
-
     
     //
     //
@@ -289,11 +287,12 @@ void loop()
     {
         showString(PSTR("v "));
         sq_dest = scanPieceArray(&board);
-    } // TODO:Ignored, broken positions
-    while(sq_dest == -1 || 63-sq_dest==27 || 63-sq_dest == 9);
+    } 
+    while(sq_dest == -1);
 
     showString(PSTR("\n"));
     
+    // Override with emulation board?
     // sq_dest = emulate_board(&board, 1);
 
     sq_dest = 63 - sq_dest;
@@ -301,13 +300,12 @@ void loop()
 
     // Piece is placed, turn off leds  
     clearDisplay();
-   
-  
+     
     // If sq_source == sq_dest, then piece was placed back to it's original pos
     // Don't play the move. Loop again.
     if(sq_source == sq_dest)
     {
-        //TODO: Flash on set at same position
+        // TODO: Flash on set at same position
         // flashPosition(sq_dest);
  
         clearDisplay();
@@ -319,37 +317,7 @@ void loop()
     // Play the move
     chess.playPieceMove(sq_dest);
 
-    // TODO: Fix bad move logic
-    /*
-      uint64_t error_board = 0x0ULL;
-      // legal == 0 if move is legal, else legal == 1, meaning move is illegal
-      // while move is illegal...
-      while(chess.playPieceMove(sq_dest) != 0)
-      {
-      if( sq_dest >= 0 )
-      {
-      showString(PSTR("Error board!\n"));
-      error_board = chess.getMask(sq_dest);
-      }
-      uint16_t* parts  = getParts(&error_board);
-      displayPositions(parts);
-      delay(500);
-      clearDisplay();
-      // HACK
-      sq_dest = scanPieceArray(&board);
-      printBoard(&board, 64);
-     
-      sq_dest = 63 - sq_dest;
-
-      //If the piece goes back to its original square...
-      if(sq_dest == sq_source)
-      {
-      //TODO: check if empty return is safe.
-      //return;
-      }
-      showString(PSTR("Waiting for a valid move\n"));
-      }
-    */
+    // TODO: Logic for Illegal Moves
 
     // -------------------------------------------------
     
