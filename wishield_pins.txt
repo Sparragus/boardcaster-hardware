@@ -1,15 +1,18 @@
+The following lists show pin usages for the WiShield 2.0
+Port B:
+Pin: 0 1 2 3 4 5
+Arduino: D53 D52 D51 D50 D10 D11
 
-B:
-0 1 2 3 4 5
-== D53 D52 D51 D50 D10 D11
-C:
-0 1 2 3
-D37 D36 D35 D34
-==
+Port C:
+Pin: 0 1 2 3
+Arduino: D37 D36 D35 D34
+
 DataFlash
-D:
-7
-D38
+Port D:
+Pin: 7
+Arduino: D38
+
+SPI Pin Usage:
 
 MEGA pin 50 (MISO) to Arduino Ethernet Shield pin 12.
 MEGA pin 51 (MOSI) to Arduino Ethernet Shield pin 11.
