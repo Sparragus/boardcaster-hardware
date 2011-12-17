@@ -2,6 +2,9 @@
   AshChess - A simple and stupid computer chess program
   Copyright (C) 2005 Ashwin Phatak
 
+  Version 2.0 - Adapted for the Boardcaster's Chess Engine
+  @Author: Richard B. Kaufman-Lopez <richardbkaufman [at] gmail [dot] com>
+
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
   as published by the Free Software Foundation; either version 2
@@ -186,7 +189,7 @@ static int loadCastlingSection(const char *fen, int i, int length, position *pos
         else {
             /* illegal character */
             return ERR_PARSE;
-        }    
+        }
     }
     else {
         for(; i < length; i++) {

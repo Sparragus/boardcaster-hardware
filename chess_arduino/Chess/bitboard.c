@@ -2,6 +2,9 @@
   AshChess - A simple and stupid computer chess program
   Copyright (C) 2005 Ashwin Phatak
 
+  Version 2.0 - Adapted for the Boardcaster's Chess Engine
+  @Author: Richard B. Kaufman-Lopez <richardbkaufman [at] gmail [dot] com>
+
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
   as published by the Free Software Foundation; either version 2
@@ -122,7 +125,7 @@ bitboard i_knight(int sq)
     int i;
     int file;
     int rank;
-    
+
     sq++;
     for(i = 0; i < sq; i++) {
         temp = 0;
