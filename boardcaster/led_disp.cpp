@@ -106,11 +106,12 @@ void displayPositions(const uint64_t* inBoard)
     // Initialize the board parts as empty 
     uint16_t board_parts[4] = { 0x0FUL, 0x0FUL, 0x0FUL};
 
+#ifdef MIRRORED_FILES
     // Use only if the hardware board is mirrored
     // This mirrors the output so that it is compatible
     // with the mirrored board. 
     mirrorBitboardX(&inBoardNC);
-
+#endif
     // Set the board parts to serial out
     board_parts[0] = inBoardNC;
     board_parts[1] = (inBoardNC >> 16);

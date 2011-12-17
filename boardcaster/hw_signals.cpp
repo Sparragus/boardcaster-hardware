@@ -65,11 +65,13 @@ void setMux(sig_t* s)
       |____|C
 
     */
-   
-    // HACK: Invert multiplexer signal
+
+// Is the board mirrored along the file axis
+#ifdef MIRRORED_FILES
     s->m_port1 = (uchar)(!(s->m_port1));
     s->m_port2 = (uchar)(!(s->m_port2));
     s->m_port3 = (uchar)(!(s->m_port3));
+#endif
 
 #ifdef DEBUG
     Serial.print("MUX: ");

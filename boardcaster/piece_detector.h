@@ -26,6 +26,9 @@
 #define PRINT_RES 0
 #define PRINT_TIME 0
 
+// Define for a board mirrored along the file axis
+#define MIRRORED_FILES
+
 // Disable debug output to Serial.
 //#define DEBUG
 
